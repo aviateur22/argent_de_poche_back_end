@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.ctoutweb</groupId>
+    <artifactId>argentDePoche</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>4.0.1</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+
+    <modules>
+        <module>core</module>
+        <module>infra</module>
+        <module>application</module>
+    </modules>
+
+    <properties>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <profiles>
+        <profile>
+            <id>local</id>
+            <properties>
+                <!-- API version-->
+                <api.version>v1</api.version>
+                <api.version.path>/api/${api.version}</api.version.path>
+
+                <!-- Database -->
+                <database.schema>sc_argent_de_poche</database.schema>
+
+                <!--Log -->
+                <log.level>DEBUG</log.level>
+                <log.file>logs/app.log</log.file>
+
+                <!--Cors -->
+                <cors.domains>http://localhost:4200,http://localhost:4200</cors.domains>
+
+                <!--File-->
+                <max.file.size>10MB</max.file.size>
+                <is.file.to.compress>true</is.file.to.compress>
+
+                <!--Image Path-->
+                <folder.path>/C:/Programmation/java/argentDePoche/images/</folder.path>
+            </properties>
+        </profile>
+        <profile>
+            <id>moe</id>
+            <properties>
+                <war.name>moe-aet-app</war.name>
+
+                <!-- API version-->
+                <api.version>v1</api.version>
+                <api.version.path>/api/${api.version}</api.version.path>
+
+                <!-- Database -->
+                <database.schema>sc_aet</database.schema>
+
+                <!--Log -->
+                <log.level>INFO</log.level>
+                <log.file>/var/log/aet-app/aet-app.log</log.file>
+
+                <!--Cors -->
+                <cors.domains>http://localhost:4200,http://moe.cartanim.fr</cors.domains>
+
+                <!--File-->
+                <max.file.size>10MB</max.file.size>
+                <is.file.to.compress>true</is.file.to.compress>
+
+                <!--Image Path-->
+                <resource.image>classpath:/image/</resource.image>
+                <memory.card.front.path>/opt/images/aet/front</memory.card.front.path>
+                <memory.card.back.path> /opt/images/aet/back</memory.card.back.path>
+
+            </properties>
+        </profile>
+        <profile>
+            <id>prod</id>
+            <properties>
+                <war.name>prod-aet-app</war.name>
+
+                <!-- API version-->
+                <api.version>v1</api.version>
+                <api.version.path>/api/${api.version}</api.version.path>
+
+                <!-- Database -->
+                <database.schema>sc_aet</database.schema>
+
+                <!--Log -->
+                <log.level>INFO</log.level>
+                <log.file>/var/log/aet-app/prod-aet-app.log</log.file>
+
+                <!--Cors -->
+                <cors.domains>https://aet.fr,http://aet.fr</cors.domains>
+
+                <!--Image Path-->
+                <resource.image>classpath:/image/</resource.image>
+                <memory.card.front.path>/opt/images/aet/front</memory.card.front.path>
+                <memory.card.back.path>/opt/images/aet/back</memory.card.back.path>
+            </properties>
+        </profile>
+    </profiles>
+
+</project>
