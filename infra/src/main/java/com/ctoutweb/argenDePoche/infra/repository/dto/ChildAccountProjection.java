@@ -5,28 +5,37 @@ import org.springframework.data.relational.core.mapping.Column;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+/**
+ * Données issue de la requette SQL loadChildAccountQuery.
+ * Cet objet restitue les données d'un compte d'argent de poche
+ * *
+ * @see com.ctoutweb.argenDePoche.infra.repository.query.SqlQuery
+ */
 public record ChildAccountProjection(
-        @Column("child_account_id")
-        long childAccountId,
+        @Column("childmoneyaccountid")
+        Long childMoneyAccountId,
 
-        @Column("child_name")
+        @Column("childid")
+        Long childId,
+
+        @Column("childname")
         String childName,
 
-        @Column("image_name")
-        String imageName,
+        @Column("imagerandomname")
+        String imageRandomName,
 
-        @Column("calendar_period")
-        String calendarPeriod,
+        @Column("periodsubscriptionname")
+        String periodSubscriptionName,
 
-        @Column("period_startday")
-        LocalDate periodStartday,
+        @Column("startperioddate")
+        LocalDate startPeriodDate,
 
-        @Column("period_end_day")
-        LocalDate periodEndDay,
+        @Column("endperioddate")
+        LocalDate endPeriodDate,
 
-        @Column("start_money")
-        BigDecimal startMoney,
+        @Column("moneyatperiodstart")
+        BigDecimal moneyAtPeriodStart,
 
-        @Column("remaining_money")
+        @Column("remainingmoney")
         BigDecimal remainingMoney) {
 }

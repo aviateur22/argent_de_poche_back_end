@@ -2,8 +2,8 @@ package com.ctoutweb.argentDePoche.application.configuration.bus;
 
 
 import com.ctoutweb.argentDePoche.application.query.Query;
-import com.ctoutweb.argentDePoche.application.query.QueryHandler;
-import org.reactivestreams.Publisher;
+import com.ctoutweb.argentDePoche.application.query.MonoQueryHandler;
+import reactor.core.publisher.Mono;
 
 public interface QueryBus {
     /**
@@ -14,7 +14,7 @@ public interface QueryBus {
      * @param <Q> Le type de la Query
      * @param <R> Le type renvoyé par la command
      */
-    <Q extends Query<R>, R> void registerHandler(Class<Q> queryType, QueryHandler<Q, R> handler);
+    <Q extends Query<R>, R> void registerMonoHandler(Class<Q> queryType, MonoQueryHandler<Q, R> handler);
 
     /**
      * Execution d'une commande
@@ -26,5 +26,5 @@ public interface QueryBus {
      *
      * @return Le type de resultat renvoyer par la qyery
      */
-    <Q  extends Query<R>, R> Publisher<R> executeQuery(Q query);
+    <Q  extends Query<R>, R> Mono<R> executeQuery(Q query);
 }

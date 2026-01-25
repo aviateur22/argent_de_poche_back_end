@@ -1,4 +1,4 @@
-package com.ctoutweb.argenDePoche.infra.adapter.bus;
+package com.ctoutweb.argenDePoche.infra.adapter.bus.impl;
 
 import com.ctoutweb.argenDePoche.infra.exception.EventException;
 import com.ctoutweb.argentDePoche.application.configuration.bus.EventBus;

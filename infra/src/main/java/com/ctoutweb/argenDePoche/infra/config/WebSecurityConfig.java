@@ -36,6 +36,7 @@ public class WebSecurityConfig {
             .authorizeExchange(exchange -> exchange
                     .pathMatchers(
                             apiVersion+"/child-accounts/**",
+                            apiVersion+"/family-accounts/**",
                             apiVersion+"/api")
                     .permitAll()
                     .anyExchange().authenticated());

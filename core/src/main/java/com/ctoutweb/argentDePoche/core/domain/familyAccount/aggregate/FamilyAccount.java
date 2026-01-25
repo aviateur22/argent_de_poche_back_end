@@ -10,7 +10,7 @@ import java.util.List;
 
 public class FamilyAccount {
     private final FamilyAccountIdentity familyAccountId;
-    private final Family familyName;
+    private final Family family;
     private final List<ParentIdentity> parentIdentities;
     private final List<ChildMoneyAccountIdentity> childMoneyAccountIds;
 
@@ -20,7 +20,7 @@ public class FamilyAccount {
             List<ParentIdentity> parentIdentities,
             List<ChildMoneyAccountIdentity> childMoneyAccountIds) {
         this.familyAccountId = familyAccountId;
-        this.familyName = family;
+        this.family = family;
         this.parentIdentities = parentIdentities;
         this.childMoneyAccountIds = childMoneyAccountIds;
     }
@@ -52,15 +52,15 @@ public class FamilyAccount {
         List<ChildMoneyAccountIdentity> updateChildMoneyAccounts =new ArrayList<>(this.childMoneyAccountIds);
         updateChildMoneyAccounts.add(createdChildMoneyAccountId);
 
-        return new FamilyAccount(this.familyAccountId, this.familyName, this.parentIdentities, updateChildMoneyAccounts);
+        return new FamilyAccount(this.familyAccountId, this.family, this.parentIdentities, updateChildMoneyAccounts);
     }
 
     public FamilyAccountIdentity getFamilyAccountId() {
         return familyAccountId;
     }
 
-    public Family getFamilyName() {
-        return familyName;
+    public Family getFamily() {
+        return family;
     }
 
     public List<ParentIdentity> getParentIdentities() {

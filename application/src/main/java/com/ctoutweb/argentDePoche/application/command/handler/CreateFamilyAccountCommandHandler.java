@@ -29,10 +29,10 @@ public class CreateFamilyAccountCommandHandler implements MonoCommandHandler<Cre
         var familyToCreate = FamilyAccount.create(
                 nextFamilyIdentities.getNextFamilyAccountIdentity(),
                 nextFamilyIdentities.getNexFamilyIdentity(),
-                nextFamilyIdentities.getNextParentIdentity(),
+                command.parentCreatingChildAccount(),
                 command.familyName()
         );
 
-        return commandRepository.createFamilyAccount(familyToCreate);
+        return commandRepository.createFamilyAccount(familyToCreate, command.parentCreatingChildAccount());
     }
 }

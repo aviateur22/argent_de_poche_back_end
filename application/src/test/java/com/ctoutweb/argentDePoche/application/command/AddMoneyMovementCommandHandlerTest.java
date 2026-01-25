@@ -77,7 +77,7 @@
 //
 //        // Mock chargement aggregat compte enfant
 //        when(loaderChildAccount.load(any(ChildMoneyAccountIdentity.class)))
-//                .thenReturn(childAccountResult);
+//                .thenReturn(Mono.just(childAccountResult));
 //
 //        /**
 //         * When - then
@@ -138,11 +138,11 @@
 //
 //        //Mock pour commandRepository.loadFamilyAccountAggregate
 //        when(commandRepository.loadFamilyAccountFromParent(parentUpdatedChildAccount))
-//                .thenReturn(Optional.of(familyAggregate));
+//                .thenReturn(Mono.just(familyAggregate));
 //
 //        //Mock pour commandRepository.loadFamilyAccountAggregate
 //        when(loaderChildAccount.load(any(ChildMoneyAccountIdentity.class)))
-//                .thenReturn(childMoneyAccountBeforeUpdate);
+//                .thenReturn(Mono.just(childMoneyAccountBeforeUpdate));
 //
 //        // Mock mise a jour du compte de l'enfant
 //        when(childMoneyAccountBeforeUpdate.addMoneyMovement(any(MoneyMovement.class)))
@@ -150,7 +150,7 @@
 //
 //        // Mock de la persistence de la mise a jour
 //        when(commandRepository.updateChildMoneyAccount(childMoneyAccountUpdated))
-//                .thenReturn(childAccountIdentityToBeUpdated);
+//                .thenReturn(Mono.just(childAccountIdentityToBeUpdated));
 //
 //
 //        /**
@@ -216,11 +216,11 @@
 //
 //        //Mock pour commandRepository.loadFamilyAccountAggregate
 //        when(commandRepository.loadFamilyAccountFromParent(parentUpdatedChildAccount))
-//                .thenReturn(Optional.of(familyAggregate));
+//                .thenReturn(Mono.just(familyAggregate));
 //
 //        //Mock pour commandRepository.loadFamilyAccountAggregate
 //        when(loaderChildAccount.load(any(ChildMoneyAccountIdentity.class)))
-//                .thenReturn(childMoneyAccountBeforeUpdate);
+//                .thenReturn(Mono.just(childMoneyAccountBeforeUpdate));
 //
 //        // Mock mise a jour du compte de l'enfant
 //        when(childMoneyAccountBeforeUpdate.addMoneyMovement(any(MoneyMovement.class)))
@@ -228,7 +228,7 @@
 //
 //        // Mock de la persistence de la mise a jour
 //        when(commandRepository.updateChildMoneyAccount(childMoneyAccountUpdated))
-//                .thenReturn(childAccountIdentityToBeUpdated);
+//                .thenReturn(Mono.just(childAccountIdentityToBeUpdated));
 //
 //
 //        /**

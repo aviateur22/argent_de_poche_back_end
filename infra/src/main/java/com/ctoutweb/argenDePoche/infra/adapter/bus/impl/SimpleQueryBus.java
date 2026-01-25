@@ -1,27 +1,27 @@
-package com.ctoutweb.argenDePoche.infra.adapter.bus;
+package com.ctoutweb.argenDePoche.infra.adapter.bus.impl;
 
 import com.ctoutweb.argentDePoche.application.configuration.bus.QueryBus;
 import com.ctoutweb.argentDePoche.application.query.Query;
-import com.ctoutweb.argentDePoche.application.query.QueryHandler;
-import org.reactivestreams.Publisher;
+import com.ctoutweb.argentDePoche.application.query.MonoQueryHandler;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Mono;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @Component
 public class SimpleQueryBus implements QueryBus {
-    private final Map<Class<?>, QueryHandler<?, ?>> queryHandlers = new HashMap<>();
+    private final Map<Class<?>, MonoQueryHandler<?, ?>> queryHandlers = new HashMap<>();
 
     @Override
-    public <Q extends Query<R>, R> void registerHandler(Class<Q> queryType, QueryHandler<Q, R> handler) {
+    public <Q extends Query<R>, R> void registerMonoHandler(Class<Q> queryType, MonoQueryHandler<Q, R> handler) {
         queryHandlers.put(queryType, handler);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public <Q extends Query<R>, R> Publisher<R> executeQuery(Q query) {
-        QueryHandler<Q, R> handler = (QueryHandler<Q, R>) queryHandlers.get(query.getClass());
+    public <Q extends Query<R>, R> Mono<R> executeQuery(Q query) {
+        MonoQueryHandler<Q, R> handler = (MonoQueryHandler<Q, R>) queryHandlers.get(query.getClass());
         if (handler == null) {
             throw new RuntimeException("Pas de handler enregistré pour : " + query.getClass());
         }

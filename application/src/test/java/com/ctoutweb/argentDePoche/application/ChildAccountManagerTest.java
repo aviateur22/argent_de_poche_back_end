@@ -75,7 +75,7 @@
 //        ChildMoneyAccount childAccountInFamily = mockChildAccount();
 //        ChildMoneyAccountIdentity childMoneyAccountIdToLoad = childAccountInFamily.getChildMoneyAccountId();
 //        ParentIdentity parentIdentity = new ParentIdentity(1L);
-//        FamilyAccountIdentity familyAccountId = new FamilyAccountIdentity(1L);
+//        FamilyAccountIdentity familyAccountIdentity = new FamilyAccountIdentity(1L);
 //        ChildAccountDto dto = Mockito.mock(ChildAccountDto.class);
 //
 //        Mockito.when(queryBus.executeQuery(ArgumentMatchers.any(LoadChildAccountQuery.class)))
@@ -100,7 +100,7 @@
 //         */
 //        ChildMoneyAccountIdentity childAccountId = new ChildMoneyAccountIdentity(1L);
 //        ParentIdentity parentIdentity = new ParentIdentity(1L);
-//        FamilyAccountIdentity familyAccountId = new FamilyAccountIdentity(1L);
+//        FamilyAccountIdentity familyAccountIdentity = new FamilyAccountIdentity(1L);
 //
 //        // Fake de l'image a modifier
 //        byte[] imageBytes = "fakeImage".getBytes();
@@ -132,7 +132,7 @@
 //         */
 //        ChildMoneyAccountIdentity childAccountId = new ChildMoneyAccountIdentity(1L);
 //        ParentIdentity parentIdentity = new ParentIdentity(1L);
-//        FamilyAccountIdentity familyAccountId = new FamilyAccountIdentity(1L);
+//        FamilyAccountIdentity familyAccountIdentity = new FamilyAccountIdentity(1L);
 //
 //        //Resource image à NULL
 //        ImageResource imageResource = null;
@@ -153,7 +153,7 @@
 //         */
 //        ChildMoneyAccountIdentity childAccountId = new ChildMoneyAccountIdentity(1L);
 //        ParentIdentity parentIdentity = new ParentIdentity(1L);
-//        FamilyAccountIdentity familyAccountId = new FamilyAccountIdentity(1L);
+//        FamilyAccountIdentity familyAccountIdentity = new FamilyAccountIdentity(1L);
 //
 //        //Resource image à NULL
 //        ImageResource imageResource = ""::getBytes;
@@ -174,7 +174,7 @@
 //         */
 //        ChildMoneyAccountIdentity childAccountId = new ChildMoneyAccountIdentity(1L);
 //        ParentIdentity parentIdentity = new ParentIdentity(1L);
-//        FamilyAccountIdentity familyAccountId = new FamilyAccountIdentity(1L);
+//        FamilyAccountIdentity familyAccountIdentity = new FamilyAccountIdentity(1L);
 //
 //        AddMoneyMovement addMoneyMovement = new AddMoneyMovement() {
 //            @Override
@@ -225,7 +225,7 @@
 //         */
 //        ChildMoneyAccountIdentity childAccountId = new ChildMoneyAccountIdentity(1L);
 //        ParentIdentity parentIdentity = new ParentIdentity(1L);
-//        FamilyAccountIdentity familyAccountId = new FamilyAccountIdentity(1L);
+//        FamilyAccountIdentity familyAccountIdentity = new FamilyAccountIdentity(1L);
 //
 //
 //        // Mock l'ajout d'un mouvement d'argent
@@ -277,7 +277,7 @@
 //         */
 //        ChildMoneyAccountIdentity childAccountId = new ChildMoneyAccountIdentity(1L);
 //        ParentIdentity parentIdentity = new ParentIdentity(1L);
-//        FamilyAccountIdentity familyAccountId = new FamilyAccountIdentity(1L);
+//        FamilyAccountIdentity familyAccountIdentity = new FamilyAccountIdentity(1L);
 //
 //
 //        // Mock l'ajout d'un mouvement d'argent

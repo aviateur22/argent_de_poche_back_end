@@ -47,7 +47,7 @@ public class ChildAccountEntity extends Temporal {
     public String toString() {
         return "ChildAccountEntity{" +
                 "id=" + id +
-                ", familyAccountId=" + familyAccountId +
+                ", familyAccountIdentity=" + familyAccountId +
                 '}';
     }
 }

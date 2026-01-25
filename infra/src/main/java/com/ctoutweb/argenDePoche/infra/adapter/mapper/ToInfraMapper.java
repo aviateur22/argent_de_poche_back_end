@@ -1,11 +1,14 @@
 package com.ctoutweb.argenDePoche.infra.adapter.mapper;
 
 import com.ctoutweb.argenDePoche.infra.model.childAccount.calendar.PeriodSubscription;
+import com.ctoutweb.argenDePoche.infra.model.dto.ChildAccountResponseDto;
 import com.ctoutweb.argenDePoche.infra.repository.entity.*;
+import com.ctoutweb.argentDePoche.application.query.dto.ChildAccountDto;
 import com.ctoutweb.argentDePoche.core.domain.base.identity.Ident;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.aggregate.ChildMoneyAccount;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.entity.child.Child;
 import com.ctoutweb.argentDePoche.core.domain.familyAccount.aggregate.FamilyAccount;
+import com.ctoutweb.argentDePoche.core.domain.familyAccount.entity.parent.ParentIdentity;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -32,7 +35,6 @@ public class ToInfraMapper {
 
         childEntity.setId(toTechnicalId(childMoneyAccount.getChild().childIdentity()));
         childEntity.setChildAccountId(toTechnicalId(childMoneyAccount.getChildMoneyAccountId()));
-        childEntity.setImageName(childMoneyAccount.getChild().childImage().imageRandomName());
         childEntity.setNickname(childMoneyAccount.getChild().firstName());
         return childEntity;
     }
@@ -49,7 +51,6 @@ public class ToInfraMapper {
         ChildEntity childEntity = new ChildEntity();
         childEntity.setChildAccountId(childAccountId);
         childEntity.setChildImageId(childImageId);
-        childEntity.setImageName(childtoCreate.childImage().imageRandomName());
         childEntity.setNickname(childtoCreate.firstName());
         return childEntity;
     }
@@ -156,6 +157,45 @@ public class ToInfraMapper {
     }
 
     /**
+     * Renvoie une entité FamilyAccountEntity pour la creation d'un nouveau compte de famille
+     *
+     * @return FamilyAccountEntity
+     */
+    public FamilyAccountEntity toFamilyAccountToCreateEntity() {
+        return new FamilyAccountEntity();
+    }
+
+    /**
+     * Renvoie une entité FamilyEntity pour la creation d'une nouvelle famille
+     *
+     * @param familyAccountId L'identitifant technique du compte de famille qui a été créé
+     * @param familyName Le nom de la famille
+     *
+     * @return FamilyEntity
+     */
+    public FamilyEntity toFamilyToCreateEntity(Long familyAccountId, String familyName) {
+        FamilyEntity familyToCreate = new FamilyEntity();
+        familyToCreate.setFamilyAccountId(familyAccountId);
+        familyToCreate.setName(familyName);
+        return familyToCreate;
+    }
+
+    /**
+     * Renvoie une entité ParentFamilyAccountEntity
+     *
+     * @param parentId L'identifiant technique du parent qui doit ^etre associé au compte de famille
+     * @param familyAccountId L'identifiant technique du compte de famille recvnt le parent
+     *
+     * @return ParentFamilyAccountEntity
+     */
+    public ParentFamilyAccountEntity toParentFamilyAccountEntity(ParentIdentity parentId, long familyAccountId) {
+       ParentFamilyAccountEntity parentFamilyAccount = new ParentFamilyAccountEntity();
+       parentFamilyAccount.setParentId(toTechnicalId(parentId));
+       parentFamilyAccount.setFamilyAccountId(familyAccountId);
+       return parentFamilyAccount;
+    }
+
+    /**
      * Renvoie la PeriodSubscription
      *
      * @param periodSubscription La periode de souscription d'argent
@@ -165,5 +205,4 @@ public class ToInfraMapper {
     private PeriodSubscription toPeriodSubscription(String periodSubscription) {
         return PeriodSubscription.findPeriodSubscription(periodSubscription);
     }
-
 }

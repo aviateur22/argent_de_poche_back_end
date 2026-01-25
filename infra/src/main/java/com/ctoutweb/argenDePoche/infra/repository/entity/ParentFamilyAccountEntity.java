@@ -59,7 +59,7 @@ public class ParentFamilyAccountEntity extends Temporal {
         return "ParentFamilyAccountEntity{" +
                 "id=" + id +
                 ", parentId=" + parentId +
-                ", familyAccountId=" + familyAccountId +
+                ", familyAccountIdentity=" + familyAccountId +
                 '}';
     }
 }

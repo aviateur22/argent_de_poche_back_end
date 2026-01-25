@@ -1,7 +1,9 @@
 package com.ctoutweb.argenDePoche.infra.adapter.primaryAdapter;
 
 import com.ctoutweb.argenDePoche.infra.adapter.mapper.ToCoreMapper;
+import com.ctoutweb.argenDePoche.infra.adapter.mapper.ToDtoMapper;
 import com.ctoutweb.argenDePoche.infra.adapter.mapper.ToInfraMapper;
+import com.ctoutweb.argenDePoche.infra.model.dto.ChildAccountResponseDto;
 import com.ctoutweb.argentDePoche.application.api.ChildAccountManager;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -11,11 +13,13 @@ public class ChildAccountManagerAdapter {
     private final ChildAccountManager childAccountManager;
     private final ToCoreMapper toCoreMapper;
     private final ToInfraMapper toInfraMapper;
+    private final ToDtoMapper toDtoMapper;
 
-    public ChildAccountManagerAdapter(ChildAccountManager childAccountManager, ToCoreMapper toCoreMapper, ToInfraMapper toInfraMapper) {
+    public ChildAccountManagerAdapter(ChildAccountManager childAccountManager, ToCoreMapper toCoreMapper, ToInfraMapper toInfraMapper, ToDtoMapper toDtoMapper) {
         this.childAccountManager = childAccountManager;
         this.toCoreMapper = toCoreMapper;
         this.toInfraMapper = toInfraMapper;
+      this.toDtoMapper = toDtoMapper;
     }
 
     /**
@@ -35,6 +39,19 @@ public class ChildAccountManagerAdapter {
             childName,
             savingPath
         ).map(toInfraMapper::toTechnicalId);
+    }
+
+    /**
+     *
+     * @param parentId
+     * @param childAccountId
+     * @return
+     */
+    public Mono<ChildAccountResponseDto> loadChildAccount(long parentId, long childAccountId) {
+        var parentIdentity = toCoreMapper.toParentIdentity(parentId);
+        var childAccountIdentity = toCoreMapper.toChildAccountIdentity(childAccountId);
+        return childAccountManager.loadChildAccount(childAccountIdentity, parentIdentity)
+                .map(toDtoMapper::toChildAccountResponseDto);
     }
 
 

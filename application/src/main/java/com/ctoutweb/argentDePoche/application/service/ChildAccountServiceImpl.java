@@ -39,7 +39,7 @@ public class ChildAccountServiceImpl implements ChildAccountManager {
     }
 
     @Override
-    public Publisher<ChildAccountDto> loadChildAccount(
+    public Mono<ChildAccountDto> loadChildAccount(
             ChildMoneyAccountIdentity childMoneyAccountId,
             ParentIdentity parentIdentity) {
 

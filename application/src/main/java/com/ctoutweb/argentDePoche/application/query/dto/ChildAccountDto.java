@@ -1,6 +1,7 @@
 package com.ctoutweb.argentDePoche.application.query.dto;
 
 import com.ctoutweb.argentDePoche.core.domain.childAccount.aggregate.ChildMoneyAccountIdentity;
+import com.ctoutweb.argentDePoche.core.domain.childAccount.entity.child.ChildIdentity;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -11,10 +12,10 @@ import java.time.LocalDate;
 public record ChildAccountDto(
         ChildMoneyAccountIdentity childAccountIdentity,
         String imageRandomName,
-        String imageRegisterPath,
+        ChildIdentity childIdentity,
         String childName,
         BigDecimal remainingMoney,
-        BigDecimal MoneyAtPeriodStart,
+        BigDecimal moneyAtPeriodStart,
         String periodName,
         LocalDate actualDate,
         LocalDate startPeriodDate,

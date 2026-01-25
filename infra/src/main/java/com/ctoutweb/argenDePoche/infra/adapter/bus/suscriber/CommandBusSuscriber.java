@@ -1,4 +1,4 @@
-package com.ctoutweb.argenDePoche.infra.adapter.bus.suscribe;
+package com.ctoutweb.argenDePoche.infra.adapter.bus.suscriber;
 
 
 import com.ctoutweb.argentDePoche.application.command.dto.command.*;

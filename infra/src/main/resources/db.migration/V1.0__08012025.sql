@@ -25,6 +25,7 @@ DROP TABLE IF EXISTS
       sc_argent_de_poche.child_account_money,
       sc_argent_de_poche.child_account,
       sc_argent_de_poche.family_account,
+      sc_argent_de_poche.family,
       sc_argent_de_poche.child,
       sc_argent_de_poche.child_image,
       sc_argent_de_poche.parent
@@ -35,6 +36,7 @@ sc_argent_de_poche.parent_id_seq,
 sc_argent_de_poche.child_id_seq,
 sc_argent_de_poche.child_image_id_seq,
 sc_argent_de_poche.family_account_id_seq,
+sc_argent_de_poche.family_id_seq,
 sc_argent_de_poche.child_account_id_seq,
 sc_argent_de_poche.child_account_movement_id_seq,
 sc_argent_de_poche.parent_family_account_id_seq,
@@ -62,10 +64,20 @@ CREATE INDEX IF NOT EXISTS idx_parent_email ON sc_argent_de_poche.parent(email);
 -- Compte famille --
 CREATE TABLE if NOT EXISTS sc_argent_de_poche.family_account(
     "id" BIGINT PRIMARY KEY,
+    "created_at" TIMESTAMPTZ NOT NULL DEFAULT now(),
+    "updated_at" TIMESTAMPTZ
+);
+
+-- Compte famille --
+CREATE TABLE if NOT EXISTS sc_argent_de_poche.family(
+    "id" BIGINT PRIMARY KEY,
+    "family_account_id" BIGINT NOT NULL REFERENCES sc_argent_de_poche."family_account"("id") on delete cascade,
     "name" VARCHAR(255) NOT NULL,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT now(),
     "updated_at" TIMESTAMPTZ
 );
+CREATE INDEX IF NOT EXISTS idx_family_family_account_id ON sc_argent_de_poche.family(family_account_id);
+
 -- compte argent de poche enfant --
 CREATE TABLE if NOT EXISTS sc_argent_de_poche.child_account(
     "id" BIGINT PRIMARY KEY,
@@ -90,7 +102,6 @@ CREATE TABLE if NOT EXISTS sc_argent_de_poche.child(
     "child_account_id" BIGINT NOT NULL REFERENCES sc_argent_de_poche."child_account"("id") on delete cascade,
     "child_image_id" BIGINT NOT NULL REFERENCES sc_argent_de_poche."child_image"("id"),
     "nickname" VARCHAR(255) NOT NULL,
-    "image_name" VARCHAR(255) NOT NULL UNIQUE,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT now(),
     "updated_at" TIMESTAMPTZ
 );
@@ -101,7 +112,7 @@ CREATE INDEX IF NOT EXISTS idx_c_child_image_id ON sc_argent_de_poche.child(chil
 CREATE TABLE if NOT EXISTS sc_argent_de_poche.child_account_calendar(
     "id" BIGINT PRIMARY KEY,
     "child_account_id" BIGINT NOT NULL REFERENCES sc_argent_de_poche."child_account"("id") on delete cascade,
-    "calendar_period" VARCHAR(255) NOT NULL UNIQUE,
+    "calendar_period" VARCHAR(255) NOT NULL,
     "period_start_day" TIMESTAMPTZ NOT NULL,
     "period_end_day" TIMESTAMPTZ NOT NULL,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT now(),
@@ -198,6 +209,7 @@ ALTER TABLE IF EXISTS sc_argent_de_poche.parent OWNER TO poche;
 ALTER TABLE IF EXISTS sc_argent_de_poche.child OWNER TO poche;
 ALTER TABLE IF EXISTS sc_argent_de_poche.child_image OWNER TO poche;
 ALTER TABLE IF EXISTS sc_argent_de_poche.family_account OWNER TO poche;
+ALTER TABLE IF EXISTS sc_argent_de_poche.family OWNER TO poche;
 ALTER TABLE IF EXISTS sc_argent_de_poche.child_account OWNER TO poche;
 ALTER TABLE IF EXISTS sc_argent_de_poche.child_account_movement OWNER TO poche;
 ALTER TABLE IF EXISTS sc_argent_de_poche.parent_family_account OWNER TO poche;
@@ -213,6 +225,7 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE sc_argent_de_poche.parent TO poche
 GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE sc_argent_de_poche.child TO poche;
 GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE sc_argent_de_poche.child_image TO poche;
 GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE sc_argent_de_poche.family_account TO poche;
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE sc_argent_de_poche.family TO poche;
 GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE sc_argent_de_poche.child_account TO poche;
 GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE sc_argent_de_poche.child_account_movement TO poche;
 GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE sc_argent_de_poche.parent_family_account TO poche;
@@ -228,6 +241,7 @@ CREATE SEQUENCE IF NOT EXISTS sc_argent_de_poche.parent_id_seq START WITH 1 INCR
 CREATE SEQUENCE IF NOT EXISTS sc_argent_de_poche.child_id_seq START WITH 1 INCREMENT BY 1 NO CYCLE;
 CREATE SEQUENCE IF NOT EXISTS sc_argent_de_poche.child_image_id_seq START WITH 1 INCREMENT BY 1 NO CYCLE;
 CREATE SEQUENCE IF NOT EXISTS sc_argent_de_poche.family_account_id_seq START WITH 1 INCREMENT BY 1 NO CYCLE;
+CREATE SEQUENCE IF NOT EXISTS sc_argent_de_poche.family_id_seq START WITH 1 INCREMENT BY 1 NO CYCLE;
 CREATE SEQUENCE IF NOT EXISTS sc_argent_de_poche.child_account_id_seq START WITH 1 INCREMENT BY 1 NO CYCLE;
 CREATE SEQUENCE IF NOT EXISTS sc_argent_de_poche.child_account_movement_id_seq START WITH 1 INCREMENT BY 1 NO CYCLE;
 CREATE SEQUENCE IF NOT EXISTS sc_argent_de_poche.parent_family_account_id_seq START WITH 1 INCREMENT BY 1 NO CYCLE;
@@ -243,6 +257,7 @@ ALTER SEQUENCE IF EXISTS sc_argent_de_poche.parent_id_seq OWNER TO poche;
 ALTER SEQUENCE IF EXISTS sc_argent_de_poche.child_id_seq OWNER TO poche;
 ALTER SEQUENCE IF EXISTS sc_argent_de_poche.child_image_id_seq OWNER TO poche;
 ALTER SEQUENCE IF EXISTS sc_argent_de_poche.family_account_id_seq OWNER TO poche;
+ALTER SEQUENCE IF EXISTS sc_argent_de_poche.family_id_seq OWNER TO poche;
 ALTER SEQUENCE IF EXISTS sc_argent_de_poche.child_account_id_seq OWNER TO poche;
 ALTER SEQUENCE IF EXISTS sc_argent_de_poche.child_account_movement_id_seq OWNER TO poche;
 ALTER SEQUENCE IF EXISTS sc_argent_de_poche.parent_family_account_id_seq OWNER TO poche;
@@ -258,6 +273,7 @@ ALTER TABLE sc_argent_de_poche.parent ALTER COLUMN id SET DEFAULT nextval('sc_ar
 ALTER TABLE sc_argent_de_poche.child ALTER COLUMN id SET DEFAULT nextval('sc_argent_de_poche.child_id_seq');
 ALTER TABLE sc_argent_de_poche.child_image ALTER COLUMN id SET DEFAULT nextval('sc_argent_de_poche.child_image_id_seq');
 ALTER TABLE sc_argent_de_poche.family_account ALTER COLUMN id SET DEFAULT nextval('sc_argent_de_poche.family_account_id_seq');
+ALTER TABLE sc_argent_de_poche.family ALTER COLUMN id SET DEFAULT nextval('sc_argent_de_poche.family_id_seq');
 ALTER TABLE sc_argent_de_poche.child_account ALTER COLUMN id SET DEFAULT nextval('sc_argent_de_poche.child_account_id_seq');
 ALTER TABLE sc_argent_de_poche.child_account_movement ALTER COLUMN id SET DEFAULT nextval('sc_argent_de_poche.child_account_movement_id_seq');
 ALTER TABLE sc_argent_de_poche.parent_family_account ALTER COLUMN id SET DEFAULT nextval('sc_argent_de_poche.parent_family_account_id_seq');
@@ -269,7 +285,8 @@ ALTER TABLE sc_argent_de_poche.delay_login ALTER COLUMN id SET DEFAULT nextval('
 ALTER TABLE sc_argent_de_poche.child_account_calendar ALTER COLUMN id SET DEFAULT nextval('sc_argent_de_poche.child_account_calendar_id_seq');
 ALTER TABLE sc_argent_de_poche.child_account_money ALTER COLUMN id SET DEFAULT nextval('sc_argent_de_poche.child_account_money_id_seq');
 
-insert into sc_argent_de_poche.family_account (name) values ('family_name');
+insert into sc_argent_de_poche.family_account default values;
+insert into sc_argent_de_poche.family (family_account_id, name) values (1, 'family_name');
 insert into sc_argent_de_poche.parent(nickname,email, password) values ('nom_parent', 'parent_mail@mail', 'password');
 insert into sc_argent_de_poche.parent(nickname,email, password) values ('nom_parent_2', 'parent_mail_2@mail', 'password');
 insert into sc_argent_de_poche.parent_family_account (parent_id, family_account_id) values (1, 1);
@@ -277,7 +294,7 @@ insert into sc_argent_de_poche.parent_family_account (parent_id, family_account_
 insert into sc_argent_de_poche.child_account (family_account_id) values (1);
 insert into sc_argent_de_poche.child_account (family_account_id) values (1);
 insert into sc_argent_de_poche.child_image (image_name) values ('nom_de_l_image');
-insert into sc_argent_de_poche.child (child_account_id,child_image_id, nickname, image_name) values (1, 1, 'enfant', 'nom_de_l_image');
+insert into sc_argent_de_poche.child (child_account_id,child_image_id, nickname) values (1, 1, 'enfant');
 insert into sc_argent_de_poche.child_account_calendar (child_account_id, calendar_period, period_start_day, period_end_day) values (1, 'week', '2026-01-21', '2026-01-28');
 insert into sc_argent_de_poche.child_account_money (child_account_id, money_at_period_start, remaining_money) values (1, 2, 1.5);
 insert into sc_argent_de_poche.child_account_movement (child_account_id, add_by , fluctuation_price, movement_action_code, movement_reason_code) values (1, 1, 0.5, '+', 'H');

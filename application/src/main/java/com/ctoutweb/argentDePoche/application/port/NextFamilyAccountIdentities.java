@@ -11,5 +11,4 @@ import com.ctoutweb.argentDePoche.core.domain.familyAccount.entity.parent.Parent
 public interface NextFamilyAccountIdentities {
     FamilyAccountIdentity getNextFamilyAccountIdentity();
     FamilyIdentity getNexFamilyIdentity();
-    ParentIdentity getNextParentIdentity();
 }

@@ -19,7 +19,7 @@ public interface ChildAccountManager {
      *
      * @return Les données de compte d'argent de pache de l'enfant
      */
-    Publisher<ChildAccountDto> loadChildAccount(ChildMoneyAccountIdentity childMoneyAccountId, ParentIdentity parentIdentity);
+    Mono<ChildAccountDto> loadChildAccount(ChildMoneyAccountIdentity childMoneyAccountId, ParentIdentity parentIdentity);
 
     /**
      * Ajout d'un nouveau compte pour enfant

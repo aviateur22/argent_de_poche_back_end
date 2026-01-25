@@ -58,5 +58,5 @@ public interface CommandRepository {
      *
      * @return L'identifiant du compte familale
      */
-    Mono<FamilyAccountIdentity> createFamilyAccount(FamilyAccount familyAccount);
+    Mono<FamilyAccountIdentity> createFamilyAccount(FamilyAccount familyAccount, ParentIdentity parentCreatingFamilyAccount);
 }

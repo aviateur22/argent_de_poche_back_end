@@ -1,4 +1,4 @@
-package com.ctoutweb.argenDePoche.infra.adapter.bus.suscribe;
+package com.ctoutweb.argenDePoche.infra.adapter.bus.suscriber;
 
 import com.ctoutweb.argenDePoche.infra.service.ImageService;
 import com.ctoutweb.argenDePoche.infra.service.LogService;

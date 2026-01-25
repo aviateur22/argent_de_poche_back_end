@@ -1,10 +1,10 @@
 package com.ctoutweb.argenDePoche.infra.service.impl;
 
 import com.ctoutweb.argenDePoche.infra.adapter.primaryAdapter.ChildAccountManagerAdapter;
+import com.ctoutweb.argenDePoche.infra.model.dto.ChildAccountResponseDto;
 import com.ctoutweb.argenDePoche.infra.model.dto.CreateChildAccountResponseDto;
 import com.ctoutweb.argenDePoche.infra.model.dto.CreateChildAccountRequestDto;
-import com.ctoutweb.argenDePoche.infra.model.dto.LoadChildAccountRequestDto;
-import com.ctoutweb.argenDePoche.infra.model.mapper.ToDtoMapper;
+import com.ctoutweb.argenDePoche.infra.adapter.mapper.ToDtoMapper;
 import com.ctoutweb.argenDePoche.infra.service.ChildAccountManagerService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -47,7 +47,9 @@ public class ChildAccountManagerServiceImpl implements ChildAccountManagerServic
     }
 
     @Override
-    public Mono<CreateChildAccountResponseDto> loadChildAccount(LoadChildAccountRequestDto dto) {
-        return null;
+    public Mono<ChildAccountResponseDto> loadChildAccount(long parentId, long childAccountId) {
+        return txOperator.transactional(childAccountManager.loadChildAccount(parentId, childAccountId)
+                .doOnSuccess(s -> LOGGER.info("Transaction réussie: {}", s))
+                .doOnError(e -> LOGGER.error("Erreur dans la transaction: ", e)));
     }
 }

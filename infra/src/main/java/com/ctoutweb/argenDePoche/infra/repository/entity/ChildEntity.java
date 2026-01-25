@@ -21,10 +21,6 @@ public class ChildEntity extends Temporal {
 
     private String nickname;
 
-    @Column("image_name")
-    private String imageName;
-
-
     public Long getId() {
         return id;
     }
@@ -49,25 +45,17 @@ public class ChildEntity extends Temporal {
         this.nickname = nickname;
     }
 
-    public String getImageName() {
-        return imageName;
-    }
-
-    public void setImageName(String imageName) {
-        this.imageName = imageName;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         ChildEntity that = (ChildEntity) o;
-        return Objects.equals(id, that.id) && Objects.equals(childAccountId, that.childAccountId) && Objects.equals(nickname, that.nickname) && Objects.equals(imageName, that.imageName);
+        return Objects.equals(id, that.id) && Objects.equals(childAccountId, that.childAccountId) && Objects.equals(nickname, that.nickname);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), id, childAccountId, nickname, imageName);
+        return Objects.hash(super.hashCode(), id, childAccountId, nickname);
     }
 
     public Long getChildImageId() {
@@ -84,7 +72,6 @@ public class ChildEntity extends Temporal {
                 "id=" + id +
                 ", childAccountId=" + childAccountId +
                 ", nickname='" + nickname + '\'' +
-                ", imageName='" + imageName + '\'' +
                 '}';
     }
 }

@@ -5,12 +5,10 @@ import org.springframework.data.relational.core.mapping.Column;
 import java.util.List;
 
 /**
- * Données sur un compte d'une famille issue de la base de donnée
+ * Cet objet restitue les informations sur un compte de famille
+ * Données issue de la requette SQL familyAccountQuery.
  *
- * @param familyAccountId L'idnetifiant technique du compte famille
- * @param familyName Le nom de la famille
- * @param parentIds Un tableau des identifiants techniques des parents
- * @param childAccountIds Un tableau des identifiants techniques des comptes d'argnets de poche
+ * @see com.ctoutweb.argenDePoche.infra.repository.query.SqlQuery
  */
 public record FamilyAccountProjection(
         @Column("family_account_id")

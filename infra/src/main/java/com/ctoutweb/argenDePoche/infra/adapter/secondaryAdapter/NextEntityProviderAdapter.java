@@ -25,8 +25,7 @@ public class NextEntityProviderAdapter implements NextIdentityProvider {
     @Override
     public NextFamilyAccountIdentities generateNextFamilyAccountIdentities() {
         long nextFamilyAccountId = NumberUtil.generateRandomLongNumberBetweenMinAndMax(1L, 10L);
-        long nextParentId = NumberUtil.generateRandomLongNumberBetweenMinAndMax(1L, 10L);
         long nextFamilyId = NumberUtil.generateRandomLongNumberBetweenMinAndMax(1L, 10L);
-        return toCoreMapper.toNextFamilyIdentities(nextFamilyAccountId, nextFamilyId, nextParentId);
+        return toCoreMapper.toNextFamilyIdentities(nextFamilyAccountId, nextFamilyId);
     }
 }
