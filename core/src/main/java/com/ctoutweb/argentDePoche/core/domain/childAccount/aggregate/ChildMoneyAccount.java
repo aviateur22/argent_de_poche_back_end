@@ -129,6 +129,26 @@ public final class ChildMoneyAccount {
         return new ChildMoneyAccount(this.childMoneyAccountId, updatedChild, this.calendarSubscription, this.childMoney);
     }
 
+    /**
+     * Creation d'une nouvelle periode de calendrier.
+     * Cette création intervient en fin de periode et initialise un nouvel période en:
+     * - Créant un nouveau calendrier
+     * - Reinitialisé l'argent de poche disponible
+     *
+     * @return Données du compte de l'enfant mise à jour
+     */
+    public ChildMoneyAccount initializeNextPeriod(LocalDate activateNextPeriodDate) {
+        var oldEndPeriodDay = this.calendarSubscription.endDay();
+        var nextCalendarPeriod = this.calendarSubscription.nextCalendarPeriod(activateNextPeriodDate);
+
+        // On ne mets pas à jour les comptes qui ont une periode mensuelle si pas la fin du mois
+        if(nextCalendarPeriod.endDay().equals(oldEndPeriodDay))
+            return this;
+
+        var updateChildMoney = this.childMoney.nextPeriod();
+        return new ChildMoneyAccount(this.childMoneyAccountId, this.child, nextCalendarPeriod, updateChildMoney);
+    }
+
     public ChildMoneyAccountIdentity getChildMoneyAccountId() {
         return childMoneyAccountId;
     }

@@ -1,9 +1,7 @@
 package com.ctoutweb.argenDePoche.infra.adapter.mapper;
 
 import com.ctoutweb.argenDePoche.infra.model.childAccount.calendar.PeriodSubscription;
-import com.ctoutweb.argenDePoche.infra.model.dto.ChildAccountResponseDto;
 import com.ctoutweb.argenDePoche.infra.repository.entity.*;
-import com.ctoutweb.argentDePoche.application.query.dto.ChildAccountDto;
 import com.ctoutweb.argentDePoche.core.domain.base.identity.Ident;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.aggregate.ChildMoneyAccount;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.entity.child.Child;
@@ -99,8 +97,17 @@ public class ToInfraMapper {
 
     }
 
-    public ChildMoneyEntity toChildMoneyEntity(ChildMoneyAccount childMoneyAccount) {
+    /**
+     * Renvoie une entité ChildMoneyEntity
+     *
+     * @param childMoneyAccount L'aggregat du compte d'argent de poche
+     * @param calendarId L'identifiant du calendrier
+     *
+     * @return ChildMoneyEntity
+     */
+    public ChildMoneyEntity toChildMoneyEntity(ChildMoneyAccount childMoneyAccount, long calendarId) {
         ChildMoneyEntity childAccountMoneyEntity = new ChildMoneyEntity();
+        childAccountMoneyEntity.setAccountCalendarId(calendarId);
         childAccountMoneyEntity.setChildAccountId(toTechnicalId(childMoneyAccount.getChildMoneyAccountId()));
         childAccountMoneyEntity.setRemainingMoney(childMoneyAccount.getChildMoney().remainingMoney().remainingMoney());
         childAccountMoneyEntity.setMoneyAtPeriodStart(childMoneyAccount.getChildMoney().childMoneyAtPeriodStart());

@@ -1,7 +1,7 @@
 package com.ctoutweb.argenDePoche.infra.exception;
 
 import com.ctoutweb.argenDePoche.infra.model.dto.ErrorDto;
-import com.ctoutweb.argentDePoche.application.exception.ChildMoneyForbiddenException;
+import com.ctoutweb.argentDePoche.application.exception.ChildAccountForbiddenException;
 import com.ctoutweb.argentDePoche.application.exception.FamilyAccountForbiddenException;
 import com.ctoutweb.argentDePoche.application.exception.FamilyConflictException;
 import org.apache.logging.log4j.LogManager;
@@ -24,8 +24,8 @@ public class HandlerException {
     );
   }
 
-  @ExceptionHandler(ChildMoneyForbiddenException.class)
-  public Mono<ResponseEntity<ErrorDto>> childMoneyForbiddenException(ChildMoneyForbiddenException exception) {
+  @ExceptionHandler(ChildAccountForbiddenException.class)
+  public Mono<ResponseEntity<ErrorDto>> childMoneyForbiddenException(ChildAccountForbiddenException exception) {
     return Mono.just(
             ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(ErrorDto.createErrorDto(exception.getMessage()))

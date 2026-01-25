@@ -9,4 +9,6 @@ public interface ChildAccountManagerService {
     Mono<CreateChildAccountResponseDto> createChildAccount(CreateChildAccountRequestDto dto);
 
     Mono<ChildAccountResponseDto> loadChildAccount(long parentId, long childAccountId);
+
+    Mono<Boolean> initializeNextPeriod();
 }

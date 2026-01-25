@@ -52,4 +52,9 @@ public class ChildAccountManagerServiceImpl implements ChildAccountManagerServic
                 .doOnSuccess(s -> LOGGER.info("Transaction réussie: {}", s))
                 .doOnError(e -> LOGGER.error("Erreur dans la transaction: ", e)));
     }
+
+    @Override
+    public Mono<Boolean> initializeNextPeriod() {
+        return childAccountManager.initializeNextPeriod();
+    }
 }

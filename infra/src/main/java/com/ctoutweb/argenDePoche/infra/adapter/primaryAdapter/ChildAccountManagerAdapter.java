@@ -42,16 +42,28 @@ public class ChildAccountManagerAdapter {
     }
 
     /**
+     * Chargement des données d'un compte d'argent de poche
      *
-     * @param parentId
-     * @param childAccountId
-     * @return
+     * @param parentId L'identifiant du parent faisant la demande
+     * @param childAccountId Le compte d'argent de poche demandé
+     *
+     * @return Les données du compte d'argent de poche
      */
     public Mono<ChildAccountResponseDto> loadChildAccount(long parentId, long childAccountId) {
         var parentIdentity = toCoreMapper.toParentIdentity(parentId);
         var childAccountIdentity = toCoreMapper.toChildAccountIdentity(childAccountId);
         return childAccountManager.loadChildAccount(childAccountIdentity, parentIdentity)
                 .map(toDtoMapper::toChildAccountResponseDto);
+    }
+
+    /**
+     * Initialisation des données pour une nouvelle période
+     * Methode croné tous les dimanche minuit
+     *
+     * @return Boolean
+     */
+    public Mono<Boolean> initializeNextPeriod() {
+        return childAccountManager.initializeNextCalendarPeriod();
     }
 
 

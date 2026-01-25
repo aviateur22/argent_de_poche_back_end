@@ -119,4 +119,10 @@ public class ChildAccountServiceImpl implements ChildAccountManager {
         // Mise a jour des données
         return commandBus.executeCommand(updateChildNameCommand);
     }
+
+    @Override
+    public Mono<Boolean> initializeNextCalendarPeriod() {
+        InitializeNextPeriodCommand initializeNextPeriodCommand = new InitializeNextPeriodCommand();
+        return commandBus.executeCommand(initializeNextPeriodCommand);
+    }
 }

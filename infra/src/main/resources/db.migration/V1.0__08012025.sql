@@ -124,12 +124,14 @@ CREATE INDEX IF NOT EXISTS idx_cac_child_account_id ON sc_argent_de_poche.child_
 CREATE TABLE if NOT EXISTS sc_argent_de_poche.child_account_money(
     "id" BIGINT PRIMARY KEY,
     "child_account_id" BIGINT NOT NULL REFERENCES sc_argent_de_poche."child_account"("id") on delete cascade,
+    "account_calendar_id" BIGINT NOT NULL REFERENCES sc_argent_de_poche."child_account_calendar"("id") on delete cascade,
     "money_at_period_start" NUMERIC(10,2) NOT NULL,
     "remaining_money" NUMERIC(10,2) NOT NULL,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT now(),
     "updated_at" TIMESTAMPTZ
 );
 CREATE INDEX IF NOT EXISTS idx_cam_child_account_id ON sc_argent_de_poche.child_account_money(child_account_id);
+CREATE INDEX IF NOT EXISTS idx_cam_account_calendar_id ON sc_argent_de_poche.child_account_money(account_calendar_id);
 
 -- movement d'argent --
 CREATE TABLE if NOT EXISTS sc_argent_de_poche.child_account_movement(
@@ -293,10 +295,18 @@ insert into sc_argent_de_poche.parent_family_account (parent_id, family_account_
 insert into sc_argent_de_poche.parent_family_account (parent_id, family_account_id) values (2, 1);
 insert into sc_argent_de_poche.child_account (family_account_id) values (1);
 insert into sc_argent_de_poche.child_account (family_account_id) values (1);
-insert into sc_argent_de_poche.child_image (image_name) values ('nom_de_l_image');
-insert into sc_argent_de_poche.child (child_account_id,child_image_id, nickname) values (1, 1, 'enfant');
+insert into sc_argent_de_poche.child_image (image_name) values ('nom_de_l_image-1');
+insert into sc_argent_de_poche.child_image (image_name) values ('nom_de_l_image-2');
+insert into sc_argent_de_poche.child (child_account_id,child_image_id, nickname) values (1, 1, 'nom-1');
+insert into sc_argent_de_poche.child (child_account_id,child_image_id, nickname) values (2, 2, 'nom-2');
+insert into sc_argent_de_poche.child_account_calendar (child_account_id, calendar_period, period_start_day, period_end_day) values (1, 'week', '2026-01-05', '2026-01-11');
+insert into sc_argent_de_poche.child_account_calendar (child_account_id, calendar_period, period_start_day, period_end_day) values (1, 'week', '2026-01-12', '2026-01-18');
 insert into sc_argent_de_poche.child_account_calendar (child_account_id, calendar_period, period_start_day, period_end_day) values (1, 'week', '2026-01-21', '2026-01-28');
-insert into sc_argent_de_poche.child_account_money (child_account_id, money_at_period_start, remaining_money) values (1, 2, 1.5);
+insert into sc_argent_de_poche.child_account_calendar (child_account_id, calendar_period, period_start_day, period_end_day) values (2, 'week', '2026-01-21', '2026-01-28');
+insert into sc_argent_de_poche.child_account_money (child_account_id, account_calendar_id, money_at_period_start, remaining_money) values (1, 1, 2, 1.5);
+insert into sc_argent_de_poche.child_account_money (child_account_id, account_calendar_id, money_at_period_start, remaining_money) values (1, 3, 2.5, 2);
+insert into sc_argent_de_poche.child_account_money (child_account_id, account_calendar_id, money_at_period_start, remaining_money) values (1, 4, 3.5, 3);
+insert into sc_argent_de_poche.child_account_money (child_account_id, account_calendar_id, money_at_period_start, remaining_money) values (2, 2, 2, 0.5);
 insert into sc_argent_de_poche.child_account_movement (child_account_id, add_by , fluctuation_price, movement_action_code, movement_reason_code) values (1, 1, 0.5, '+', 'H');
 
 COMMIT;

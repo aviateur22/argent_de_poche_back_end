@@ -1,7 +1,7 @@
 package com.ctoutweb.argentDePoche.application.policy;
 
 import com.ctoutweb.argentDePoche.core.domain.childAccount.aggregate.ChildMoneyAccountIdentity;
-import com.ctoutweb.argentDePoche.application.exception.ChildMoneyForbiddenException;
+import com.ctoutweb.argentDePoche.application.exception.ChildAccountForbiddenException;
 import com.ctoutweb.argentDePoche.core.domain.familyAccount.aggregate.FamilyAccountIdentity;
 import com.ctoutweb.argentDePoche.core.domain.familyAccount.entity.parent.ParentIdentity;
 import org.junit.jupiter.api.Assertions;
@@ -57,7 +57,7 @@ public class ChildAccessPolicyTest {
          */
         ParentIdentity parentIdentity = new ParentIdentity(1L);
         FamilyAccountIdentity familyAccountId = new FamilyAccountIdentity(1L);
-        Exception exception = Assertions.assertThrows(ChildMoneyForbiddenException.class,
+        Exception exception = Assertions.assertThrows(ChildAccountForbiddenException.class,
                 () -> childAccessPolicy.checkAccess(new ChildMoneyAccountIdentity(3L),  childIds));
        assertEquals("Vous ne pouvez pas accéder à ce compte d'argent de poche", exception.getMessage());
     }

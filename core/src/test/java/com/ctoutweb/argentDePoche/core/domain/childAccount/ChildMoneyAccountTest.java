@@ -7,7 +7,10 @@ import com.ctoutweb.argentDePoche.core.domain.childAccount.valueObject.account.M
 import com.ctoutweb.argentDePoche.core.domain.childAccount.valueObject.account.MovementReason;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.valueObject.account.ChildMoney;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.valueObject.account.MoneyMovement;
+import com.ctoutweb.argentDePoche.core.domain.childAccount.valueObject.calendar.PeriodSubscription;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.valueObject.calendar.SubscriptionCalendar;
+import com.ctoutweb.argentDePoche.core.domain.childAccount.valueObject.remainingMoney.Devise;
+import com.ctoutweb.argentDePoche.core.domain.childAccount.valueObject.remainingMoney.RemainingMoney;
 import com.ctoutweb.argentDePoche.core.domain.exception.ChildException;
 import com.ctoutweb.argentDePoche.core.domain.exception.ChildImageException;
 import com.ctoutweb.argentDePoche.core.domain.exception.ChildMoneyException;
@@ -21,8 +24,12 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ChildMoneyAccountTest {
 
@@ -65,9 +72,9 @@ public class ChildMoneyAccountTest {
                 })
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        Assertions.assertEquals(0, actualPrice.compareTo(weeklyMovementPrice), "Le montant des mouvements d'argent de la semaine actuel devrait être de " + weeklyMovementPrice + " mais est actuellement de " + actualPrice);
-        Assertions.assertEquals(6, ChronoUnit.DAYS.between(weeklyAccount.getCalendarSubscription().startDay(), weeklyAccount.getCalendarSubscription().endDay()));
-        Assertions.assertEquals(moneyAtPeriodStart, weeklyAccount.getChildMoney().remainingMoney().remainingMoney());
+        assertEquals(0, actualPrice.compareTo(weeklyMovementPrice), "Le montant des mouvements d'argent de la semaine actuel devrait être de " + weeklyMovementPrice + " mais est actuellement de " + actualPrice);
+        assertEquals(6, ChronoUnit.DAYS.between(weeklyAccount.getCalendarSubscription().startDay(), weeklyAccount.getCalendarSubscription().endDay()));
+        assertEquals(moneyAtPeriodStart, weeklyAccount.getChildMoney().remainingMoney().remainingMoney());
 
     }
 
@@ -108,8 +115,8 @@ public class ChildMoneyAccountTest {
          */
         String initialFirstName = child.firstName();
         Assertions.assertNotNull(updateChildMoneyAccount.getChild().childImage().folderPath());
-        Assertions.assertEquals(updatedRandomImageName, updateChildMoneyAccount.getChild().childImage().imageRandomName());
-        Assertions.assertEquals(initialFirstName, updateChildMoneyAccount.getChild().firstName());
+        assertEquals(updatedRandomImageName, updateChildMoneyAccount.getChild().childImage().imageRandomName());
+        assertEquals(initialFirstName, updateChildMoneyAccount.getChild().firstName());
 
     }
 
@@ -141,7 +148,7 @@ public class ChildMoneyAccountTest {
          */
         String updatedRandomImageName = "";
         Exception exception = Assertions.assertThrows(ChildImageException.class, () -> monthlyAccount.updateChildImage(updatedRandomImageName));
-        Assertions.assertEquals("Le nom de la nouvelle image ne peut pas être nulle", exception.getMessage());
+        assertEquals("Le nom de la nouvelle image ne peut pas être nulle", exception.getMessage());
 
     }
 
@@ -173,7 +180,7 @@ public class ChildMoneyAccountTest {
          */
         String updatedRandomImageName = null;
         Exception exception = Assertions.assertThrows(ChildImageException.class, () -> monthlyAccount.updateChildImage(updatedRandomImageName));
-        Assertions.assertEquals("Le nom de la nouvelle image ne peut pas être nulle", exception.getMessage());
+        assertEquals("Le nom de la nouvelle image ne peut pas être nulle", exception.getMessage());
 
     }
 
@@ -211,7 +218,7 @@ public class ChildMoneyAccountTest {
          */
         Assertions.assertNotNull(updateChildMoneyAccount.getChild().childImage().folderPath());
         Assertions.assertNotNull(updateChildMoneyAccount.getChild().childImage().imageRandomName());
-        Assertions.assertEquals(updateFirstName, updateChildMoneyAccount.getChild().firstName());
+        assertEquals(updateFirstName, updateChildMoneyAccount.getChild().firstName());
 
     }
 
@@ -243,7 +250,7 @@ public class ChildMoneyAccountTest {
          */
         String updateFirstName = null;
         Exception exception = Assertions.assertThrows(ChildException.class, () -> monthlyAccount.updateChildName(updateFirstName));
-        Assertions.assertEquals("Le prénom ne peux pas être inférieur a 3 charactères", exception.getMessage());
+        assertEquals("Le prénom ne peux pas être inférieur a 3 charactères", exception.getMessage());
 
     }
 
@@ -275,7 +282,7 @@ public class ChildMoneyAccountTest {
          */
         String updateFirstName = "dd";
         Exception exception = Assertions.assertThrows(ChildException.class, () -> monthlyAccount.updateChildName(updateFirstName));
-        Assertions.assertEquals("Le prénom ne peux pas être inférieur a 3 charactères", exception.getMessage());
+        assertEquals("Le prénom ne peux pas être inférieur a 3 charactères", exception.getMessage());
 
     }
 
@@ -307,7 +314,7 @@ public class ChildMoneyAccountTest {
          */
         String updateFirstName = monthlyAccount.getChild().firstName();
         Exception exception = Assertions.assertThrows(ChildException.class, () -> monthlyAccount.updateChildName(updateFirstName));
-        Assertions.assertEquals("Le prénom de l'enfant doit être différent", exception.getMessage());
+        assertEquals("Le prénom de l'enfant doit être différent", exception.getMessage());
 
     }
 
@@ -333,7 +340,7 @@ public class ChildMoneyAccountTest {
         ChildMoneyAccount weeklyAccount = monthlyAccount.loadWeekPeriodSubscription();
 
         // Vérification argent restant la semaine
-        Assertions.assertEquals(moneyAtPeriodStart.add(weeklyMovementPrice).setScale(2, RoundingMode.UNNECESSARY), weeklyAccount.getChildMoney().remainingMoney().remainingMoney().setScale(2, RoundingMode.UNNECESSARY));
+        assertEquals(moneyAtPeriodStart.add(weeklyMovementPrice).setScale(2, RoundingMode.UNNECESSARY), weeklyAccount.getChildMoney().remainingMoney().remainingMoney().setScale(2, RoundingMode.UNNECESSARY));
 
         /**
          * When
@@ -353,7 +360,7 @@ public class ChildMoneyAccountTest {
          */
         // RemainingMoney attendu
         BigDecimal expectedRemainingMoney = weeklyMovementPrice.add(moneyAtPeriodStart).add(moneyMovementToAdd.fluctuationPrice()).setScale(2, RoundingMode.UNNECESSARY);
-        Assertions.assertEquals(expectedRemainingMoney, updateChildMoneyAccount.getChildMoney().remainingMoney().remainingMoney().setScale(2, RoundingMode.UNNECESSARY));
+        assertEquals(expectedRemainingMoney, updateChildMoneyAccount.getChildMoney().remainingMoney().remainingMoney().setScale(2, RoundingMode.UNNECESSARY));
     }
 
     @Test
@@ -396,7 +403,7 @@ public class ChildMoneyAccountTest {
         BigDecimal expectedRemainingMoney = moneyAtPeriodStart.subtract(moneyMovementToAdd.fluctuationPrice()).setScale(2, RoundingMode.UNNECESSARY);
         expectedRemainingMoney = expectedRemainingMoney.compareTo(moneyAtPeriodStart) > 0 ? moneyAtPeriodStart :  expectedRemainingMoney;
 
-        Assertions.assertEquals(expectedRemainingMoney, updateChildMoneyAccount.getChildMoney().remainingMoney().remainingMoney().setScale(2, RoundingMode.UNNECESSARY), "L'argent restant après l'ajout d'un mouvement d'argent négatif est faux");
+        assertEquals(expectedRemainingMoney, updateChildMoneyAccount.getChildMoney().remainingMoney().remainingMoney().setScale(2, RoundingMode.UNNECESSARY), "L'argent restant après l'ajout d'un mouvement d'argent négatif est faux");
     }
 
     @Test
@@ -429,9 +436,9 @@ public class ChildMoneyAccountTest {
         /**
          * Then
          */
-        Assertions.assertEquals(newMoneyAtPeriodStart, updatedWeeklyAccount.getChildMoney().childMoneyAtPeriodStart());
-        Assertions.assertEquals(weeklyAccount.getChildMoney().moneyMovements(), updatedWeeklyAccount.getChildMoney().moneyMovements());
-        Assertions.assertEquals(weeklyAccount.getChildMoney().remainingMoney().remainingMoney(), updatedWeeklyAccount.getChildMoney().remainingMoney().remainingMoney());
+        assertEquals(newMoneyAtPeriodStart, updatedWeeklyAccount.getChildMoney().childMoneyAtPeriodStart());
+        assertEquals(weeklyAccount.getChildMoney().moneyMovements(), updatedWeeklyAccount.getChildMoney().moneyMovements());
+        assertEquals(weeklyAccount.getChildMoney().remainingMoney().remainingMoney(), updatedWeeklyAccount.getChildMoney().remainingMoney().remainingMoney());
     }
 
     @Test
@@ -512,7 +519,7 @@ public class ChildMoneyAccountTest {
                 moneyAtPeriodStartControl
                 :  expectedRemainingMoney;
 
-        Assertions.assertEquals(expectedRemainingMoney.setScale(2, RoundingMode.UNNECESSARY), updatedMovementsAccount.getChildMoney().remainingMoney().remainingMoney().setScale(2, RoundingMode.UNNECESSARY), "L'argent restant après l'ajout d'un mouvement d'argent négatif est faux");
+        assertEquals(expectedRemainingMoney.setScale(2, RoundingMode.UNNECESSARY), updatedMovementsAccount.getChildMoney().remainingMoney().remainingMoney().setScale(2, RoundingMode.UNNECESSARY), "L'argent restant après l'ajout d'un mouvement d'argent négatif est faux");
     }
 
     @Test
@@ -566,9 +573,84 @@ public class ChildMoneyAccountTest {
                 moneyAtPeriodStartControl
                 :  expectedRemainingMoney;
 
-        Assertions.assertEquals(expectedRemainingMoney.setScale(2, RoundingMode.UNNECESSARY), updatedMovementsAccount.getChildMoney().remainingMoney().remainingMoney().setScale(2, RoundingMode.UNNECESSARY), "L'argent restant après l'ajout d'un mouvement d'argent négatif est faux");
+        assertEquals(expectedRemainingMoney.setScale(2, RoundingMode.UNNECESSARY), updatedMovementsAccount.getChildMoney().remainingMoney().remainingMoney().setScale(2, RoundingMode.UNNECESSARY), "L'argent restant après l'ajout d'un mouvement d'argent négatif est faux");
     }
 
+    @Test
+    void next_calendar_period_for_week_subscription() {
+        /**
+         * Given
+         */
+        ChildMoneyAccountIdentity childMoneyAccountId = new ChildMoneyAccountIdentity(1L);
+        Child child = new GenerateChild().generate();
+
+        SubscriptionCalendar monthlyCalendar = new SubscriptionCalendar(
+                LocalDate.now(),
+                PeriodSubscription.WEEK,
+                LocalDate.of(2025, 12, 29),
+                LocalDate.of(2026, 1, 4)
+        );
+
+        BigDecimal moneyAtPeriodStart = BigDecimal.valueOf(4);
+        RemainingMoney remainingMoney = new RemainingMoney(BigDecimal.valueOf(1.0), Devise.EUR);
+        ChildMoney monthlyChildMoney = new ChildMoney(moneyAtPeriodStart, List.of(), remainingMoney);
+
+        ChildMoneyAccount childAccount = new ChildMoneyAccount(childMoneyAccountId, child, monthlyCalendar, monthlyChildMoney);
+
+        /**
+         * when
+         */
+        var activateNextPeriodDate = LocalDate.of(2026, 1,21);
+        var weekAccountNextPeriod = childAccount.initializeNextPeriod(activateNextPeriodDate);
+
+        /**
+         * then
+         */
+        assertEquals(child.firstName(), weekAccountNextPeriod.getChild().firstName());
+        assertEquals(LocalDate.of(2026, 1, 11), weekAccountNextPeriod.getCalendarSubscription().endDay());
+        assertEquals(LocalDate.of(2026, 1, 5), weekAccountNextPeriod.getCalendarSubscription().startDay());
+        assertEquals(moneyAtPeriodStart, weekAccountNextPeriod.getChildMoney().remainingMoney().remainingMoney());
+        assertEquals(moneyAtPeriodStart, weekAccountNextPeriod.getChildMoney().childMoneyAtPeriodStart());
+    }
+
+    @Test
+    void next_calendar_period_for_month_subscription() {
+        /**
+         * Given
+         */
+        ChildMoneyAccountIdentity childMoneyAccountId = new ChildMoneyAccountIdentity(1L);
+        Child child = new GenerateChild().generate();
+
+        SubscriptionCalendar monthlyCalendar = new SubscriptionCalendar(
+                LocalDate.now(),
+                PeriodSubscription.MONTH,
+                LocalDate.of(2026, 1, 1),
+                LocalDate.of(2026, 1, 31)
+        );
+
+        BigDecimal moneyAtPeriodStart = BigDecimal.valueOf(4);
+        RemainingMoney remainingMoney = new RemainingMoney(BigDecimal.valueOf(1.0), Devise.EUR);
+        ChildMoney monthlyChildMoney = new ChildMoney(moneyAtPeriodStart, List.of(), remainingMoney);
+
+        ChildMoneyAccount childAccount = new ChildMoneyAccount(childMoneyAccountId, child, monthlyCalendar, monthlyChildMoney);
+
+        /**
+         * when
+         */
+        var activateNextPeriodDate = LocalDate.of(2026, 1,31);
+        var monthAccountNextPeriod = childAccount.initializeNextPeriod(activateNextPeriodDate);
+
+        /**
+         * then
+         */
+        // Prochaine
+        assertEquals(child.firstName(), monthAccountNextPeriod.getChild().firstName());
+        assertEquals(LocalDate.of(2026, 2, 1), monthAccountNextPeriod.getCalendarSubscription().startDay());
+        assertEquals(LocalDate.of(2026, 2, 28), monthAccountNextPeriod.getCalendarSubscription().endDay());
+        assertEquals(moneyAtPeriodStart, monthAccountNextPeriod.getChildMoney().remainingMoney().remainingMoney());
+        assertEquals(moneyAtPeriodStart, monthAccountNextPeriod.getChildMoney().childMoneyAtPeriodStart());
+
+    }
 
 
 }
