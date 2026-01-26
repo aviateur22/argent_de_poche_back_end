@@ -69,6 +69,17 @@ public record RemainingMoney(BigDecimal remainingMoney, Devise devise) {
     }
 
     /**
+     * Réinitialise l'argent restant pour une nouvelle période.
+     *
+     * @param moneyAtPeriodStart L'argent disponible en début de periode
+     *
+     * @return L'argent restant reinitialisé a sa valeur initiale
+     */
+    public RemainingMoney nextPeriodReinitialize(BigDecimal moneyAtPeriodStart) {
+        return with(moneyAtPeriodStart);
+    }
+
+    /**
      * Calcul la balance totale des mouvements d'argent de poche
      *
      * @param childMoneyMovements Les mouvements d'argent de poche sur une periode

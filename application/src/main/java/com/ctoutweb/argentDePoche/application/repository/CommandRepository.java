@@ -1,7 +1,5 @@
 package com.ctoutweb.argentDePoche.application.repository;
 
-import com.ctoutweb.argentDePoche.application.port.NextChildAccountIdentities;
-import com.ctoutweb.argentDePoche.application.port.NextFamilyAccountIdentities;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.aggregate.ChildMoneyAccount;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.aggregate.ChildMoneyAccountIdentity;
 import com.ctoutweb.argentDePoche.core.domain.familyAccount.aggregate.FamilyAccount;
@@ -59,4 +57,6 @@ public interface CommandRepository {
      * @return L'identifiant du compte familale
      */
     Mono<FamilyAccountIdentity> createFamilyAccount(FamilyAccount familyAccount, ParentIdentity parentCreatingFamilyAccount);
+
+    Mono<Boolean> initializeNextPeriod();
 }

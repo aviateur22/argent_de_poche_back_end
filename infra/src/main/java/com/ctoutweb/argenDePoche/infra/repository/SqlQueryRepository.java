@@ -1,6 +1,5 @@
 package com.ctoutweb.argenDePoche.infra.repository;
 
-import com.ctoutweb.argenDePoche.infra.repository.dto.ChildAccountProjection;
 import com.ctoutweb.argenDePoche.infra.repository.dto.FamilyAccountProjection;
 import com.ctoutweb.argenDePoche.infra.repository.query.SqlQuery;
 import com.ctoutweb.argentDePoche.core.domain.familyAccount.aggregate.FamilyAccountIdentity;
@@ -15,8 +14,5 @@ public interface SqlQueryRepository extends ReactiveCrudRepository<FamilyAccount
 
     @Query(SqlQuery.familyAccountQuery)
     Mono<FamilyAccountProjection> findFamilyAccount(@Param("parentId") long parentId);
-
-    @Query(SqlQuery.loadChildAccountQuery)
-    Mono<ChildAccountProjection> loadChildAccount(@Param("childAccountId") long childAccountId);
 
 }

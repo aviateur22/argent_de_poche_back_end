@@ -45,6 +45,17 @@ public record ChildMoney(
     }
 
     /**
+     * Mise à jour quand seul l'argent restant est mis a jour
+     *
+     * @param updatedRemainingMoney Nouvel argent de poche restant disponbible
+     *
+     * @return Renvoie les données d'argent mise à jour
+     */
+    public ChildMoney withEndMoney(RemainingMoney updatedRemainingMoney) {
+        return new ChildMoney(this.childMoneyAtPeriodStart, this.moneyMovements, updatedRemainingMoney);
+    }
+
+    /**
      * Ajout d'un nouveau mouvement d'argent de poche
      *
      * @param moneyMovementToAdd Le nouveau mouvement d'argent
@@ -108,5 +119,15 @@ public record ChildMoney(
         );
 
         return with(balancesInPeriod, updatedRemainingMoney);
+    }
+
+    /**
+     * Réinitialise l'argent de poche pour une nouvelle période
+     *
+     * @return Renvoie les données d'argent de poche réinitialisé pour une nouvelle période
+     */
+    public ChildMoney nextPeriod() {
+        RemainingMoney updateRemain = this.remainingMoney.nextPeriodReinitialize(this.childMoneyAtPeriodStart);
+        return this.withEndMoney(updateRemain);
     }
 }

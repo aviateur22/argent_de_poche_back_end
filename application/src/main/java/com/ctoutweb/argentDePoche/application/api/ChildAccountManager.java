@@ -71,4 +71,11 @@ public interface ChildAccountManager {
      * @return  Les données de compte d'argent de poche de l'enfant mise a jour
      */
     Publisher<ChildMoneyAccountIdentity> updateChildName(ChildMoneyAccountIdentity childMoneyAccountId, String updatedChildName, ParentIdentity parentIdentity);
+
+    /**
+     * Génération du nouveau calendrier et réinitialisation de l'argent de poche pour la nouvelle période
+     *
+     * @return True
+     */
+    Mono<Boolean> initializeNextCalendarPeriod();
 }

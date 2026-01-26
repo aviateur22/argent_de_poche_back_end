@@ -14,6 +14,7 @@ public class CommandBusSuscriber {
     private final CreateFamilyAccountCommandHandler createFamilyAccountCommandHandler;
     private final UpdateChildImageCommandHandler updateChildImageCommandHandler;
     private final UpdateInitialChildMoneyCommandHandler updateInitialChildMoneyCommandHandler;
+    private final InitializeNexPeriodCommandHandler initializeNexPeriodCommandHandler;
 
     public CommandBusSuscriber(
             CommandBus commandBus,
@@ -21,7 +22,8 @@ public class CommandBusSuscriber {
             AddMoneyMovementCommandHandler addMoneyMovementCommandHandler,
             CreateFamilyAccountCommandHandler createFamilyAccountCommandHandler,
             UpdateChildImageCommandHandler updateChildImageCommandHandler,
-            UpdateInitialChildMoneyCommandHandler updateInitialChildMoneyCommandHandler
+            UpdateInitialChildMoneyCommandHandler updateInitialChildMoneyCommandHandler,
+            InitializeNexPeriodCommandHandler initializeNexPeriodCommandHandler
     ) {
         this.commandBus = commandBus;
 
@@ -30,8 +32,9 @@ public class CommandBusSuscriber {
         this.createFamilyAccountCommandHandler = createFamilyAccountCommandHandler;
         this.updateChildImageCommandHandler = updateChildImageCommandHandler;
         this.updateInitialChildMoneyCommandHandler = updateInitialChildMoneyCommandHandler;
+      this.initializeNexPeriodCommandHandler = initializeNexPeriodCommandHandler;
 
-        suscribe();
+      suscribe();
     }
 
     public void suscribe() {
@@ -40,5 +43,6 @@ public class CommandBusSuscriber {
         commandBus.registerMonoHandler(CreateFamilyAccountCommand.class, createFamilyAccountCommandHandler);
         commandBus.registerMonoHandler(UpdateChildImageCommand.class, updateChildImageCommandHandler);
         commandBus.registerMonoHandler(UpdateInitialChildMoneyCommand.class, updateInitialChildMoneyCommandHandler);
+        commandBus.registerMonoHandler(InitializeNextPeriodCommand.class, initializeNexPeriodCommandHandler);
     }
 }

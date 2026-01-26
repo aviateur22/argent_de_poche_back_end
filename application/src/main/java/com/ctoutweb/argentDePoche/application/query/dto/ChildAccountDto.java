@@ -11,13 +11,13 @@ import java.time.LocalDate;
  */
 public record ChildAccountDto(
         ChildMoneyAccountIdentity childAccountIdentity,
-        String imageRandomName,
         ChildIdentity childIdentity,
         String childName,
-        BigDecimal remainingMoney,
+        String imageRandomName,
         BigDecimal moneyAtPeriodStart,
-        String periodName,
+        BigDecimal remainingMoney,
         LocalDate actualDate,
         LocalDate startPeriodDate,
-        LocalDate endPeriodDate) {
+        LocalDate endPeriodDate,
+        String periodName) {
 }

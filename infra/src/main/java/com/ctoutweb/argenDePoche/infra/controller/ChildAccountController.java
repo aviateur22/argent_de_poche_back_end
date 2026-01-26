@@ -50,4 +50,18 @@ public class ChildAccountController {
                     }
                 );
     }
+
+  @GetMapping("/test")
+  public Mono<ResponseEntity<String>> testNextPeriod() {
+    LOGGER.info(() -> "Test Next Period");
+    return childAccountService.initializeNextPeriod()
+            .map(responseDto -> {
+                      return ResponseEntity
+                              .ok()
+                              .body("responseDto");
+                    }
+            );
+  }
+
+
 }

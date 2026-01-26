@@ -15,6 +15,9 @@ public class ChildMoneyEntity extends Temporal {
     @Column("child_account_id")
     private Long childAccountId;
 
+    @Column("account_calendar_id")
+    private Long accountCalendarId;
+
     @Column("money_at_period_start")
     private BigDecimal moneyAtPeriodStart;
 
@@ -53,24 +56,33 @@ public class ChildMoneyEntity extends Temporal {
         this.remainingMoney = remainingMoney;
     }
 
+    public Long getAccountCalendarId() {
+        return accountCalendarId;
+    }
+
+    public void setAccountCalendarId(Long accountCalendarId) {
+        this.accountCalendarId = accountCalendarId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         ChildMoneyEntity that = (ChildMoneyEntity) o;
-        return Objects.equals(id, that.id) && Objects.equals(childAccountId, that.childAccountId) && Objects.equals(moneyAtPeriodStart, that.moneyAtPeriodStart) && Objects.equals(remainingMoney, that.remainingMoney);
+        return Objects.equals(id, that.id) && Objects.equals(childAccountId, that.childAccountId) && Objects.equals(accountCalendarId, that.accountCalendarId) && Objects.equals(moneyAtPeriodStart, that.moneyAtPeriodStart) && Objects.equals(remainingMoney, that.remainingMoney);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), id, childAccountId, moneyAtPeriodStart, remainingMoney);
+        return Objects.hash(super.hashCode(), id, childAccountId, accountCalendarId, moneyAtPeriodStart, remainingMoney);
     }
 
     @Override
     public String toString() {
-        return "ChildAccountMoney{" +
+        return "ChildMoneyEntity{" +
                 "id=" + id +
                 ", childAccountId=" + childAccountId +
+                ", accountCalendarId=" + accountCalendarId +
                 ", moneyAtPeriodStart=" + moneyAtPeriodStart +
                 ", remainingMoney=" + remainingMoney +
                 '}';

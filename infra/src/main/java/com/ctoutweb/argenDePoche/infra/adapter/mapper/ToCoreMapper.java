@@ -1,15 +1,11 @@
 package com.ctoutweb.argenDePoche.infra.adapter.mapper;
 
-import com.ctoutweb.argenDePoche.infra.repository.dto.ChildAccountProjection;
 import com.ctoutweb.argenDePoche.infra.repository.dto.FamilyAccountProjection;
-import com.ctoutweb.argenDePoche.infra.repository.dto.LoadFamilyAccountProjection;
-import com.ctoutweb.argenDePoche.infra.repository.entity.ChildAccountEntity;
 import com.ctoutweb.argenDePoche.infra.repository.entity.FamilyEntity;
 import com.ctoutweb.argentDePoche.application.port.NextChildAccountIdentities;
 import com.ctoutweb.argentDePoche.application.port.NextFamilyAccountIdentities;
 import com.ctoutweb.argentDePoche.application.query.dto.ChildAccountDto;
 import com.ctoutweb.argentDePoche.application.query.dto.FamilyChildDto;
-import com.ctoutweb.argentDePoche.application.query.dto.FamilyDto;
 import com.ctoutweb.argentDePoche.application.query.dto.FamilyInformationDto;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.aggregate.ChildMoneyAccountIdentity;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.entity.child.ChildIdentity;
@@ -20,7 +16,7 @@ import com.ctoutweb.argentDePoche.core.domain.familyAccount.entity.family.Family
 import com.ctoutweb.argentDePoche.core.domain.familyAccount.entity.parent.ParentIdentity;
 import org.springframework.stereotype.Component;
 
-import javax.swing.text.html.Option;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -150,22 +146,31 @@ public class ToCoreMapper {
     /**
      * Renvoie un objet de type ChildAccountDto
      *
-     * @param dto Données issue de la base contenant les donnes du compte
-     *
      * @return ChildAccountDto
      */
-    public ChildAccountDto toChildAccountDto(ChildAccountProjection dto) {
+    public ChildAccountDto toChildAccountDto(
+            Long childAccountId,
+            Long childId,
+            String childName,
+            String imageName,
+            BigDecimal moneyAtPeriodStart,
+            BigDecimal moneyRemaining,
+            LocalDate actualDate,
+            LocalDate calendarStartDate,
+            LocalDate calendarEndDate,
+            String periodSubscription
+    ) {
         return new ChildAccountDto(
-                toChildAccountIdentity(dto.childMoneyAccountId()),
-                dto.imageRandomName(),
-                toChildIdentity(dto.childId()),
-                dto.childName(),
-                dto.remainingMoney(),
-                dto.moneyAtPeriodStart(),
-                dto.periodSubscriptionName(),
-                LocalDate.now(),
-                dto.startPeriodDate(),
-                dto.endPeriodDate()
+                toChildAccountIdentity(childAccountId),
+                toChildIdentity(childId),
+                childName,
+                imageName,
+                moneyAtPeriodStart,
+                moneyRemaining,
+                actualDate,
+                calendarStartDate,
+                calendarEndDate,
+                periodSubscription
         );
     }
 
@@ -193,19 +198,6 @@ public class ToCoreMapper {
      */
     public FamilyInformationDto toFamilyInformationDto(FamilyEntity family) {
         return new FamilyInformationDto(toFamilyAccountIdentity(family.getFamilyAccountId()), family.getName());
-    }
-
-    /**
-     *
-     * @param data
-     * @return
-     */
-    public FamilyDto toFamilyDto(LoadFamilyAccountProjection data) {
-        return new FamilyDto(
-                toFamilyAccountIdentity(data.familyAccountId()),
-                data.familyName(),
-                List.of()
-        );
     }
 
     private FamilyAccountIdentity mapToFamilyAccountIdentity(long familyAccountId) {
