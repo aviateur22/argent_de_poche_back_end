@@ -37,7 +37,7 @@ public class WebSecurityConfig {
                     .pathMatchers(
                             apiVersion+"/child-accounts/**",
                             apiVersion+"/family-accounts/**",
-                            apiVersion+"/api")
+                            apiVersion+"/admin/**")
                     .permitAll()
                     .anyExchange().authenticated());
 
