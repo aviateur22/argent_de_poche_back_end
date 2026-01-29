@@ -7,5 +7,11 @@ import reactor.core.publisher.Mono;
 
 @Repository
 public interface ChildMoneyRepository extends ReactiveCrudRepository<ChildMoneyEntity, Long> {
+
+  /**
+   * Récuperation de l'ar
+   * @param accountCalendarId
+   * @return
+   */
   Mono<ChildMoneyEntity> findByAccountCalendarId(long accountCalendarId);
 }

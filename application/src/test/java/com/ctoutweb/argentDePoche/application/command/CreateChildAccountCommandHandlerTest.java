@@ -58,7 +58,6 @@ public class CreateChildAccountCommandHandlerTest {
         CreateChildAccountCommand command = mock(CreateChildAccountCommand.class);
         when(command.parentCreatingChildAccount()).thenReturn(mock(ParentIdentity.class));
         when(command.childName()).thenReturn("cyril");
-        when(command.defaultImagePath()).thenReturn("path");
 
         // Mock generate de familyAccount
         FamilyAccount familyAccount = mock(FamilyAccount.class);
@@ -108,7 +107,6 @@ public class CreateChildAccountCommandHandlerTest {
         CreateChildAccountCommand command = mock(CreateChildAccountCommand.class);
         when(command.parentCreatingChildAccount()).thenReturn(mock(ParentIdentity.class));
         when(command.childName()).thenReturn("cyril");
-        when(command.defaultImagePath()).thenReturn("path");
 
         // Mock generate de familyAccount
         FamilyAccount familyAccount = mock(FamilyAccount.class);
@@ -145,7 +143,6 @@ public class CreateChildAccountCommandHandlerTest {
         CreateChildAccountCommand command = mock(CreateChildAccountCommand.class);
         when(command.parentCreatingChildAccount()).thenReturn(mock(ParentIdentity.class));
         when(command.childName()).thenReturn("cyril");
-        when(command.defaultImagePath()).thenReturn("path");
 
         // Mock generate de familyAccount
         FamilyAccount familyAccount = mock(FamilyAccount.class);

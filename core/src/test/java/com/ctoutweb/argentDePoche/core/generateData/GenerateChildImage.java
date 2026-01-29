@@ -12,9 +12,8 @@ public class GenerateChildImage {
     };
 
     private static final String IMAGE_NAME = "random_name";
-    private static final String PATH = "path";
 
     public ChildImage generate() {
-        return new ChildImage(IMAGE_NAME, PATH);
+        return new ChildImage(IMAGE_NAME);
     }
 }
