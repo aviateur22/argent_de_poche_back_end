@@ -8,7 +8,7 @@ import reactor.core.publisher.Mono;
 /**
  * Contrat permettant de gerer les comptes de la familles *
  */
-public interface FamilyAccountManager {
+public interface FamilyAccountUseCase {
 
     /**
      * Récupération des comptes des enfants d'une famille

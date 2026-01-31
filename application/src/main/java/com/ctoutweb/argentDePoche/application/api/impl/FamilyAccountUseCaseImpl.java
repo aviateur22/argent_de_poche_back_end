@@ -1,26 +1,25 @@
-package com.ctoutweb.argentDePoche.application.service;
+package com.ctoutweb.argentDePoche.application.api.impl;
 
 import com.ctoutweb.argentDePoche.application.command.dto.command.CreateFamilyAccountCommand;
 import com.ctoutweb.argentDePoche.application.configuration.annotation.CoreService;
 import com.ctoutweb.argentDePoche.application.configuration.bus.CommandBus;
 import com.ctoutweb.argentDePoche.application.configuration.bus.QueryBus;
-import com.ctoutweb.argentDePoche.application.api.FamilyAccountManager;
+import com.ctoutweb.argentDePoche.application.api.FamilyAccountUseCase;
 import com.ctoutweb.argentDePoche.application.policy.FamilyAccessPolicy;
 import com.ctoutweb.argentDePoche.application.query.dto.FamilyDto;
 import com.ctoutweb.argentDePoche.application.query.dto.query.LoadFamilyAccountQuery;
 import com.ctoutweb.argentDePoche.core.domain.familyAccount.aggregate.FamilyAccountIdentity;
 import com.ctoutweb.argentDePoche.core.domain.familyAccount.entity.parent.ParentIdentity;
-import org.reactivestreams.Publisher;
 import reactor.core.publisher.Mono;
 
 @CoreService
-public class FamilyAccountManagerImpl implements FamilyAccountManager {
+public class FamilyAccountUseCaseImpl implements FamilyAccountUseCase {
     private final QueryBus queryBus;
     private final CommandBus commandBus;
 
     private final FamilyAccessPolicy familyAccessPolicy;
 
-    public FamilyAccountManagerImpl(
+    public FamilyAccountUseCaseImpl(
             QueryBus queryBus,
             CommandBus commandBus,
             FamilyAccessPolicy accessAccountPolicy) {

@@ -1,11 +1,13 @@
 package com.ctoutweb.argenDePoche.infra.service.impl;
 
-import com.ctoutweb.argenDePoche.infra.adapter.primaryAdapter.ChildAccountManagerAdapter;
-import com.ctoutweb.argenDePoche.infra.model.dto.ChildAccountResponseDto;
-import com.ctoutweb.argenDePoche.infra.model.dto.CreateChildAccountResponseDto;
-import com.ctoutweb.argenDePoche.infra.model.dto.CreateChildAccountRequestDto;
+import com.ctoutweb.argenDePoche.infra.adapter.primaryAdapter.ChildAccountUseCaseAdapter;
+import com.ctoutweb.argenDePoche.infra.model.dto.controller.ChildAccountResponseDto;
+import com.ctoutweb.argenDePoche.infra.model.dto.controller.CreateChildAccountResponseDto;
+import com.ctoutweb.argenDePoche.infra.model.dto.controller.CreateChildAccountRequestDto;
 import com.ctoutweb.argenDePoche.infra.adapter.mapper.ToDtoMapper;
-import com.ctoutweb.argenDePoche.infra.model.dto.UpdatedChildImageResponseDto;
+import com.ctoutweb.argenDePoche.infra.model.dto.UpdatedChildImageDto;
+import com.ctoutweb.argenDePoche.infra.model.dto.controller.UpdatedChildImageResponseDto;
+import com.ctoutweb.argenDePoche.infra.model.mapper.InfraMapper;
 import com.ctoutweb.argenDePoche.infra.service.ChildAccountService;
 import com.ctoutweb.argenDePoche.infra.service.ImageService;
 import org.apache.logging.log4j.LogManager;
@@ -19,21 +21,21 @@ import reactor.core.publisher.Mono;
 public class ChildAccountServiceImpl implements ChildAccountService {
     private static final Logger LOGGER = LogManager.getLogger();
 
-
     private final TransactionalOperator txOperator;
-
     private final ToDtoMapper toDtoMapper;
+    private final InfraMapper infraMapper;
 
-    private final ChildAccountManagerAdapter childAccountManager;
+    private final ChildAccountUseCaseAdapter childAccountUseCaseAdapter;
     private final ImageService imageService;
 
     public ChildAccountServiceImpl(
             TransactionalOperator txOperator,
-            ToDtoMapper toDtoMapper,
-            ChildAccountManagerAdapter childAccountManager, ImageService imageService) {
+            ToDtoMapper toDtoMapper, InfraMapper infraMapper,
+            ChildAccountUseCaseAdapter childAccountManager, ImageService imageService) {
         this.txOperator = txOperator;
         this.toDtoMapper = toDtoMapper;
-        this.childAccountManager = childAccountManager;
+      this.infraMapper = infraMapper;
+      this.childAccountUseCaseAdapter = childAccountManager;
       this.imageService = imageService;
     }
 
@@ -41,7 +43,7 @@ public class ChildAccountServiceImpl implements ChildAccountService {
     public Mono<CreateChildAccountResponseDto> createChildAccount(CreateChildAccountRequestDto dto) {
         return txOperator.transactional(
             Mono.defer(() ->
-                childAccountManager.createChildAccount(dto.parentId(), dto.childName())
+                childAccountUseCaseAdapter.createChildAccount(dto.parentId(), dto.childName())
                         .map(toDtoMapper::mapToCreateChildAccountResponseDto)
                         .doOnSuccess(s -> LOGGER.info("Transaction réussie: {}", s))
                         .doOnError(e -> LOGGER.error("Erreur dans la transaction: ", e))
@@ -50,19 +52,19 @@ public class ChildAccountServiceImpl implements ChildAccountService {
 
     @Override
     public Mono<ChildAccountResponseDto> loadChildAccount(long parentId, long childAccountId) {
-        return txOperator.transactional(childAccountManager.loadChildAccount(parentId, childAccountId)
+        return txOperator.transactional(childAccountUseCaseAdapter.loadChildAccount(parentId, childAccountId)
                 .doOnSuccess(s -> LOGGER.info("Transaction réussie: {}", s))
                 .doOnError(e -> LOGGER.error("Erreur dans la transaction: ", e)));
     }
 
     @Override
     public Mono<UpdatedChildImageResponseDto> updateChildImage(FilePart childImageFile, long parentId, long childAccountId) {
-        return txOperator.transactional(childAccountManager.updateChildImage(parentId, childAccountId)
+        return txOperator.transactional(childAccountUseCaseAdapter.updateChildImage(parentId, childAccountId)
                         .flatMap(dto ->
                                 imageService.saveImage(childImageFile, dto.newImageName())
                                 .flatMap( uploadImageFileName ->
                                         imageService.deleteImage(dto.oldImageName())
-                                        .thenReturn(dto)
+                                        .thenReturn(infraMapper.toUpdatedChildImageResponseDto(dto))
                                 )
                         )
                 .doOnSuccess(s -> LOGGER.info("Transaction réussie: {}", s))

@@ -2,7 +2,6 @@ package com.ctoutweb.argentDePoche.application.api;
 
 import com.ctoutweb.argentDePoche.application.command.dto.UpdatedChildImage;
 import com.ctoutweb.argentDePoche.application.port.AddMoneyMovement;
-import com.ctoutweb.argentDePoche.application.port.ImageResource;
 import com.ctoutweb.argentDePoche.application.query.dto.ChildAccountDto;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.aggregate.ChildMoneyAccountIdentity;
 import com.ctoutweb.argentDePoche.core.domain.familyAccount.entity.parent.ParentIdentity;
@@ -11,7 +10,7 @@ import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
 
-public interface ChildAccountManager {
+public interface ChildAccountUseCase {
     /**
      * Récupération des données de compte compte d'argent de pache d'un enfant
      *

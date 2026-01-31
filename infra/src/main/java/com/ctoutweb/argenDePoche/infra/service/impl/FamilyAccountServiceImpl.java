@@ -1,10 +1,10 @@
 package com.ctoutweb.argenDePoche.infra.service.impl;
 
-import com.ctoutweb.argenDePoche.infra.adapter.primaryAdapter.FamilyAccountManagerAdapter;
-import com.ctoutweb.argenDePoche.infra.model.dto.CreateFamilyAccountRequestDto;
-import com.ctoutweb.argenDePoche.infra.model.dto.CreateFamilyAccountResponseDto;
+import com.ctoutweb.argenDePoche.infra.adapter.primaryAdapter.FamilyAccountUseCaseAdapter;
+import com.ctoutweb.argenDePoche.infra.model.dto.controller.CreateFamilyAccountRequestDto;
+import com.ctoutweb.argenDePoche.infra.model.dto.controller.CreateFamilyAccountResponseDto;
 import com.ctoutweb.argenDePoche.infra.adapter.mapper.ToDtoMapper;
-import com.ctoutweb.argenDePoche.infra.model.dto.familyAccountResponse.FamilyAccountResponseDto;
+import com.ctoutweb.argenDePoche.infra.model.dto.controller.familyAccountResponse.FamilyAccountResponseDto;
 import com.ctoutweb.argenDePoche.infra.service.AuthService;
 import com.ctoutweb.argenDePoche.infra.service.FamilyAccountService;
 import org.springframework.stereotype.Service;
@@ -16,10 +16,10 @@ public class FamilyAccountServiceImpl implements FamilyAccountService {
 
     private final AuthService authService;
     private final ToDtoMapper toDtoMapper;
-    private final FamilyAccountManagerAdapter familyAccountManagerAdapter;
+    private final FamilyAccountUseCaseAdapter familyAccountManagerAdapter;
     private final TransactionalOperator txOperator;
 
-  public FamilyAccountServiceImpl(AuthService authService, ToDtoMapper toDtoMapper, FamilyAccountManagerAdapter familyAccountManagerAdapter, TransactionalOperator txOperator) {
+  public FamilyAccountServiceImpl(AuthService authService, ToDtoMapper toDtoMapper, FamilyAccountUseCaseAdapter familyAccountManagerAdapter, TransactionalOperator txOperator) {
     this.authService = authService;
     this.toDtoMapper = toDtoMapper;
     this.familyAccountManagerAdapter = familyAccountManagerAdapter;

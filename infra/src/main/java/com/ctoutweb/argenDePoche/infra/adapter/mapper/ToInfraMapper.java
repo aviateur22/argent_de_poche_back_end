@@ -9,6 +9,10 @@ import com.ctoutweb.argentDePoche.core.domain.familyAccount.aggregate.FamilyAcco
 import com.ctoutweb.argentDePoche.core.domain.familyAccount.entity.parent.ParentIdentity;
 import org.springframework.stereotype.Component;
 
+/**
+ * Mapper utilisé uniquement pour mapper les données du layer Application / Core vers des données du layer:
+ * - Infra (sauf les models de type DTO qui sont regroupé dans ToDtoMapper
+ */
 @Component
 public class ToInfraMapper {
 

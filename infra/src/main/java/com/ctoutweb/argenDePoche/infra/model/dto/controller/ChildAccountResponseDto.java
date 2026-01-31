@@ -1,4 +1,4 @@
-package com.ctoutweb.argenDePoche.infra.model.dto;
+package com.ctoutweb.argenDePoche.infra.model.dto.controller;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

@@ -29,6 +29,11 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Mapper utilisée uniquement pour mapper les données du layer Infra vers:
+ * - Layer Application
+ * - Layer Core
+ */
 @Component
 public class ToCoreMapper {
 

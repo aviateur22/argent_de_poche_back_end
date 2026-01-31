@@ -3,21 +3,25 @@ package com.ctoutweb.argenDePoche.infra.adapter.primaryAdapter;
 import com.ctoutweb.argenDePoche.infra.adapter.mapper.ToCoreMapper;
 import com.ctoutweb.argenDePoche.infra.adapter.mapper.ToDtoMapper;
 import com.ctoutweb.argenDePoche.infra.adapter.mapper.ToInfraMapper;
-import com.ctoutweb.argenDePoche.infra.model.dto.ChildAccountResponseDto;
-import com.ctoutweb.argenDePoche.infra.model.dto.UpdatedChildImageResponseDto;
-import com.ctoutweb.argentDePoche.application.api.ChildAccountManager;
+import com.ctoutweb.argenDePoche.infra.model.dto.controller.ChildAccountResponseDto;
+import com.ctoutweb.argenDePoche.infra.model.dto.UpdatedChildImageDto;
+import com.ctoutweb.argentDePoche.application.api.ChildAccountUseCase;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 @Service
-public class ChildAccountManagerAdapter {
-    private final ChildAccountManager childAccountManager;
+public class ChildAccountUseCaseAdapter {
+    private final ChildAccountUseCase childAccountUseCase;
     private final ToCoreMapper toCoreMapper;
     private final ToInfraMapper toInfraMapper;
     private final ToDtoMapper toDtoMapper;
 
-    public ChildAccountManagerAdapter(ChildAccountManager childAccountManager, ToCoreMapper toCoreMapper, ToInfraMapper toInfraMapper, ToDtoMapper toDtoMapper) {
-        this.childAccountManager = childAccountManager;
+    public ChildAccountUseCaseAdapter(
+            ChildAccountUseCase childAccountManager,
+            ToCoreMapper toCoreMapper,
+            ToInfraMapper toInfraMapper,
+            ToDtoMapper toDtoMapper) {
+        this.childAccountUseCase = childAccountManager;
         this.toCoreMapper = toCoreMapper;
         this.toInfraMapper = toInfraMapper;
       this.toDtoMapper = toDtoMapper;
@@ -34,7 +38,7 @@ public class ChildAccountManagerAdapter {
     public Mono<Long> createChildAccount(long parentCreatingChildAccount, String childName) {
         var parentIdentity = toCoreMapper.toParentIdentity(parentCreatingChildAccount);
 
-        return childAccountManager.createChildMoneyAccount(
+        return childAccountUseCase.createChildMoneyAccount(
             parentIdentity,
             childName
         ).map(toInfraMapper::toTechnicalId);
@@ -51,7 +55,7 @@ public class ChildAccountManagerAdapter {
     public Mono<ChildAccountResponseDto> loadChildAccount(long parentId, long childAccountId) {
         var parentIdentity = toCoreMapper.toParentIdentity(parentId);
         var childAccountIdentity = toCoreMapper.toChildAccountIdentity(childAccountId);
-        return childAccountManager.loadChildAccount(childAccountIdentity, parentIdentity)
+        return childAccountUseCase.loadChildAccount(childAccountIdentity, parentIdentity)
                 .map(toDtoMapper::toChildAccountResponseDto);
     }
 
@@ -62,7 +66,7 @@ public class ChildAccountManagerAdapter {
      * @return Boolean
      */
     public Mono<Boolean> initializeNextPeriod() {
-        return childAccountManager.initializeNextCalendarPeriod();
+        return childAccountUseCase.initializeNextCalendarPeriod();
     }
 
 
@@ -74,10 +78,10 @@ public class ChildAccountManagerAdapter {
      *
      * @return renvoie L'identifiant du compte, le nom de la nouvelle image, le nom de l'ancienne image
      */
-    public Mono<UpdatedChildImageResponseDto> updateChildImage(long parentId, long childAccountId) {
+    public Mono<UpdatedChildImageDto> updateChildImage(long parentId, long childAccountId) {
         var parentIdentity = toCoreMapper.toParentIdentity(parentId);
         var childAccountIdentity = toCoreMapper.toChildAccountIdentity(childAccountId);
-        return childAccountManager.updateChildImage(childAccountIdentity, parentIdentity)
-                .map(toDtoMapper::toUpdatedChildImageResponseDto);
+        return childAccountUseCase.updateChildImage(childAccountIdentity, parentIdentity)
+                .map(toDtoMapper::toUpdatedChildImageDto);
     }
 }

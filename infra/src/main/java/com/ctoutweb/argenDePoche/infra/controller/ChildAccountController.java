@@ -1,8 +1,9 @@
 package com.ctoutweb.argenDePoche.infra.controller;
 
-import com.ctoutweb.argenDePoche.infra.model.dto.ChildAccountResponseDto;
-import com.ctoutweb.argenDePoche.infra.model.dto.CreateChildAccountResponseDto;
-import com.ctoutweb.argenDePoche.infra.model.dto.CreateChildAccountRequestDto;
+import com.ctoutweb.argenDePoche.infra.model.dto.controller.ChildAccountResponseDto;
+import com.ctoutweb.argenDePoche.infra.model.dto.controller.CreateChildAccountResponseDto;
+import com.ctoutweb.argenDePoche.infra.model.dto.controller.CreateChildAccountRequestDto;
+import com.ctoutweb.argenDePoche.infra.model.dto.controller.UpdatedChildImageResponseDto;
 import com.ctoutweb.argenDePoche.infra.service.ChildAccountService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -55,7 +56,7 @@ public class ChildAccountController {
     }
 
     @PutMapping(path = "/update-image")
-    public Mono<ResponseEntity<Long>> updateChildImage(
+    public Mono<ResponseEntity<UpdatedChildImageResponseDto>> updateChildImage(
             @RequestPart("image") FilePart childImage,
             @RequestPart("parentId") String parentIdStringFormated,
             @RequestPart("childAccountId") String childAccountIdStringFormated) {
@@ -68,7 +69,7 @@ public class ChildAccountController {
                         URI location = URI.create(apiPath + "/child-accounts/" + responseDto.childAccountId());
                         return ResponseEntity
                                 .created(location)
-                                .body(responseDto.childAccountId());
+                                .body(responseDto);
                       }
               );
     }

@@ -1,4 +1,4 @@
-package com.ctoutweb.argenDePoche.infra.model.dto.familyAccountResponse;
+package com.ctoutweb.argenDePoche.infra.model.dto.controller.familyAccountResponse;
 
 import java.util.List;
 

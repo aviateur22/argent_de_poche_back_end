@@ -1,6 +1,6 @@
 package com.ctoutweb.argenDePoche.infra.service.impl;
 
-import com.ctoutweb.argenDePoche.infra.adapter.primaryAdapter.ChildAccountManagerAdapter;
+import com.ctoutweb.argenDePoche.infra.adapter.primaryAdapter.ChildAccountUseCaseAdapter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -13,8 +13,8 @@ public class AdminServiceImpl implements com.ctoutweb.argenDePoche.infra.service
   private static final Logger LOGGER = LogManager.getLogger();
 
   private final TransactionalOperator txOperator;
-  private final ChildAccountManagerAdapter childAccountManager;
-  public AdminServiceImpl(TransactionalOperator txOperator, ChildAccountManagerAdapter childAccountManager) {
+  private final ChildAccountUseCaseAdapter childAccountManager;
+  public AdminServiceImpl(TransactionalOperator txOperator, ChildAccountUseCaseAdapter childAccountManager) {
     this.txOperator = txOperator;
     this.childAccountManager = childAccountManager;
   }

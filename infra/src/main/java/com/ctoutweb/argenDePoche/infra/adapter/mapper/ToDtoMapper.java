@@ -1,17 +1,21 @@
 package com.ctoutweb.argenDePoche.infra.adapter.mapper;
 
-import com.ctoutweb.argenDePoche.infra.model.dto.ChildAccountResponseDto;
-import com.ctoutweb.argenDePoche.infra.model.dto.CreateChildAccountResponseDto;
-import com.ctoutweb.argenDePoche.infra.model.dto.CreateFamilyAccountResponseDto;
-import com.ctoutweb.argenDePoche.infra.model.dto.UpdatedChildImageResponseDto;
-import com.ctoutweb.argenDePoche.infra.model.dto.familyAccountResponse.ChildDto;
-import com.ctoutweb.argenDePoche.infra.model.dto.familyAccountResponse.FamilyAccountResponseDto;
+import com.ctoutweb.argenDePoche.infra.model.dto.controller.ChildAccountResponseDto;
+import com.ctoutweb.argenDePoche.infra.model.dto.controller.CreateChildAccountResponseDto;
+import com.ctoutweb.argenDePoche.infra.model.dto.controller.CreateFamilyAccountResponseDto;
+import com.ctoutweb.argenDePoche.infra.model.dto.UpdatedChildImageDto;
+import com.ctoutweb.argenDePoche.infra.model.dto.controller.familyAccountResponse.ChildDto;
+import com.ctoutweb.argenDePoche.infra.model.dto.controller.familyAccountResponse.FamilyAccountResponseDto;
 import com.ctoutweb.argentDePoche.application.command.dto.UpdatedChildImage;
 import com.ctoutweb.argentDePoche.application.query.dto.ChildAccountDto;
 import com.ctoutweb.argentDePoche.application.query.dto.FamilyChildDto;
 import com.ctoutweb.argentDePoche.application.query.dto.FamilyDto;
 import org.springframework.stereotype.Component;
 
+/**
+ * Mapper utilisé uniquement pour mapper les données du layer Domaine / Core vers:
+ * - des Dto du Layer Infra
+ */
 @Component
 public class ToDtoMapper {
 
@@ -86,13 +90,17 @@ public class ToDtoMapper {
     }
 
     /**
+     * Map les données du useCase vers UpdatedChildImageDto.
+     * Ces données renvoyées contiennent le nom random de la nouvelle image ainsi que l'ancien nom de l'image utilisé
+     * Cela permettra de transféré la nouvelle image avec son nouveau nom et de supprimer l'ancienne
      *
-     * @param updatedChildImage
-     * @return
+     * @param updatedChildImage Les données de la mise a jour de l'image du useCase
+     *
+     * @return UpdatedChildImageDto
      */
-    public UpdatedChildImageResponseDto toUpdatedChildImageResponseDto(UpdatedChildImage updatedChildImage) {
+    public UpdatedChildImageDto toUpdatedChildImageDto(UpdatedChildImage updatedChildImage) {
 
-        return new UpdatedChildImageResponseDto(
+        return new UpdatedChildImageDto(
                 infraMapper.toTechnicalId(updatedChildImage.childMoneyAccountIdentity()),
                 updatedChildImage.newRandomImageName(),
                 updatedChildImage.oldImageName()

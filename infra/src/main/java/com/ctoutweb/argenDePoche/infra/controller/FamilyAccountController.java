@@ -1,8 +1,8 @@
 package com.ctoutweb.argenDePoche.infra.controller;
 
-import com.ctoutweb.argenDePoche.infra.model.dto.CreateFamilyAccountRequestDto;
-import com.ctoutweb.argenDePoche.infra.model.dto.CreateFamilyAccountResponseDto;
-import com.ctoutweb.argenDePoche.infra.model.dto.familyAccountResponse.FamilyAccountResponseDto;
+import com.ctoutweb.argenDePoche.infra.model.dto.controller.CreateFamilyAccountRequestDto;
+import com.ctoutweb.argenDePoche.infra.model.dto.controller.CreateFamilyAccountResponseDto;
+import com.ctoutweb.argenDePoche.infra.model.dto.controller.familyAccountResponse.FamilyAccountResponseDto;
 import com.ctoutweb.argenDePoche.infra.service.FamilyAccountService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

@@ -1,4 +1,4 @@
-package com.ctoutweb.argenDePoche.infra.model.dto;
+package com.ctoutweb.argenDePoche.infra.model.dto.controller;
 
 /**
  * Renvoi le contenu du compte d'argent de poche

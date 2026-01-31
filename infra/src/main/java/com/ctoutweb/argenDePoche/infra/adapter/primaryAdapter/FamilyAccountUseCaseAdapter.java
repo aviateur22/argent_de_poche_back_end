@@ -3,25 +3,25 @@ package com.ctoutweb.argenDePoche.infra.adapter.primaryAdapter;
 import com.ctoutweb.argenDePoche.infra.adapter.mapper.ToCoreMapper;
 import com.ctoutweb.argenDePoche.infra.adapter.mapper.ToDtoMapper;
 import com.ctoutweb.argenDePoche.infra.adapter.mapper.ToInfraMapper;
-import com.ctoutweb.argenDePoche.infra.model.dto.familyAccountResponse.FamilyAccountResponseDto;
-import com.ctoutweb.argentDePoche.application.api.FamilyAccountManager;
+import com.ctoutweb.argenDePoche.infra.model.dto.controller.familyAccountResponse.FamilyAccountResponseDto;
+import com.ctoutweb.argentDePoche.application.api.FamilyAccountUseCase;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 @Service
-public class FamilyAccountManagerAdapter {
-  private final FamilyAccountManager familyAccountManager;
+public class FamilyAccountUseCaseAdapter {
+  private final FamilyAccountUseCase familyAccountUseCase;
 
   private final ToCoreMapper toCoreMapper;
   private final ToInfraMapper toInfraMapper;
   private final ToDtoMapper toDtoMapper;
 
-  public FamilyAccountManagerAdapter(
-          FamilyAccountManager familyAccountManager,
+  public FamilyAccountUseCaseAdapter(
+          FamilyAccountUseCase familyAccountManager,
           ToCoreMapper toCoreMapper,
           ToInfraMapper toInfraMapper,
           ToDtoMapper toDtoMapper) {
-    this.familyAccountManager = familyAccountManager;
+    this.familyAccountUseCase = familyAccountManager;
     this.toCoreMapper = toCoreMapper;
     this.toInfraMapper = toInfraMapper;
     this.toDtoMapper = toDtoMapper;
@@ -38,7 +38,7 @@ public class FamilyAccountManagerAdapter {
    */
   public Mono<Long> createFamilyAccount(long parentId, String familyName) {
     var parentIdentity = toCoreMapper.toParentIdentity(parentId);
-    return familyAccountManager.createFamilyAccount(parentIdentity, familyName)
+    return familyAccountUseCase.createFamilyAccount(parentIdentity, familyName)
             .map(toInfraMapper::toTechnicalId);
   }
 
@@ -52,7 +52,7 @@ public class FamilyAccountManagerAdapter {
   public Mono<FamilyAccountResponseDto> loadFamilyAccount(long parentId) {
     var parentIdentity = toCoreMapper.toParentIdentity(parentId);
 
-    return familyAccountManager.loadFamilyAccount(parentIdentity)
+    return familyAccountUseCase.loadFamilyAccount(parentIdentity)
             .map(familyDto -> toDtoMapper.mapToFamilyAccountResponseDto(familyDto));
   }
 }

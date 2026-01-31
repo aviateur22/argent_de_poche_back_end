@@ -1,6 +1,6 @@
-package com.ctoutweb.argentDePoche.application.service;
+package com.ctoutweb.argentDePoche.application.api.impl;
 
-import com.ctoutweb.argentDePoche.application.api.ChildAccountManager;
+import com.ctoutweb.argentDePoche.application.api.ChildAccountUseCase;
 import com.ctoutweb.argentDePoche.application.command.dto.UpdatedChildImage;
 import com.ctoutweb.argentDePoche.application.command.dto.command.*;
 import com.ctoutweb.argentDePoche.application.configuration.annotation.CoreService;
@@ -9,7 +9,6 @@ import com.ctoutweb.argentDePoche.application.configuration.bus.EventBus;
 import com.ctoutweb.argentDePoche.application.configuration.bus.QueryBus;
 import com.ctoutweb.argentDePoche.application.configuration.event.LogErrorEvent;
 import com.ctoutweb.argentDePoche.application.port.AddMoneyMovement;
-import com.ctoutweb.argentDePoche.application.port.ImageResource;
 import com.ctoutweb.argentDePoche.application.query.dto.ChildAccountDto;
 import com.ctoutweb.argentDePoche.application.query.dto.query.LoadChildAccountQuery;
 import com.ctoutweb.argentDePoche.application.spi.RandomProvider;
@@ -22,14 +21,14 @@ import reactor.core.publisher.Mono;
 import java.math.BigDecimal;
 
 @CoreService
-public class ChildAccountServiceImpl implements ChildAccountManager {
+public class ChildAccountUseCaseImpl implements ChildAccountUseCase {
 
     private final CommandBus commandBus;
     private final QueryBus queryBus;
     private final RandomProvider randomProvider;
     private final EventBus eventBus;
 
-    public ChildAccountServiceImpl(
+    public ChildAccountUseCaseImpl(
             EventBus eventBus,
             CommandBus commandBus, QueryBus queryBus,
             RandomProvider randomProvider) {
