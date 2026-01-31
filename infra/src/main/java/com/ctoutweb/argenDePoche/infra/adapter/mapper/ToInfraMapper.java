@@ -203,6 +203,19 @@ public class ToInfraMapper {
     }
 
     /**
+     * Recu^pération de nom de la periode d'inscription sur l'argent de poche
+     *
+     * @param calendarPeriod La periode d'inscription provenant du CORE est a mapper vers l'infra
+     *
+     * @return La periode de distribution de l'argent de poche en text
+     */
+    public String toPeriodCalendar(com.ctoutweb.argentDePoche.core.domain.childAccount.valueObject.calendar.PeriodSubscription calendarPeriod) {
+       return PeriodSubscription
+               .findPeriodSubscription(calendarPeriod.getPeriodSubscriptionText())
+               .name();
+    }
+
+    /**
      * Renvoie la PeriodSubscription
      *
      * @param periodSubscription La periode de souscription d'argent
@@ -212,4 +225,6 @@ public class ToInfraMapper {
     private PeriodSubscription toPeriodSubscription(String periodSubscription) {
         return PeriodSubscription.findPeriodSubscription(periodSubscription);
     }
+
+
 }

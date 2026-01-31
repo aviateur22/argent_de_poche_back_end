@@ -1,6 +1,7 @@
 package com.ctoutweb.argenDePoche.infra.service;
 
-import java.io.InputStream;
+import org.springframework.http.codec.multipart.FilePart;
+import reactor.core.publisher.Mono;
 
 /**
  * Gestion des image
@@ -8,18 +9,20 @@ import java.io.InputStream;
 public interface ImageService {
 
     /**
-     * Sauvgarde d'une image
+     * Sauvgarde d'une image de le l'enfant
      *
-     * @param imageNameToSave - Nom de l'image
-     * @param imageBytes - L'image a sauvegarder
+     * @param childImageFile - L'image de l'enfant
+     * @param childImageRandomName - Le nom unique de l'image qui est généré pour sauvegarde
+     *
+     * @return Le nom unique de l'image qui est sauvegardé
      *
      */
-    void saveImage(String imageNameToSave, byte[] imageBytes);
+    Mono<String> saveImage(FilePart childImageFile, String childImageRandomName);
 
     /**
-     * Image a supprimer
+     * Une Image a supprimer
      *
      * @param imageNameToDelete Nom de l'image a supprimer
      */
-    void deleteImage(String imageNameToDelete);
+    Mono<Void> deleteImage(String imageNameToDelete);
 }

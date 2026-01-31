@@ -36,15 +36,13 @@ public final class ChildMoneyAccount {
      * Factory pour initialiser un nouveau compte pour enfant
      *
      * @param childName Le nom de l'enfant
-     * @param defaultImagePath Le path par default de l'image
      *
      * @return Le compte de l'enfant initialisé
      */
     public static ChildMoneyAccount createDefaultChildAccount(
             ChildMoneyAccountIdentity childMoneyAccountId,
             ChildIdentity childIdentity,
-            String childName,
-            String defaultImagePath) {
+            String childName) {
         // Image par default à la creation d'un compte
         final String DEFAULT_CHILD_IMAGE = "default_child.png";
 
@@ -60,7 +58,7 @@ public final class ChildMoneyAccount {
         // Argent restant à l'initialisation d'un nouveau compte
         final BigDecimal DEFAULT_REMAINING_MONEY = BigDecimal.ZERO;
 
-        ChildImage createdChildImage = ChildImage.create(DEFAULT_CHILD_IMAGE, defaultImagePath);
+        ChildImage createdChildImage = ChildImage.create(DEFAULT_CHILD_IMAGE);
         Child createdChild = new Child(childIdentity, childName, createdChildImage);
         SubscriptionCalendar createdSubscriptionCalendar = SubscriptionCalendar.created(LocalDate.now(), DEFAULT_PERIOD_SUBSCRIPTION);
         RemainingMoney createdRemainingMoney = new RemainingMoney(DEFAULT_REMAINING_MONEY, DEFAULT_DEVISE);

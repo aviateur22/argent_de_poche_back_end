@@ -6,12 +6,10 @@ import com.ctoutweb.argentDePoche.core.domain.familyAccount.entity.parent.Parent
 
 public record CreateChildAccountCommand(
         ParentIdentity parentCreatingChildAccount,
-        String childName,
-        String defaultImagePath) implements Command<ChildMoneyAccountIdentity> {
+        String childName) implements Command<ChildMoneyAccountIdentity> {
     public static CreateChildAccountCommand create(
             ParentIdentity parentCreatingChildAccount,
-            String childName,
-            String defaultImagePath) {
-        return new CreateChildAccountCommand(parentCreatingChildAccount, childName, defaultImagePath);
+            String childName) {
+        return new CreateChildAccountCommand(parentCreatingChildAccount, childName);
     }
 }

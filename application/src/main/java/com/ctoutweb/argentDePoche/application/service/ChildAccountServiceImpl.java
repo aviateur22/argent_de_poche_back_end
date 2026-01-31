@@ -1,6 +1,7 @@
 package com.ctoutweb.argentDePoche.application.service;
 
 import com.ctoutweb.argentDePoche.application.api.ChildAccountManager;
+import com.ctoutweb.argentDePoche.application.command.dto.UpdatedChildImage;
 import com.ctoutweb.argentDePoche.application.command.dto.command.*;
 import com.ctoutweb.argentDePoche.application.configuration.annotation.CoreService;
 import com.ctoutweb.argentDePoche.application.configuration.bus.CommandBus;
@@ -50,29 +51,23 @@ public class ChildAccountServiceImpl implements ChildAccountManager {
     @Override
     public Mono<ChildMoneyAccountIdentity> createChildMoneyAccount(
             ParentIdentity parentIdentity,
-            String childName,
-            String imagePath) {
+            String childName) {
         // Création d'un nouveau compte
-        CreateChildAccountCommand createAccountCommand = CreateChildAccountCommand.create(parentIdentity, childName, imagePath);
+        CreateChildAccountCommand createAccountCommand = CreateChildAccountCommand.create(parentIdentity, childName);
         return commandBus.executeCommand(createAccountCommand);
     }
 
     @Override
-    public Publisher<ChildMoneyAccountIdentity> updateChildImage(
+    public Mono<UpdatedChildImage> updateChildImage(
             ChildMoneyAccountIdentity childMoneyAccountId,
-            ImageResource updatedImage,
             ParentIdentity parentIdentity) {
-
-        if(updatedImage == null || updatedImage.read().length == 0)
-            throw new ChildImageException("La nouvelle image n'est pas valide");
-
         try {
             // Génération d'un nouveau nom aléatoire
             String newRandomImageName = randomProvider.generateUniqueRandomUuid();
 
             // Sauvegarde en base des nouvelle données
             UpdateChildImageCommand updateAccoundCommand = UpdateChildImageCommand
-                    .create(childMoneyAccountId, parentIdentity, updatedImage, newRandomImageName);
+                    .create(childMoneyAccountId, parentIdentity, newRandomImageName);
 
             return commandBus.executeCommand(updateAccoundCommand);
 

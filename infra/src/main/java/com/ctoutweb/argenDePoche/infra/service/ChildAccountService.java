@@ -1,11 +1,10 @@
 package com.ctoutweb.argenDePoche.infra.service;
 
-import com.ctoutweb.argenDePoche.infra.model.dto.ChildAccountResponseDto;
-import com.ctoutweb.argenDePoche.infra.model.dto.CreateChildAccountResponseDto;
-import com.ctoutweb.argenDePoche.infra.model.dto.CreateChildAccountRequestDto;
+import com.ctoutweb.argenDePoche.infra.model.dto.*;
+import org.springframework.http.codec.multipart.FilePart;
 import reactor.core.publisher.Mono;
 
-public interface ChildAccountManagerService {
+public interface ChildAccountService {
     /**
      * Creation d'un compte d'argent de piche
      *
@@ -24,4 +23,13 @@ public interface ChildAccountManagerService {
      * @return Les données du compte d'argent de poche
      */
     Mono<ChildAccountResponseDto> loadChildAccount(long parentId, long childAccountId);
+
+    /**
+     * Mise à jour de l'image de l'enfant
+     *
+     * @param childImageFile L'image de l'enfant
+     *
+     * @return Le nom random de l'image
+     */
+    Mono<UpdatedChildImageResponseDto> updateChildImage(FilePart childImageFile, long parentId, long childAccountId);
 }

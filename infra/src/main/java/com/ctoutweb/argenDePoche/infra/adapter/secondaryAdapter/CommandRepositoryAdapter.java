@@ -8,13 +8,6 @@ import com.ctoutweb.argentDePoche.application.exception.FamilyAccountForbiddenEx
 import com.ctoutweb.argentDePoche.application.repository.CommandRepository;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.aggregate.ChildMoneyAccount;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.aggregate.ChildMoneyAccountIdentity;
-import com.ctoutweb.argentDePoche.core.domain.childAccount.entity.child.Child;
-import com.ctoutweb.argentDePoche.core.domain.childAccount.entity.childImage.ChildImage;
-import com.ctoutweb.argentDePoche.core.domain.childAccount.valueObject.account.ChildMoney;
-import com.ctoutweb.argentDePoche.core.domain.childAccount.valueObject.calendar.PeriodSubscription;
-import com.ctoutweb.argentDePoche.core.domain.childAccount.valueObject.calendar.SubscriptionCalendar;
-import com.ctoutweb.argentDePoche.core.domain.childAccount.valueObject.remainingMoney.Devise;
-import com.ctoutweb.argentDePoche.core.domain.childAccount.valueObject.remainingMoney.RemainingMoney;
 import com.ctoutweb.argentDePoche.core.domain.familyAccount.aggregate.FamilyAccount;
 import com.ctoutweb.argentDePoche.core.domain.familyAccount.aggregate.FamilyAccountIdentity;
 import com.ctoutweb.argentDePoche.core.domain.familyAccount.entity.parent.ParentIdentity;
@@ -24,7 +17,6 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Component
 public class CommandRepositoryAdapter implements CommandRepository {
@@ -88,36 +80,15 @@ public class CommandRepositoryAdapter implements CommandRepository {
                                                                         )
                                                                         .collectList()
                                                                         .map( moneyMovements -> {
-                                                                                ChildImage childImageValueObject = new ChildImage(childImage.getImageName(), "");
-                                                                                Child childIdentity = new Child(
-                                                                                        toCoreIdentity.toChildIdentity(child.getId()),
-                                                                                        child.getNickname(),
-                                                                                        childImageValueObject);
-
-                                                                                PeriodSubscription periodSubscription = PeriodSubscription.findPeriodSubscription(accountCalendar.getCalendarPeriod());
-                                                                                LocalDate startDay = accountCalendar.getPeriodStartDay();
-                                                                                LocalDate endDay = accountCalendar.getPeriodEndDay();
-                                                                                LocalDate actualDate = LocalDate.now();
-
-                                                                                SubscriptionCalendar subscriptionCalendarValueObject = new SubscriptionCalendar(
-                                                                                        actualDate, periodSubscription, startDay, endDay);
-
-                                                                                RemainingMoney remainingMoneyObjectValue = new RemainingMoney(
-                                                                                    accountMoney.getRemainingMoney(),
-                                                                                    Devise.EUR
-                                                                                );
-
-                                                                                ChildMoney childMoneyValueObject = new ChildMoney(
-                                                                                        accountMoney.getMoneyAtPeriodStart(),
-                                                                                      List.of(),
-                                                                                        remainingMoneyObjectValue
-                                                                                );
+                                                                                var childIdentity = toCoreIdentity.toChild(child, childImage);
+                                                                                var subscriptionCalendar = toCoreIdentity.toSubscriptionCalendar(accountCalendar, LocalDate.now());
+                                                                                var childMoney = toCoreIdentity.toChildMoneyAccount(accountMoney);
 
                                                                                 return new ChildMoneyAccount(
                                                                                   toCoreIdentity.toChildAccountIdentity(childAccountId),
                                                                                   childIdentity,
-                                                                                  subscriptionCalendarValueObject,
-                                                                                  childMoneyValueObject
+                                                                                  subscriptionCalendar,
+                                                                                  childMoney
                                                                                 );
 
                                                                         })
@@ -143,7 +114,40 @@ public class CommandRepositoryAdapter implements CommandRepository {
 
     @Override
     public Mono<ChildMoneyAccountIdentity> updateChildMoneyAccount(ChildMoneyAccount updatedChildAccount) {
-        return null;
+        long childAccountId = toInfraMapper.toTechnicalId(updatedChildAccount.getChildMoneyAccountId());
+        return childRepository.findByChildAccountId(childAccountId)
+                .flatMap(childEntity ->
+                        childImageRepository.findById(childEntity.getId())
+                                .flatMap( childImageEntity ->
+                                        childCalendarRepository.findFirstByChildAccountIdOrderByPeriodStartDayDesc(childAccountId)
+                                                .flatMap(childCalendarEntity ->
+                                                        childMoneyRepository.findByAccountCalendarId(childCalendarEntity.getId())
+                                                                .flatMap(childMoneyAccountEntity -> {
+                                                                  // Mise a jour des données
+                                                                  var updatedImageName = updatedChildAccount.getChild().childImage().imageRandomName();
+                                                                  var childName = updatedChildAccount.getChild().firstName();
+                                                                  var remainingMoney = updatedChildAccount.getChildMoney().remainingMoney().remainingMoney();
+                                                                  var moneyAtPeriodStart = updatedChildAccount.getChildMoney().childMoneyAtPeriodStart();
+                                                                  var calendarPeriod = updatedChildAccount.getCalendarSubscription().periodSubscription();
+
+                                                                  childEntity.setNickname(childName);
+                                                                  childImageEntity.setImageName(updatedImageName);
+                                                                  childMoneyAccountEntity.setRemainingMoney(remainingMoney);
+                                                                  childMoneyAccountEntity.setMoneyAtPeriodStart(moneyAtPeriodStart);
+                                                                  childCalendarEntity.setCalendarPeriod(toInfraMapper.toPeriodCalendar(calendarPeriod));
+
+                                                                  return childRepository.save(childEntity)
+                                                                          .then(childImageRepository.save(childImageEntity))
+                                                                          .then(childMoneyRepository.save(childMoneyAccountEntity))
+                                                                          .then(childCalendarRepository.save(childCalendarEntity))
+                                                                          .thenReturn(toCoreIdentity.toChildAccountIdentity(childAccountId));
+                                                                })
+                                                )
+
+                                ));
+
+
+
     }
 
     @Override
