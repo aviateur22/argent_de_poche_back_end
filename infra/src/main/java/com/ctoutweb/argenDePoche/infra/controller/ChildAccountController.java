@@ -3,11 +3,13 @@ package com.ctoutweb.argenDePoche.infra.controller;
 import com.ctoutweb.argenDePoche.infra.model.dto.ChildAccountResponseDto;
 import com.ctoutweb.argenDePoche.infra.model.dto.CreateChildAccountResponseDto;
 import com.ctoutweb.argenDePoche.infra.model.dto.CreateChildAccountRequestDto;
-import com.ctoutweb.argenDePoche.infra.service.ChildAccountManagerService;
+import com.ctoutweb.argenDePoche.infra.service.ChildAccountService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
@@ -20,9 +22,10 @@ public class ChildAccountController {
 
     @Value("${api.version}")
     String apiPath;
-    private final ChildAccountManagerService childAccountService;
 
-    public ChildAccountController(ChildAccountManagerService childAccountService) {
+    private final ChildAccountService childAccountService;
+
+    public ChildAccountController(@Qualifier("infraChildAccountServiceImpl") ChildAccountService childAccountService) {
         this.childAccountService = childAccountService;
     }
 
@@ -49,5 +52,24 @@ public class ChildAccountController {
                       .body(responseDto);
                     }
                 );
+    }
+
+    @PutMapping(path = "/update-image")
+    public Mono<ResponseEntity<Long>> updateChildImage(
+            @RequestPart("image") FilePart childImage,
+            @RequestPart("parentId") String parentIdStringFormated,
+            @RequestPart("childAccountId") String childAccountIdStringFormated) {
+      LOGGER.info(() -> "Mise à jour de l'image de l'enfant");
+      long parentId = Long.parseLong(parentIdStringFormated);
+      long childAccountId = Long.parseLong(childAccountIdStringFormated);
+
+      return childAccountService.updateChildImage(childImage, parentId, childAccountId)
+              .map(responseDto -> {
+                        URI location = URI.create(apiPath + "/child-accounts/" + responseDto.childAccountId());
+                        return ResponseEntity
+                                .created(location)
+                                .body(responseDto.childAccountId());
+                      }
+              );
     }
 }

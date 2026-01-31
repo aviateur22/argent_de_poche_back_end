@@ -1,5 +1,6 @@
 package com.ctoutweb.argentDePoche.application.api;
 
+import com.ctoutweb.argentDePoche.application.command.dto.UpdatedChildImage;
 import com.ctoutweb.argentDePoche.application.port.AddMoneyMovement;
 import com.ctoutweb.argentDePoche.application.port.ImageResource;
 import com.ctoutweb.argentDePoche.application.query.dto.ChildAccountDto;
@@ -26,21 +27,20 @@ public interface ChildAccountManager {
      *
      * @param parentIdentity L'identité du parent faisant la demande
      * @param childName Le nom de l'enfant associé au nouveau compte
-     * @param imagePath Le path par defaut de l'image de l'enfant
      *
      * @return Les données d'argent de poche de la famille mise a jour
      */
-    Mono<ChildMoneyAccountIdentity> createChildMoneyAccount(ParentIdentity parentIdentity, String childName, String imagePath);
+    Mono<ChildMoneyAccountIdentity> createChildMoneyAccount(ParentIdentity parentIdentity, String childName);
 
     /**
      * Mise à jour de l'image de l'enfant
      *
-     * @param updatedImage la nouvelle image
+     * @param parentIdentity  L'identifiant du parent mettant à jour l"image
      * @param childMoneyAccountId L'identifiant du compte de l'enfant
      *
      * @return Les données de compte d'argent de poche de l'enfant mise a jour
      */
-    Publisher<ChildMoneyAccountIdentity> updateChildImage(ChildMoneyAccountIdentity childMoneyAccountId, ImageResource updatedImage, ParentIdentity parentIdentity);
+    Mono<UpdatedChildImage> updateChildImage(ChildMoneyAccountIdentity childMoneyAccountId, ParentIdentity parentIdentity);
 
     /**
      * Ajout d'une balance d'argent positive ou negative d'argent dans le compte d'une enfant

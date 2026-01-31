@@ -114,7 +114,6 @@ public class ChildMoneyAccountTest {
          * - Le prenom ne doit pas avoir changer
          */
         String initialFirstName = child.firstName();
-        Assertions.assertNotNull(updateChildMoneyAccount.getChild().childImage().folderPath());
         assertEquals(updatedRandomImageName, updateChildMoneyAccount.getChild().childImage().imageRandomName());
         assertEquals(initialFirstName, updateChildMoneyAccount.getChild().firstName());
 
@@ -216,7 +215,6 @@ public class ChildMoneyAccountTest {
         /**
          * Then
          */
-        Assertions.assertNotNull(updateChildMoneyAccount.getChild().childImage().folderPath());
         Assertions.assertNotNull(updateChildMoneyAccount.getChild().childImage().imageRandomName());
         assertEquals(updateFirstName, updateChildMoneyAccount.getChild().firstName());
 

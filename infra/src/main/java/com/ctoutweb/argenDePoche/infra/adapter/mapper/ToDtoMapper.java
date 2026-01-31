@@ -3,8 +3,10 @@ package com.ctoutweb.argenDePoche.infra.adapter.mapper;
 import com.ctoutweb.argenDePoche.infra.model.dto.ChildAccountResponseDto;
 import com.ctoutweb.argenDePoche.infra.model.dto.CreateChildAccountResponseDto;
 import com.ctoutweb.argenDePoche.infra.model.dto.CreateFamilyAccountResponseDto;
+import com.ctoutweb.argenDePoche.infra.model.dto.UpdatedChildImageResponseDto;
 import com.ctoutweb.argenDePoche.infra.model.dto.familyAccountResponse.ChildDto;
 import com.ctoutweb.argenDePoche.infra.model.dto.familyAccountResponse.FamilyAccountResponseDto;
+import com.ctoutweb.argentDePoche.application.command.dto.UpdatedChildImage;
 import com.ctoutweb.argentDePoche.application.query.dto.ChildAccountDto;
 import com.ctoutweb.argentDePoche.application.query.dto.FamilyChildDto;
 import com.ctoutweb.argentDePoche.application.query.dto.FamilyDto;
@@ -84,6 +86,20 @@ public class ToDtoMapper {
     }
 
     /**
+     *
+     * @param updatedChildImage
+     * @return
+     */
+    public UpdatedChildImageResponseDto toUpdatedChildImageResponseDto(UpdatedChildImage updatedChildImage) {
+
+        return new UpdatedChildImageResponseDto(
+                infraMapper.toTechnicalId(updatedChildImage.childMoneyAccountIdentity()),
+                updatedChildImage.newRandomImageName(),
+                updatedChildImage.oldImageName()
+        );
+    }
+
+    /**
      * Renvoie un DTO de type ChildDto qui est requis pour l'objet FamilyAccountResponseDto
      *
      * @see FamilyAccountResponseDto
@@ -99,4 +115,5 @@ public class ToDtoMapper {
                 childDto.imageRandomName()
         );
     }
+
 }

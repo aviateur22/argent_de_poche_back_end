@@ -1,14 +1,22 @@
 package com.ctoutweb.argenDePoche.infra.adapter.mapper;
 
 import com.ctoutweb.argenDePoche.infra.repository.dto.FamilyAccountProjection;
-import com.ctoutweb.argenDePoche.infra.repository.entity.FamilyEntity;
+import com.ctoutweb.argenDePoche.infra.repository.entity.*;
 import com.ctoutweb.argentDePoche.application.port.NextChildAccountIdentities;
 import com.ctoutweb.argentDePoche.application.port.NextFamilyAccountIdentities;
 import com.ctoutweb.argentDePoche.application.query.dto.ChildAccountDto;
 import com.ctoutweb.argentDePoche.application.query.dto.FamilyChildDto;
 import com.ctoutweb.argentDePoche.application.query.dto.FamilyInformationDto;
+import com.ctoutweb.argentDePoche.core.domain.childAccount.aggregate.ChildMoneyAccount;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.aggregate.ChildMoneyAccountIdentity;
+import com.ctoutweb.argentDePoche.core.domain.childAccount.entity.child.Child;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.entity.child.ChildIdentity;
+import com.ctoutweb.argentDePoche.core.domain.childAccount.entity.childImage.ChildImage;
+import com.ctoutweb.argentDePoche.core.domain.childAccount.valueObject.account.ChildMoney;
+import com.ctoutweb.argentDePoche.core.domain.childAccount.valueObject.calendar.PeriodSubscription;
+import com.ctoutweb.argentDePoche.core.domain.childAccount.valueObject.calendar.SubscriptionCalendar;
+import com.ctoutweb.argentDePoche.core.domain.childAccount.valueObject.remainingMoney.Devise;
+import com.ctoutweb.argentDePoche.core.domain.childAccount.valueObject.remainingMoney.RemainingMoney;
 import com.ctoutweb.argentDePoche.core.domain.familyAccount.aggregate.FamilyAccount;
 import com.ctoutweb.argentDePoche.core.domain.familyAccount.aggregate.FamilyAccountIdentity;
 import com.ctoutweb.argentDePoche.core.domain.familyAccount.entity.family.Family;
@@ -198,6 +206,59 @@ public class ToCoreMapper {
      */
     public FamilyInformationDto toFamilyInformationDto(FamilyEntity family) {
         return new FamilyInformationDto(toFamilyAccountIdentity(family.getFamilyAccountId()), family.getName());
+    }
+
+    /**
+     * Map les données de la base vers L'Entity Child de l'aggregat ChildAccountAggregate
+     *
+     * @param childEntity Les données de l'enfant
+     * @param childImageEntity Les données de l'image de l'enfant
+     *
+     * @return L'Entity Child de l'aggregat
+     */
+    public Child toChild(ChildEntity childEntity, ChildImageEntity childImageEntity) {
+        var childImage = new ChildImage(childImageEntity.getImageName());
+        return new Child(
+                toChildIdentity(childEntity.getId()),
+                childEntity.getNickname(),
+                childImage);
+    }
+
+    /**
+     * Map vers le valueObject SubscriptionCalendar de l'aggregat ChildAccountAggregate
+     *
+     * @param childAccountCalendarEntity Les données issues de la base
+     * @param actualDate La date actuel de consulatation
+     *
+     * @return Le valueObject SubscriptionCalendar
+     */
+    public SubscriptionCalendar toSubscriptionCalendar(ChildAccountCalendarEntity childAccountCalendarEntity, LocalDate actualDate) {
+        PeriodSubscription periodSubscription = PeriodSubscription.findPeriodSubscription(childAccountCalendarEntity.getCalendarPeriod());
+        LocalDate startDay = childAccountCalendarEntity.getPeriodStartDay();
+        LocalDate endDay = childAccountCalendarEntity.getPeriodEndDay();
+
+        return new SubscriptionCalendar(
+                actualDate, periodSubscription, startDay, endDay);
+    }
+
+    /**
+     * Map vers le valueObject ChildMoney de l'aggregat ChildAccountAggregate
+     *
+     * @param childMoneyEntity Les données d'argent issue dela base
+     *
+     * @return Le valueObject ChildMoney
+     */
+    public ChildMoney toChildMoneyAccount(ChildMoneyEntity childMoneyEntity) {
+        RemainingMoney remainingMoneyObjectValue = new RemainingMoney(
+                childMoneyEntity.getRemainingMoney(),
+                Devise.EUR
+        );
+
+        return new ChildMoney(
+                childMoneyEntity.getMoneyAtPeriodStart(),
+                List.of(),
+                remainingMoneyObjectValue
+        );
     }
 
     private FamilyAccountIdentity mapToFamilyAccountIdentity(long familyAccountId) {
