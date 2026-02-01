@@ -28,7 +28,7 @@ public class UpdateChildNameCommandHandler extends BaseCommandHandler<UpdateChil
                 .flatMap(childMoneyAccount -> {
                     var childAccountUpdated = childMoneyAccount.updateChildName(command.newChildName());
                     // Sauvegarde de la mise a jour du compte
-                    return commandRepository.updateChildMoneyAccount(childAccountUpdated);
+                    return commandRepository.updateActiveChildMoneyAccount(childAccountUpdated);
                 });
 
 

@@ -5,9 +5,12 @@ import com.ctoutweb.argenDePoche.infra.adapter.mapper.ToDtoMapper;
 import com.ctoutweb.argenDePoche.infra.adapter.mapper.ToInfraMapper;
 import com.ctoutweb.argenDePoche.infra.model.dto.controller.ChildAccountResponseDto;
 import com.ctoutweb.argenDePoche.infra.model.dto.UpdatedChildImageDto;
+import com.ctoutweb.argenDePoche.infra.model.dto.controller.UpdatedChildAccountResponseDto;
 import com.ctoutweb.argentDePoche.application.api.ChildAccountUseCase;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+
+import java.math.BigDecimal;
 
 @Service
 public class ChildAccountUseCaseAdapter {
@@ -84,4 +87,42 @@ public class ChildAccountUseCaseAdapter {
         return childAccountUseCase.updateChildImage(childAccountIdentity, parentIdentity)
                 .map(toDtoMapper::toUpdatedChildImageDto);
     }
+
+    /**
+     * Mise a jour de l'argent de poche disponible en debut de période
+     *
+     * @param parentId Le parent faisont l'action
+     * @param childAccountId Le compte d'argent de poche
+     * @param moneyAtPeriodStart Le nouvel argent de poche
+     *
+     * @return L'identifiant du compte d'argent de poche disponible
+     */
+    public Mono<UpdatedChildAccountResponseDto> updateChildMoneyAtPeriodStart(long parentId, long childAccountId, BigDecimal moneyAtPeriodStart) {
+        var parentIdentity = toCoreMapper.toParentIdentity(parentId);
+        var childAccountIdentity = toCoreMapper.toChildAccountIdentity(childAccountId);
+
+        return childAccountUseCase.modulateInitialChildMoney(childAccountIdentity, parentIdentity, moneyAtPeriodStart)
+                .map(s-> toDtoMapper.toUpdatedChildResponseDto(s));
+
+    }
+
+    /**
+     * Ajout d'un mouvement d'argent sur un compte d'argent de poche
+     *
+     * @param parentId L'identification du parent faisant l'action
+     * @param childAccountId Lidentitifaction du compte d'argent depoche
+     * @param movementReasonCode Le code de la rasion du mouvement d'argent
+     * @param movementActionCode L'action d'ajout ou de retrait d'argent
+     *
+     * @return L'identifiant du compte d'argent de poche qui a été modifié
+     */
+    public Mono<UpdatedChildAccountResponseDto> addMoneyMovement(long parentId, long childAccountId, String movementReasonCode, String movementActionCode) {
+        var parentIdentity = toCoreMapper.toParentIdentity(parentId);
+        var childAccountIdentity = toCoreMapper.toChildAccountIdentity(childAccountId);
+
+        return childAccountUseCase.addChildMoneyMovement(childAccountIdentity, parentIdentity, movementReasonCode, movementActionCode)
+                .map(s-> toDtoMapper.toUpdatedChildResponseDto(s));
+    }
+
+
 }

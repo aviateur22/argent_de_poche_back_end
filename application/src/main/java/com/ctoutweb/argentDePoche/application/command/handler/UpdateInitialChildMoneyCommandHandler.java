@@ -34,7 +34,7 @@ public class UpdateInitialChildMoneyCommandHandler extends BaseCommandHandler<Up
             .flatMap(childAccountMoney -> {
                 var childAccountUpdated = childAccountMoney.updateInitialMoneyAtPeriodStart(command.moneyAtPeriodStart());
                 // Sauvegarde de la mise a jour du compte
-                return commandRepository.updateChildMoneyAccount(childAccountUpdated);
+                return commandRepository.updateActiveChildMoneyAccount(childAccountUpdated);
             });
     }
 }

@@ -9,9 +9,11 @@ import reactor.core.publisher.Mono;
 public interface ChildMoneyRepository extends ReactiveCrudRepository<ChildMoneyEntity, Long> {
 
   /**
-   * Récuperation de l'ar
-   * @param accountCalendarId
-   * @return
+   * Récuperation de l'argent de poche par identifiant de la periode
+   *
+   * @param accountCalendarId L'identifiant de la période
+   *
+   * @return ChildMoneyEntity
    */
   Mono<ChildMoneyEntity> findByAccountCalendarId(long accountCalendarId);
 }

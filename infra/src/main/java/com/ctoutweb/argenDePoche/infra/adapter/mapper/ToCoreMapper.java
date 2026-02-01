@@ -261,8 +261,36 @@ public class ToCoreMapper {
 
         return new ChildMoney(
                 childMoneyEntity.getMoneyAtPeriodStart(),
-                List.of(),
                 remainingMoneyObjectValue
+        );
+    }
+
+    /**
+     * Renvoie l'aggregat du compte d'argent de poche
+     *
+     * @param childAccountId L'identifiant de l'aggregat
+     * @param child L'enfant
+     * @param childImage L'image de l'enfant
+     * @param activeAccountCalendar La periode d'argent de poche
+     * @param accountMoney L'argent du compte
+     *
+     * @return ChildMoneyAccount
+     */
+    public ChildMoneyAccount toChildMoneyAccount(
+            long childAccountId,
+            ChildEntity child,
+            ChildImageEntity childImage,
+            ChildAccountCalendarEntity activeAccountCalendar,
+            ChildMoneyEntity accountMoney) {
+        var childIdentity = toChild(child, childImage);
+        var subscriptionCalendar = toSubscriptionCalendar(activeAccountCalendar, LocalDate.now());
+        var childMoney = toChildMoneyAccount(accountMoney);
+
+        return new ChildMoneyAccount(
+                toChildAccountIdentity(childAccountId),
+                childIdentity,
+                subscriptionCalendar,
+                childMoney
         );
     }
 

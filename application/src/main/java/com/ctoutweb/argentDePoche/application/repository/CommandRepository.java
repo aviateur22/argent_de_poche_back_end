@@ -1,26 +1,27 @@
 package com.ctoutweb.argentDePoche.application.repository;
 
+import com.ctoutweb.argentDePoche.application.port.AddMoneyMovementReason;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.aggregate.ChildMoneyAccount;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.aggregate.ChildMoneyAccountIdentity;
+import com.ctoutweb.argentDePoche.core.domain.childAccount.valueObject.account.MoneyMovement;
 import com.ctoutweb.argentDePoche.core.domain.familyAccount.aggregate.FamilyAccount;
 import com.ctoutweb.argentDePoche.core.domain.familyAccount.aggregate.FamilyAccountIdentity;
 import com.ctoutweb.argentDePoche.core.domain.familyAccount.entity.parent.ParentIdentity;
 import reactor.core.publisher.Mono;
 
-import java.time.LocalDate;
-
 public interface CommandRepository {
 
     /**
      * Chargement des données d'argent de poche d'un enfant
+     * L'aggregat ChildMoneyAccount qui est chargé aura les données Calendar suivant:
+     * - De la semaine actuelle si periode de l'argent de poche est  WEEK
+     * - Du mois actuel si la periode de l'argent de poche est MONTH
      *
      * @param childMoneyAccountId Identifiant du compte
-     * @param periodStart Le debut de la période
-     * @param periodEnd Fin de la pépriode
      *
      * @return Les données du compte de l'enfant
      */
-    Mono<ChildMoneyAccount> loadChildMoneyAccountAggregate(ChildMoneyAccountIdentity childMoneyAccountId, LocalDate periodStart, LocalDate periodEnd);
+    Mono<ChildMoneyAccount> loadActiveChildAccountAggregate(ChildMoneyAccountIdentity childMoneyAccountId);
 
     /**
      * Chargement de compte famille à partir de l'identitifiant de parent faison l'action
@@ -33,12 +34,15 @@ public interface CommandRepository {
 
     /**
      * Mise à jour d'un compte argent de poche d'un enfant
+     * Le compte qui est mis a jour est celui:
+     * - De la semaine actuelle si periode de l'argent de poche est  WEEk
+     * - Du mois actuel si la periode de l'argent de poche est MONTH
      *
      * @param updatedChildAccount Les données du compte argent de poche
      *
      * @return L'identifiant du compte de l'enfant
      */
-    Mono<ChildMoneyAccountIdentity> updateChildMoneyAccount(ChildMoneyAccount updatedChildAccount);
+    Mono<ChildMoneyAccountIdentity> updateActiveChildMoneyAccount(ChildMoneyAccount updatedChildAccount);
 
     /**
      * Création d'un compte argent de poche
@@ -59,4 +63,24 @@ public interface CommandRepository {
     Mono<FamilyAccountIdentity> createFamilyAccount(FamilyAccount familyAccount, ParentIdentity parentCreatingFamilyAccount);
 
     Mono<Boolean> initializeNextPeriod();
+
+    /**
+     * Chargement des informationd sur les informations d'un mouvement d'argent
+     *
+     * @param movementReasonCode Le code de la raison du mouvement d'argent
+     * @param childAccountIdentity  L'identifiant du compte d'argent de poche
+     *
+     * @return AddMoneyMovementReason
+     */
+    Mono<AddMoneyMovementReason> loadMoneyMovementReasonByCode(String movementReasonCode, ChildMoneyAccountIdentity childAccountIdentity);
+
+    /**
+     * Ajout d'un mouvement d'argent
+     *
+     * @param moneyMovementToAdd Le mouvement d'argent
+     * @param childAccountToBeUpdated Le compte d'argent poche qui recoit le mouvement d'argent
+     *
+     * @return L'identifiant du compte d'argent de poche quia recu le mouvemrnt
+     */
+    Mono<ChildMoneyAccountIdentity> addMoneyMovement(MoneyMovement moneyMovementToAdd, ChildMoneyAccountIdentity childAccountToBeUpdated);
 }

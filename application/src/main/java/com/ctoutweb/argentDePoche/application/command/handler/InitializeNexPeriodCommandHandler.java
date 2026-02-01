@@ -21,6 +21,7 @@ public class InitializeNexPeriodCommandHandler implements MonoCommandHandler<Ini
 
   @Override
   public Mono<Boolean> handle(InitializeNextPeriodCommand command) {
+    // L'ajout de la nouvelle periode de calendrier ne pourra se faire que
     return commandRepository.initializeNextPeriod();
   }
 }

@@ -1,4 +1,4 @@
-package com.ctoutweb.argenDePoche.infra.model.childAccount.calendar;
+package com.ctoutweb.argenDePoche.infra.model.dto.childAccount.calendar;
 
 import com.ctoutweb.argenDePoche.infra.exception.PeriodException;
 import org.apache.logging.log4j.LogManager;

@@ -78,8 +78,6 @@ public record SubscriptionCalendar(LocalDate actualDay, PeriodSubscription perio
         return new SubscriptionCalendar(firstDayOfNextPeriod, this.periodSubscription, startDay, endDay);
     }
 
-
-
     private static LocalDate loadEndDay(LocalDate actualDay, PeriodSubscription periodDuration) {
         return switch (periodDuration) {
             case WEEK -> actualDay.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY));

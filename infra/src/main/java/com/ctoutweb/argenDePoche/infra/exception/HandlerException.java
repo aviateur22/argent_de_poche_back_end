@@ -1,9 +1,7 @@
 package com.ctoutweb.argenDePoche.infra.exception;
 
 import com.ctoutweb.argenDePoche.infra.model.dto.ErrorDto;
-import com.ctoutweb.argentDePoche.application.exception.ChildAccountForbiddenException;
-import com.ctoutweb.argentDePoche.application.exception.FamilyAccountForbiddenException;
-import com.ctoutweb.argentDePoche.application.exception.FamilyConflictException;
+import com.ctoutweb.argentDePoche.application.exception.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
@@ -42,6 +40,22 @@ public class HandlerException {
 
   @ExceptionHandler(FamilyConflictException.class)
   public Mono<ResponseEntity<ErrorDto>> familyConflictException(FamilyConflictException exception) {
+    return Mono.just(
+            ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(ErrorDto.createErrorDto(exception.getMessage()))
+    );
+  }
+
+  @ExceptionHandler(CalendarPeriodNotFound.class)
+  public Mono<ResponseEntity<ErrorDto>> calendarPeriodNotFound(CalendarPeriodNotFound exception) {
+    return Mono.just(
+            ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(ErrorDto.createErrorDto(exception.getMessage()))
+    );
+  }
+
+  @ExceptionHandler(BalanceReasonException.class)
+  public Mono<ResponseEntity<ErrorDto>> balanceReasonException(BalanceReasonException exception) {
     return Mono.just(
             ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(ErrorDto.createErrorDto(exception.getMessage()))

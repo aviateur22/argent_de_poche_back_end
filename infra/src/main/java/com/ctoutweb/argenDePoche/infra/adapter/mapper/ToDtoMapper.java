@@ -4,12 +4,14 @@ import com.ctoutweb.argenDePoche.infra.model.dto.controller.ChildAccountResponse
 import com.ctoutweb.argenDePoche.infra.model.dto.controller.CreateChildAccountResponseDto;
 import com.ctoutweb.argenDePoche.infra.model.dto.controller.CreateFamilyAccountResponseDto;
 import com.ctoutweb.argenDePoche.infra.model.dto.UpdatedChildImageDto;
+import com.ctoutweb.argenDePoche.infra.model.dto.controller.UpdatedChildAccountResponseDto;
 import com.ctoutweb.argenDePoche.infra.model.dto.controller.familyAccountResponse.ChildDto;
 import com.ctoutweb.argenDePoche.infra.model.dto.controller.familyAccountResponse.FamilyAccountResponseDto;
 import com.ctoutweb.argentDePoche.application.command.dto.UpdatedChildImage;
 import com.ctoutweb.argentDePoche.application.query.dto.ChildAccountDto;
 import com.ctoutweb.argentDePoche.application.query.dto.FamilyChildDto;
 import com.ctoutweb.argentDePoche.application.query.dto.FamilyDto;
+import com.ctoutweb.argentDePoche.core.domain.childAccount.aggregate.ChildMoneyAccountIdentity;
 import org.springframework.stereotype.Component;
 
 /**
@@ -105,6 +107,16 @@ public class ToDtoMapper {
                 updatedChildImage.newRandomImageName(),
                 updatedChildImage.oldImageName()
         );
+    }
+
+    /**
+     *
+     * @param childMoneyAccountIdentity
+     * @return
+     */
+    public UpdatedChildAccountResponseDto toUpdatedChildResponseDto(ChildMoneyAccountIdentity childMoneyAccountIdentity) {
+        var childAccountId = infraMapper.toTechnicalId(childMoneyAccountIdentity);
+        return new UpdatedChildAccountResponseDto(childAccountId);
     }
 
     /**

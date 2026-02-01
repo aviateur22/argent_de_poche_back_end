@@ -27,7 +27,7 @@ public interface QueryRepository {
      *
      * @return ChildAccountDto
      */
-    Mono<ChildAccountDto> loadChildMoneyAccount(ChildMoneyAccountIdentity childMoneyAccountIdentity);
+    Mono<ChildAccountDto> loadActiveChildMoneyAccount(ChildMoneyAccountIdentity childMoneyAccountIdentity);
 
     /**
      * Récupération des compte de familles  associé a un parent

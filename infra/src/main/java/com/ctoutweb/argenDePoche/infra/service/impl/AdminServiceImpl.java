@@ -13,10 +13,10 @@ public class AdminServiceImpl implements com.ctoutweb.argenDePoche.infra.service
   private static final Logger LOGGER = LogManager.getLogger();
 
   private final TransactionalOperator txOperator;
-  private final ChildAccountUseCaseAdapter childAccountManager;
+  private final ChildAccountUseCaseAdapter childAccountUseCaseAdapter;
   public AdminServiceImpl(TransactionalOperator txOperator, ChildAccountUseCaseAdapter childAccountManager) {
     this.txOperator = txOperator;
-    this.childAccountManager = childAccountManager;
+    this.childAccountUseCaseAdapter = childAccountManager;
   }
 
   //second minute heure day-of-month month day-of-week
@@ -24,7 +24,7 @@ public class AdminServiceImpl implements com.ctoutweb.argenDePoche.infra.service
   @Override
   public Mono<Boolean> initializeNextPeriod() {
     LOGGER.info("Initialisation de la periode suivante");
-    return txOperator.transactional(childAccountManager.initializeNextPeriod())
+    return txOperator.transactional(childAccountUseCaseAdapter.initializeNextPeriod())
             .doOnSuccess(success -> LOGGER.info("Initialisation de la période suivante s'est bien passé"));
   }
 }

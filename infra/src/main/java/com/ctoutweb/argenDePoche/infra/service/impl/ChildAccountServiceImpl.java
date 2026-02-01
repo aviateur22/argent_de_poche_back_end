@@ -1,12 +1,8 @@
 package com.ctoutweb.argenDePoche.infra.service.impl;
 
 import com.ctoutweb.argenDePoche.infra.adapter.primaryAdapter.ChildAccountUseCaseAdapter;
-import com.ctoutweb.argenDePoche.infra.model.dto.controller.ChildAccountResponseDto;
-import com.ctoutweb.argenDePoche.infra.model.dto.controller.CreateChildAccountResponseDto;
-import com.ctoutweb.argenDePoche.infra.model.dto.controller.CreateChildAccountRequestDto;
+import com.ctoutweb.argenDePoche.infra.model.dto.controller.*;
 import com.ctoutweb.argenDePoche.infra.adapter.mapper.ToDtoMapper;
-import com.ctoutweb.argenDePoche.infra.model.dto.UpdatedChildImageDto;
-import com.ctoutweb.argenDePoche.infra.model.dto.controller.UpdatedChildImageResponseDto;
 import com.ctoutweb.argenDePoche.infra.model.mapper.InfraMapper;
 import com.ctoutweb.argenDePoche.infra.service.ChildAccountService;
 import com.ctoutweb.argenDePoche.infra.service.ImageService;
@@ -45,20 +41,21 @@ public class ChildAccountServiceImpl implements ChildAccountService {
             Mono.defer(() ->
                 childAccountUseCaseAdapter.createChildAccount(dto.parentId(), dto.childName())
                         .map(toDtoMapper::mapToCreateChildAccountResponseDto)
-                        .doOnSuccess(s -> LOGGER.info("Transaction réussie: {}", s))
-                        .doOnError(e -> LOGGER.error("Erreur dans la transaction: ", e))
-            ));
+                        .doOnSuccess(childAccount -> LOGGER.info(() -> String.format("Réussite de la création du compte d'argent de poche avec comme identifiant %s", childAccount.createdChildAccountId())))
+                        .doOnError(e -> LOGGER.error("Erreur dans l'appel au service loadChildAccount", e))
+            )
+        );
     }
 
     @Override
     public Mono<ChildAccountResponseDto> loadChildAccount(long parentId, long childAccountId) {
         return txOperator.transactional(childAccountUseCaseAdapter.loadChildAccount(parentId, childAccountId)
-                .doOnSuccess(s -> LOGGER.info("Transaction réussie: {}", s))
-                .doOnError(e -> LOGGER.error("Erreur dans la transaction: ", e)));
+                .doOnSuccess(childAccount -> LOGGER.info(() -> String.format("Réussite de la récupération des données du compte enfant %s", childAccount.childAccountIdentity())))
+                .doOnError(e -> LOGGER.error("Erreur dans l'appel au service loadChildAccount", e)));
     }
 
     @Override
-    public Mono<UpdatedChildImageResponseDto> updateChildImage(FilePart childImageFile, long parentId, long childAccountId) {
+    public Mono<UpdatedChildAccountResponseDto> updateChildImage(FilePart childImageFile, long parentId, long childAccountId) {
         return txOperator.transactional(childAccountUseCaseAdapter.updateChildImage(parentId, childAccountId)
                         .flatMap(dto ->
                                 imageService.saveImage(childImageFile, dto.newImageName())
@@ -67,8 +64,31 @@ public class ChildAccountServiceImpl implements ChildAccountService {
                                         .thenReturn(infraMapper.toUpdatedChildImageResponseDto(dto))
                                 )
                         )
-                .doOnSuccess(s -> LOGGER.info("Transaction réussie: {}", s))
-                .doOnError(e -> LOGGER.error("Erreur dans la transaction: ", e)));
+                .doOnSuccess(childAccountUpdated -> LOGGER.info(() -> String.format("Le compte est mise à jour %s", childAccountUpdated)))
+                .doOnError(e -> LOGGER.error("Erreur dans l'appel au service updateChildImage", e)));
 
+    }
+
+    @Override
+    public Mono<UpdatedChildAccountResponseDto> updateChildMoneyAtPeriodStart(UpdateChildMoneyAtPeriodStartRequestDto dto) {
+        return txOperator.transactional(childAccountUseCaseAdapter.updateChildMoneyAtPeriodStart(
+                dto.parentId(),
+                dto.childAccountId(),
+                dto.updatedMoneyAtPeriodStart()
+        ))
+        .doOnSuccess(childAccountUpdated -> LOGGER.info(() -> String.format("Le compte est mise à jour %s", childAccountUpdated)))
+        .doOnError(e -> LOGGER.error("Erreur dans l'appel au service updateChildMoneyAtPeriodStart", e));
+    }
+
+    @Override
+    public Mono<UpdatedChildAccountResponseDto> addMoneyMovement(AddMoneyMovementRequestDto dto) {
+        return txOperator.transactional(childAccountUseCaseAdapter.addMoneyMovement(
+                        dto.parentId(),
+                        dto.childAccountId(),
+                        dto.reasonCode(),
+                        dto.actionCode()
+                ))
+                .doOnSuccess(childAccountUpdated -> LOGGER.info(() -> String.format("Le compte est mise à jour %s", childAccountUpdated)))
+                .doOnError(e -> LOGGER.error("Erreur dans l'appel au service addMoneyMovement", e));
     }
 }

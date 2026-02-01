@@ -1,10 +1,6 @@
 package com.ctoutweb.argenDePoche.infra.service;
 
-import com.ctoutweb.argenDePoche.infra.model.dto.*;
-import com.ctoutweb.argenDePoche.infra.model.dto.controller.ChildAccountResponseDto;
-import com.ctoutweb.argenDePoche.infra.model.dto.controller.CreateChildAccountRequestDto;
-import com.ctoutweb.argenDePoche.infra.model.dto.controller.CreateChildAccountResponseDto;
-import com.ctoutweb.argenDePoche.infra.model.dto.controller.UpdatedChildImageResponseDto;
+import com.ctoutweb.argenDePoche.infra.model.dto.controller.*;
 import org.springframework.http.codec.multipart.FilePart;
 import reactor.core.publisher.Mono;
 
@@ -33,7 +29,25 @@ public interface ChildAccountService {
      *
      * @param childImageFile L'image de l'enfant
      *
-     * @return Le nom random de l'image
+     * @return L'identifiant du compte d'argent de poche
      */
-    Mono<UpdatedChildImageResponseDto> updateChildImage(FilePart childImageFile, long parentId, long childAccountId);
+    Mono<UpdatedChildAccountResponseDto> updateChildImage(FilePart childImageFile, long parentId, long childAccountId);
+
+    /**
+     * Mise à jour de l'argent de poche disponible en début de periode
+     *
+     * @param dto Les données de mise a jour
+     *
+     * @return L'identifiant du compte d'argent de poche
+     */
+    Mono<UpdatedChildAccountResponseDto> updateChildMoneyAtPeriodStart(UpdateChildMoneyAtPeriodStartRequestDto dto);
+
+    /**
+     * Ajout d'un nouveau movement d'argent sur le compte d'argent de poche
+     *
+     * @param dto Les données liée a ce movement d'argent
+     *
+     * @return L'identifiant du compte d'argent de poche mise à jour
+     */
+    Mono<UpdatedChildAccountResponseDto> addMoneyMovement(AddMoneyMovementRequestDto dto);
 }
