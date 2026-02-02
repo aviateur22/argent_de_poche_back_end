@@ -262,6 +262,7 @@ public class CommandRepositoryAdapter implements CommandRepository {
     @Override
     public Mono<Boolean> initializeNextPeriod() {
 
+
         LocalDate activateNextPeriodDate = LocalDate.now();
         return childAccountRepository.findAll()
                 .flatMap(childAccount ->
@@ -270,7 +271,8 @@ public class CommandRepositoryAdapter implements CommandRepository {
                                   LOGGER.debug(childAccount.getId());
                                     var startDay = accountCalendar.getPeriodStartDay();
                                     var endDay = accountCalendar.getPeriodEndDay();
-                                   return this.loadActiveChildAccountAggregate(toCoreIdentity.toChildAccountIdentity(childAccount.getId()))
+                                    var childAccountIdentity = toCoreIdentity.toChildAccountIdentity(childAccount.getId());
+                                   return this.childAccountAggregate(childAccountIdentity, startDay, endDay)
                                        .flatMap(childAccountAggregate -> {
                                          var nextPeriodAggregate = childAccountAggregate.initializeNextPeriod(activateNextPeriodDate);
                                          return childCalendarRepository.save(toInfraMapper.toCalendarEntity(nextPeriodAggregate))
@@ -347,4 +349,16 @@ public class CommandRepositoryAdapter implements CommandRepository {
             });
   }
 
+  private Mono<ChildMoneyAccount> childAccountAggregate(
+          ChildMoneyAccountIdentity childMoneyAccountId,
+          LocalDate startMonthDate,
+          LocalDate endMonthDate) {
+
+    var childAccountId = toInfraMapper.toTechnicalId(childMoneyAccountId);
+    return loadActiveChildAccountCalendar(childAccountId, startMonthDate, endMonthDate)
+            .switchIfEmpty(Mono.error(new CalendarPeriodNotFound("Il n'y a pas de periode mensuelle ou hebdomadaire associée a ce compte d'argent de poche")))
+            .flatMap(activeAccountCalendar ->
+                    loadChildAccountInformation(childAccountId, activeAccountCalendar)
+            );
+  }
 }

@@ -64,8 +64,10 @@ public class ChildAccountServiceImpl implements ChildAccountService {
                                         .thenReturn(infraMapper.toUpdatedChildImageResponseDto(dto))
                                 )
                         )
-                .doOnSuccess(childAccountUpdated -> LOGGER.info(() -> String.format("Le compte est mise à jour %s", childAccountUpdated)))
-                .doOnError(e -> LOGGER.error("Erreur dans l'appel au service updateChildImage", e)));
+                .doOnSuccess(childAccountUpdated ->
+                        LOGGER.info(() -> String.format("Le compte est mise à jour %s", childAccountUpdated)))
+                .doOnError(e ->
+                        LOGGER.error("Erreur dans l'appel au service updateChildImage", e)));
 
     }
 
@@ -76,8 +78,10 @@ public class ChildAccountServiceImpl implements ChildAccountService {
                 dto.childAccountId(),
                 dto.updatedMoneyAtPeriodStart()
         ))
-        .doOnSuccess(childAccountUpdated -> LOGGER.info(() -> String.format("Le compte est mise à jour %s", childAccountUpdated)))
-        .doOnError(e -> LOGGER.error("Erreur dans l'appel au service updateChildMoneyAtPeriodStart", e));
+        .doOnSuccess(childAccountUpdated ->
+                LOGGER.info(() -> String.format("Le compte est mise à jour %s", childAccountUpdated)))
+        .doOnError(e ->
+                LOGGER.error("Erreur dans l'appel au service updateChildMoneyAtPeriodStart", e));
     }
 
     @Override
@@ -88,7 +92,18 @@ public class ChildAccountServiceImpl implements ChildAccountService {
                         dto.reasonCode(),
                         dto.actionCode()
                 ))
-                .doOnSuccess(childAccountUpdated -> LOGGER.info(() -> String.format("Le compte est mise à jour %s", childAccountUpdated)))
-                .doOnError(e -> LOGGER.error("Erreur dans l'appel au service addMoneyMovement", e));
+                .doOnSuccess(childAccountUpdated ->
+                        LOGGER.info(() -> String.format("Le compte est mise à jour %s", childAccountUpdated)))
+                .doOnError(e ->
+                        LOGGER.error("Erreur dans l'appel au service addMoneyMovement", e));
+    }
+
+    @Override
+    public Mono<UpdatedChildAccountResponseDto> reinitializeRemainingMoney(long parentId, long childAccountId) {
+        return txOperator.transactional(childAccountUseCaseAdapter.reinitializeRemainingMoney(parentId, childAccountId))
+                .doOnSuccess(childAccountUpdated ->
+                        LOGGER.info(() -> String.format("Le compte est mise à jour %s", childAccountUpdated)))
+                .doOnError(e ->
+                        LOGGER.error("Erreur dans l'appel au service addMoneyMovement", e));
     }
 }

@@ -15,6 +15,7 @@ public class CommandBusSuscriber {
     private final UpdateChildImageCommandHandler updateChildImageCommandHandler;
     private final UpdateInitialChildMoneyCommandHandler updateInitialChildMoneyCommandHandler;
     private final InitializeNexPeriodCommandHandler initializeNexPeriodCommandHandler;
+    private final ReinitializeRemainingMoneyCommandHandler reinitializeRemainingMoneyCommandHandler;
 
     public CommandBusSuscriber(
             CommandBus commandBus,
@@ -23,16 +24,17 @@ public class CommandBusSuscriber {
             CreateFamilyAccountCommandHandler createFamilyAccountCommandHandler,
             UpdateChildImageCommandHandler updateChildImageCommandHandler,
             UpdateInitialChildMoneyCommandHandler updateInitialChildMoneyCommandHandler,
-            InitializeNexPeriodCommandHandler initializeNexPeriodCommandHandler
+            InitializeNexPeriodCommandHandler initializeNexPeriodCommandHandler,
+            ReinitializeRemainingMoneyCommandHandler reinitializeRemainingMoneyCommandHandler
     ) {
         this.commandBus = commandBus;
-
         this.createChildAccountCommandHandler = createChildAccountCommandHandler;
         this.addMoneyMovementCommandHandler = addMoneyMovementCommandHandler;
         this.createFamilyAccountCommandHandler = createFamilyAccountCommandHandler;
         this.updateChildImageCommandHandler = updateChildImageCommandHandler;
         this.updateInitialChildMoneyCommandHandler = updateInitialChildMoneyCommandHandler;
       this.initializeNexPeriodCommandHandler = initializeNexPeriodCommandHandler;
+      this.reinitializeRemainingMoneyCommandHandler = reinitializeRemainingMoneyCommandHandler;
 
       suscribe();
     }
@@ -44,5 +46,6 @@ public class CommandBusSuscriber {
         commandBus.registerMonoHandler(UpdateChildImageCommand.class, updateChildImageCommandHandler);
         commandBus.registerMonoHandler(UpdateInitialChildMoneyCommand.class, updateInitialChildMoneyCommandHandler);
         commandBus.registerMonoHandler(InitializeNextPeriodCommand.class, initializeNexPeriodCommandHandler);
+        commandBus.registerMonoHandler(ReinitializeRemainingMoneyCommand.class, reinitializeRemainingMoneyCommandHandler);
     }
 }

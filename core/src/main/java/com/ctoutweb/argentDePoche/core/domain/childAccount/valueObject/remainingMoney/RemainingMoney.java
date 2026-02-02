@@ -34,13 +34,27 @@ public record RemainingMoney(BigDecimal remainingMoney, Devise devise) {
     }
 
     /**
-     * Réinitialise l'argent restant pour une nouvelle période.
+     * Vérification de l'argent restant quand lors de la modification de l'argent de poche initial
+     *
+     * @param moneyAtPeriodStart L'argent de poche initial mise a jour
+     *
+     * @return RemainingMoney
+     */
+    public RemainingMoney controlRemainingMoneyWhenMoneyAtPeriodStartChange(BigDecimal moneyAtPeriodStart) {
+        if(remainingMoney.compareTo(moneyAtPeriodStart) > 0)
+            return with(moneyAtPeriodStart);
+
+        return this;
+    }
+
+    /**
+     * Réinitialise l'argent restant à la valeur de l'argent disponible en début de période
      *
      * @param moneyAtPeriodStart L'argent disponible en début de periode
      *
      * @return L'argent restant reinitialisé a sa valeur initiale
      */
-    public RemainingMoney nextPeriodReinitialize(BigDecimal moneyAtPeriodStart) {
+    public RemainingMoney reinitializeRemainingMoney(BigDecimal moneyAtPeriodStart) {
         return with(moneyAtPeriodStart);
     }
 }

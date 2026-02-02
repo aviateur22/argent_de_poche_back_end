@@ -133,6 +133,16 @@ public final class ChildMoneyAccount {
         return new ChildMoneyAccount(this.childMoneyAccountId, this.child, nextCalendarPeriod, updateChildMoney);
     }
 
+    /**
+     * Réinitialisation de l'agent de poche restant
+     *
+     * @return Données du compte de l'enfant mise à jour avec une valeur de l'argent de poche restant reinitilaisé
+     */
+    public ChildMoneyAccount reinitializeRemainingMoney() {
+        ChildMoney reinitializeRemainingMoney = this.childMoney.reinitializeRemainingMoney();
+        return new ChildMoneyAccount(this.childMoneyAccountId, this.child, this.calendarSubscription, reinitializeRemainingMoney);
+    }
+
     public ChildMoneyAccountIdentity getChildMoneyAccountId() {
         return childMoneyAccountId;
     }
@@ -148,4 +158,6 @@ public final class ChildMoneyAccount {
     public ChildMoney getChildMoney() {
         return childMoney;
     }
+
+
 }

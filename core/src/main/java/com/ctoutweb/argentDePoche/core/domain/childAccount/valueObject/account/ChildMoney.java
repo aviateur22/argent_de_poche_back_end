@@ -38,6 +38,17 @@ public record ChildMoney(
     }
 
     /**
+     * Mise à jour de ChildMoney quand l'argent de poche disponible en début de mois est modifié
+     *
+     * @param updatedMoneyAtPeriodStart Nouvel argent de poche en debut de période
+     *
+     * @return Renvoie les données d'argent mise à jour
+     */
+    public ChildMoney with(BigDecimal updatedMoneyAtPeriodStart, RemainingMoney remainingMoney) {
+        return new ChildMoney(updatedMoneyAtPeriodStart, remainingMoney);
+    }
+
+    /**
      * Ajout d'un nouveau mouvement d'argent de poche
      *
      * @param moneyMovementToAdd Le nouveau mouvement d'argent
@@ -70,7 +81,10 @@ public record ChildMoney(
         if(updatedMoneyAtPeriodStart.compareTo(BigDecimal.ZERO) == 0)
             throw new UnvalidMoneyAtPeriodStartException("Le nouvel argent de poche ne peut pas être de 0");
 
-        return with(updatedMoneyAtPeriodStart);
+        // Vérification que  remainingMoney <= updatedMoneyAtPeriodStart
+        RemainingMoney validRemainingMoney = remainingMoney.controlRemainingMoneyWhenMoneyAtPeriodStartChange(updatedMoneyAtPeriodStart);
+
+        return with(updatedMoneyAtPeriodStart, validRemainingMoney);
     }
 //
 //    /**
@@ -105,7 +119,17 @@ public record ChildMoney(
      * @return Renvoie les données d'argent de poche réinitialisé pour une nouvelle période
      */
     public ChildMoney nextPeriod() {
-        RemainingMoney updatedRemainingMoney = this.remainingMoney.nextPeriodReinitialize(this.childMoneyAtPeriodStart);
+        RemainingMoney updatedRemainingMoney = this.remainingMoney.reinitializeRemainingMoney(this.childMoneyAtPeriodStart);
+        return with(updatedRemainingMoney);
+    }
+
+    /**
+     * Réinitialise l'argent de poche restant pour qu'il soit identique a l'argent de poche initial
+     *
+     * @return Renvoie les données avec l'argent de poche restant réinitialisé
+     */
+    public ChildMoney reinitializeRemainingMoney() {
+        RemainingMoney updatedRemainingMoney = this.remainingMoney.reinitializeRemainingMoney(this.childMoneyAtPeriodStart);
         return with(updatedRemainingMoney);
     }
 }

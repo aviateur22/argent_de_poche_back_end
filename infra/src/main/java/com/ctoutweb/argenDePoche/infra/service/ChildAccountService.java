@@ -50,4 +50,14 @@ public interface ChildAccountService {
      * @return L'identifiant du compte d'argent de poche mise à jour
      */
     Mono<UpdatedChildAccountResponseDto> addMoneyMovement(AddMoneyMovementRequestDto dto);
+
+    /**
+     * Reinitialisation de l'argent restant
+     *
+     * @param parentId L'identifiant du parent faisant la reinitialmisation
+     * @param childAccountId Le compte d'argent de poche impacté
+     *
+     * @return L'identifiant du compte d'argent de poche mise à jour
+     */
+    Mono<UpdatedChildAccountResponseDto> reinitializeRemainingMoney(long parentId, long childAccountId);
 }

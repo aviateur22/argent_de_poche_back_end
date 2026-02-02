@@ -99,4 +99,19 @@ public class ChildAccountController {
                       }
               );
     }
+
+  @PostMapping(path = "/reinitialize-remaining-money")
+  public Mono<ResponseEntity<UpdatedChildAccountResponseDto>> reinitializeRemainingMoney(@RequestBody ReinitializeRemainingMoneyDto dto) {
+    LOGGER.info(() -> "Reinitimaisation de l'argent de poche restant");
+    return childAccountService.reinitializeRemainingMoney(dto.parentId(), dto.childAccountId())
+            .map(responseDto -> {
+                      URI location = URI.create(apiPath + "/child-accounts/" + responseDto.childAccountId());
+                      return ResponseEntity
+                              .ok()
+                              .location(location)
+                              .body(responseDto);
+                    }
+            );
+  }
+
 }

@@ -124,5 +124,20 @@ public class ChildAccountUseCaseAdapter {
                 .map(s-> toDtoMapper.toUpdatedChildResponseDto(s));
     }
 
+    /**
+     *
+     * @param parentId
+     * @param childAccountId
+     * @return
+     */
+    public Mono<UpdatedChildAccountResponseDto> reinitializeRemainingMoney(long parentId, long childAccountId) {
+        var parentIdentity = toCoreMapper.toParentIdentity(parentId);
+        var childAccountIdentity = toCoreMapper.toChildAccountIdentity(childAccountId);
+
+        return childAccountUseCase.reinitializeRemainingMoney(childAccountIdentity, parentIdentity)
+                .map(s-> toDtoMapper.toUpdatedChildResponseDto(s));
+    }
+
+
 
 }

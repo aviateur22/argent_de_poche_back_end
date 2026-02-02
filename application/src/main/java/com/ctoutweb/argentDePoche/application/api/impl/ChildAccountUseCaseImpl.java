@@ -8,7 +8,6 @@ import com.ctoutweb.argentDePoche.application.configuration.bus.CommandBus;
 import com.ctoutweb.argentDePoche.application.configuration.bus.EventBus;
 import com.ctoutweb.argentDePoche.application.configuration.bus.QueryBus;
 import com.ctoutweb.argentDePoche.application.configuration.event.LogErrorEvent;
-import com.ctoutweb.argentDePoche.application.port.AddMoneyMovementReason;
 import com.ctoutweb.argentDePoche.application.query.dto.ChildAccountDto;
 import com.ctoutweb.argentDePoche.application.query.dto.query.LoadChildAccountQuery;
 import com.ctoutweb.argentDePoche.application.spi.RandomProvider;
@@ -119,5 +118,16 @@ public class ChildAccountUseCaseImpl implements ChildAccountUseCase {
     public Mono<Boolean> initializeNextCalendarPeriod() {
         InitializeNextPeriodCommand initializeNextPeriodCommand = new InitializeNextPeriodCommand();
         return commandBus.executeCommand(initializeNextPeriodCommand);
+    }
+
+    @Override
+    public Mono<ChildMoneyAccountIdentity> reinitializeRemainingMoney(
+            ChildMoneyAccountIdentity childMoneyAccountId,
+            ParentIdentity parentUpdatedChildAccount) {
+        ReinitializeRemainingMoneyCommand reinitializeRemainingMoneyCommand = ReinitializeRemainingMoneyCommand
+                .create(childMoneyAccountId, parentUpdatedChildAccount);
+
+        // Mise a jour des données
+        return commandBus.executeCommand(reinitializeRemainingMoneyCommand);
     }
 }

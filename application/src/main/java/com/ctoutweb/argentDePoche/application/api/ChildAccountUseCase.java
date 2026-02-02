@@ -1,7 +1,6 @@
 package com.ctoutweb.argentDePoche.application.api;
 
 import com.ctoutweb.argentDePoche.application.command.dto.UpdatedChildImage;
-import com.ctoutweb.argentDePoche.application.port.AddMoneyMovementReason;
 import com.ctoutweb.argentDePoche.application.query.dto.ChildAccountDto;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.aggregate.ChildMoneyAccountIdentity;
 import com.ctoutweb.argentDePoche.core.domain.familyAccount.entity.parent.ParentIdentity;
@@ -44,7 +43,8 @@ public interface ChildAccountUseCase {
     /**
      * Ajout d'une balance d'argent positive ou negative d'argent dans le compte d'une enfant
      *
-     * @param addMoneyMovement  La nouvel balance d'argent a ajouter
+     * @param movementReasonCode  La raison du mouvement d'argent
+     * @param movementActionCode L'action d'ajout ou de retrait du mouvement d(argent
      * @param childMoneyAccountId L'identifiant du compte de l'enfant
      *
      * @return Les données de compte d'argent de poche de l'enfant mise a jour
@@ -77,4 +77,14 @@ public interface ChildAccountUseCase {
      * @return True
      */
     Mono<Boolean> initializeNextCalendarPeriod();
+
+    /**
+     * Reinitialisation de l'argent de poche restant
+     *
+     * @return L'identifiant du compte d'argent de poche mis a jour
+     */
+    Mono<ChildMoneyAccountIdentity> reinitializeRemainingMoney(
+            ChildMoneyAccountIdentity childMoneyAccountId,
+            ParentIdentity parentUpdatedChildAccount);
+
 }
