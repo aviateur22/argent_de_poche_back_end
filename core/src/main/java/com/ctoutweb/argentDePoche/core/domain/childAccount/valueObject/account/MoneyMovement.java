@@ -18,6 +18,7 @@ public record MoneyMovement(
             Objects.requireNonNull(action, "L'action d'ajout / suppression de l'argent de poche ne peut pas être vide: " + this);
             Objects.requireNonNull(reason, "La raison de modification de l'argent de poche ne peut pas être vide: " + this);
             Objects.requireNonNull(fluctuationPrice, "Le montant du mouvement d'argent est obligatoire");
+            Objects.requireNonNull(occurredAt, "La date d'ajout du movement d'argent ne peut pas être vide");
 
 
             if(fluctuationPrice.compareTo(BigDecimal.ZERO) < 0)

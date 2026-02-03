@@ -1,4 +1,4 @@
-package com.ctoutweb.argenDePoche.infra.exception;
+package com.ctoutweb.argentDePoche.application.exception;
 
 public class BalanceReasonException extends RuntimeException {
     public BalanceReasonException(String message) {

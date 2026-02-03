@@ -1,7 +1,6 @@
 package com.ctoutweb.argentDePoche.application.api;
 
 import com.ctoutweb.argentDePoche.application.command.dto.UpdatedChildImage;
-import com.ctoutweb.argentDePoche.application.port.AddMoneyMovement;
 import com.ctoutweb.argentDePoche.application.query.dto.ChildAccountDto;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.aggregate.ChildMoneyAccountIdentity;
 import com.ctoutweb.argentDePoche.core.domain.familyAccount.entity.parent.ParentIdentity;
@@ -44,12 +43,13 @@ public interface ChildAccountUseCase {
     /**
      * Ajout d'une balance d'argent positive ou negative d'argent dans le compte d'une enfant
      *
-     * @param addMoneyMovement  La nouvel balance d'argent a ajouter
+     * @param movementReasonCode  La raison du mouvement d'argent
+     * @param movementActionCode L'action d'ajout ou de retrait du mouvement d(argent
      * @param childMoneyAccountId L'identifiant du compte de l'enfant
      *
      * @return Les données de compte d'argent de poche de l'enfant mise a jour
      */
-    Publisher<ChildMoneyAccountIdentity> addChildMoneyMovement(ChildMoneyAccountIdentity childMoneyAccountId, AddMoneyMovement addMoneyMovement, ParentIdentity parentIdentity);
+    Mono<ChildMoneyAccountIdentity> addChildMoneyMovement(ChildMoneyAccountIdentity childMoneyAccountId, ParentIdentity parentIdentity, String movementReasonCode, String movementActionCode);
 
     /**
      * Mise a jour de l'argent de poche disponible en début de période pour une enfant
@@ -59,7 +59,7 @@ public interface ChildAccountUseCase {
      *
      * @return  Les données de compte d'argent de poche de l'enfant mise a jour
      */
-    Publisher<ChildMoneyAccountIdentity> modulateInitialChildMoney(ChildMoneyAccountIdentity childMoneyAccountId, BigDecimal updatedInitialMoney, ParentIdentity parentIdentity);
+    Mono<ChildMoneyAccountIdentity> modulateInitialChildMoney(ChildMoneyAccountIdentity childMoneyAccountId, ParentIdentity parentIdentity, BigDecimal updatedInitialMoney);
 
     /**
      * Mise a jour du prénom de l'enfant
@@ -77,4 +77,14 @@ public interface ChildAccountUseCase {
      * @return True
      */
     Mono<Boolean> initializeNextCalendarPeriod();
+
+    /**
+     * Reinitialisation de l'argent de poche restant
+     *
+     * @return L'identifiant du compte d'argent de poche mis a jour
+     */
+    Mono<ChildMoneyAccountIdentity> reinitializeRemainingMoney(
+            ChildMoneyAccountIdentity childMoneyAccountId,
+            ParentIdentity parentUpdatedChildAccount);
+
 }

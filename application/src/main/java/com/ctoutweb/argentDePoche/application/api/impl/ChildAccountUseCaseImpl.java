@@ -8,7 +8,6 @@ import com.ctoutweb.argentDePoche.application.configuration.bus.CommandBus;
 import com.ctoutweb.argentDePoche.application.configuration.bus.EventBus;
 import com.ctoutweb.argentDePoche.application.configuration.bus.QueryBus;
 import com.ctoutweb.argentDePoche.application.configuration.event.LogErrorEvent;
-import com.ctoutweb.argentDePoche.application.port.AddMoneyMovement;
 import com.ctoutweb.argentDePoche.application.query.dto.ChildAccountDto;
 import com.ctoutweb.argentDePoche.application.query.dto.query.LoadChildAccountQuery;
 import com.ctoutweb.argentDePoche.application.spi.RandomProvider;
@@ -77,22 +76,23 @@ public class ChildAccountUseCaseImpl implements ChildAccountUseCase {
     }
 
     @Override
-    public Publisher<ChildMoneyAccountIdentity> addChildMoneyMovement(
+    public Mono<ChildMoneyAccountIdentity> addChildMoneyMovement(
             ChildMoneyAccountIdentity childMoneyAccountId,
-            AddMoneyMovement addMoneyMovement,
-            ParentIdentity parentUpdatedChildAccount) {
+            ParentIdentity parentUpdatedChildAccount,
+            String movementReasonCode,
+            String movementActionCode) {
 
         // Sauvegarde en base des nouvelles données
         AddMoneyMovementCommand addMoneyMovementCommand = AddMoneyMovementCommand
-                .create(parentUpdatedChildAccount, childMoneyAccountId, addMoneyMovement);
+                .create(parentUpdatedChildAccount, childMoneyAccountId, movementReasonCode, movementActionCode);
         return commandBus.executeCommand(addMoneyMovementCommand);
     }
 
     @Override
-    public Publisher<ChildMoneyAccountIdentity> modulateInitialChildMoney(
+    public Mono<ChildMoneyAccountIdentity> modulateInitialChildMoney(
             ChildMoneyAccountIdentity childMoneyAccountId,
-            BigDecimal updatedInitialMoney,
-            ParentIdentity parentUpdatedChildAccount) {
+            ParentIdentity parentUpdatedChildAccount,
+            BigDecimal updatedInitialMoney) {
         // Persistance des nouvelles données
         UpdateInitialChildMoneyCommand updateInitialChildMoneyCommand = UpdateInitialChildMoneyCommand
                 .create(parentUpdatedChildAccount, childMoneyAccountId, updatedInitialMoney);
@@ -118,5 +118,16 @@ public class ChildAccountUseCaseImpl implements ChildAccountUseCase {
     public Mono<Boolean> initializeNextCalendarPeriod() {
         InitializeNextPeriodCommand initializeNextPeriodCommand = new InitializeNextPeriodCommand();
         return commandBus.executeCommand(initializeNextPeriodCommand);
+    }
+
+    @Override
+    public Mono<ChildMoneyAccountIdentity> reinitializeRemainingMoney(
+            ChildMoneyAccountIdentity childMoneyAccountId,
+            ParentIdentity parentUpdatedChildAccount) {
+        ReinitializeRemainingMoneyCommand reinitializeRemainingMoneyCommand = ReinitializeRemainingMoneyCommand
+                .create(childMoneyAccountId, parentUpdatedChildAccount);
+
+        // Mise a jour des données
+        return commandBus.executeCommand(reinitializeRemainingMoneyCommand);
     }
 }

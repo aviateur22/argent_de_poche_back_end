@@ -48,7 +48,6 @@ public class GenerateChildMoney {
         RemainingMoney remainingMoney = calculateRemainingMoney(childMonthlyMoneyMovements, initialMoneyAtPeriodStart);
         return new ChildMoney(
                 initialMoneyAtPeriodStart,
-                childMonthlyMoneyMovements,
                 remainingMoney
         );
     }

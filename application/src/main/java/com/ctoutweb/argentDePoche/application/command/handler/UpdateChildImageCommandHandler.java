@@ -37,7 +37,7 @@ public class UpdateChildImageCommandHandler extends BaseCommandHandler<UpdateChi
                 .flatMap(childAccount -> {
                     var initialImageName = childAccount.getChild().childImage().imageRandomName();
                     ChildMoneyAccount updatedChildAccount = childAccount.updateChildImage(command.imageRandomName());
-                    return commandRepository.updateChildMoneyAccount(updatedChildAccount)
+                    return commandRepository.updateActiveChildMoneyAccount(updatedChildAccount)
                             .thenReturn(new UpdatedChildImage(
                                     childAccount.getChildMoneyAccountId(),
                                     command.imageRandomName(),

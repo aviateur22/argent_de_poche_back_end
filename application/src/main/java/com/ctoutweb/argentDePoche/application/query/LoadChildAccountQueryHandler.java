@@ -39,7 +39,7 @@ public class LoadChildAccountQueryHandler implements MonoQueryHandler<LoadChildA
 
                    // Vérification que le parent peut accéder au compte de l'enfant
                    childAccessPolicy.checkAccess(childAccountRequested, familyAccount.getChildMoneyAccountIds());
-                   return queryRepository.loadChildMoneyAccount(childAccountRequested);
+                   return queryRepository.loadActiveChildMoneyAccount(childAccountRequested);
                });
     }
 }

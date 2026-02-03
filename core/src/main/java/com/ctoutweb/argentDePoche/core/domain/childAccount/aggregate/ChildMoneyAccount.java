@@ -2,7 +2,6 @@ package com.ctoutweb.argentDePoche.core.domain.childAccount.aggregate;
 
 import com.ctoutweb.argentDePoche.core.domain.childAccount.entity.child.ChildIdentity;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.entity.childImage.ChildImage;
-import com.ctoutweb.argentDePoche.core.domain.childAccount.entity.childImage.ChildImageIdentity;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.valueObject.account.MoneyMovement;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.valueObject.calendar.SubscriptionCalendar;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.entity.child.Child;
@@ -13,7 +12,6 @@ import com.ctoutweb.argentDePoche.core.domain.childAccount.valueObject.remaining
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
 
 public final class ChildMoneyAccount {
     private final ChildMoneyAccountIdentity childMoneyAccountId;
@@ -62,21 +60,9 @@ public final class ChildMoneyAccount {
         Child createdChild = new Child(childIdentity, childName, createdChildImage);
         SubscriptionCalendar createdSubscriptionCalendar = SubscriptionCalendar.created(LocalDate.now(), DEFAULT_PERIOD_SUBSCRIPTION);
         RemainingMoney createdRemainingMoney = new RemainingMoney(DEFAULT_REMAINING_MONEY, DEFAULT_DEVISE);
-        ChildMoney createdChildMoney = new ChildMoney(DEFAULT_MONEY, List.of(), createdRemainingMoney);
+        ChildMoney createdChildMoney = new ChildMoney(DEFAULT_MONEY, createdRemainingMoney);
 
         return new ChildMoneyAccount(childMoneyAccountId, createdChild, createdSubscriptionCalendar, createdChildMoney);
-    }
-
-    /**
-     * Renvoie les données du compte de l'enfant qui son initialement chargé mensuellement en données hebdomadaire
-     *
-     * @return Données de l'argent de poche de l'enfant en hebdomadaire iso mensuel
-     */
-    public ChildMoneyAccount loadWeekPeriodSubscription() {
-        SubscriptionCalendar weekSubscriptionCalendar = this.calendarSubscription.updateCalendarSubscription(PeriodSubscription.WEEK);
-        ChildMoney weekChildMoney = this.childMoney.weekPeriodSubscription(weekSubscriptionCalendar.startDay(), weekSubscriptionCalendar.endDay());
-
-        return new ChildMoneyAccount(this.childMoneyAccountId, this.child, weekSubscriptionCalendar, weekChildMoney);
     }
 
     /**
@@ -147,6 +133,16 @@ public final class ChildMoneyAccount {
         return new ChildMoneyAccount(this.childMoneyAccountId, this.child, nextCalendarPeriod, updateChildMoney);
     }
 
+    /**
+     * Réinitialisation de l'agent de poche restant
+     *
+     * @return Données du compte de l'enfant mise à jour avec une valeur de l'argent de poche restant reinitilaisé
+     */
+    public ChildMoneyAccount reinitializeRemainingMoney() {
+        ChildMoney reinitializeRemainingMoney = this.childMoney.reinitializeRemainingMoney();
+        return new ChildMoneyAccount(this.childMoneyAccountId, this.child, this.calendarSubscription, reinitializeRemainingMoney);
+    }
+
     public ChildMoneyAccountIdentity getChildMoneyAccountId() {
         return childMoneyAccountId;
     }
@@ -162,4 +158,6 @@ public final class ChildMoneyAccount {
     public ChildMoney getChildMoney() {
         return childMoney;
     }
+
+
 }

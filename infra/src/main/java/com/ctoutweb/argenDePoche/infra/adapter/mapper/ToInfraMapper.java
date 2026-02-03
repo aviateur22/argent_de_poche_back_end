@@ -1,6 +1,6 @@
 package com.ctoutweb.argenDePoche.infra.adapter.mapper;
 
-import com.ctoutweb.argenDePoche.infra.model.childAccount.calendar.PeriodSubscription;
+import com.ctoutweb.argenDePoche.infra.model.dto.childAccount.calendar.PeriodSubscription;
 import com.ctoutweb.argenDePoche.infra.repository.entity.*;
 import com.ctoutweb.argentDePoche.core.domain.base.identity.Ident;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.aggregate.ChildMoneyAccount;
@@ -8,6 +8,9 @@ import com.ctoutweb.argentDePoche.core.domain.childAccount.entity.child.Child;
 import com.ctoutweb.argentDePoche.core.domain.familyAccount.aggregate.FamilyAccount;
 import com.ctoutweb.argentDePoche.core.domain.familyAccount.entity.parent.ParentIdentity;
 import org.springframework.stereotype.Component;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * Mapper utilisé uniquement pour mapper les données du layer Application / Core vers des données du layer:
@@ -126,9 +129,10 @@ public class ToInfraMapper {
      *
      * @return ChildMoneyEntity
      */
-    public ChildMoneyEntity toChildMoneyEntityToCreate(ChildMoneyAccount childMoneyAccount, long childAccountId) {
+    public ChildMoneyEntity toChildMoneyEntityToCreate(ChildMoneyAccount childMoneyAccount, long childAccountId, long accountCalendarId) {
         ChildMoneyEntity childAccountMoneyEntity = new ChildMoneyEntity();
         childAccountMoneyEntity.setChildAccountId(childAccountId);
+        childAccountMoneyEntity.setAccountCalendarId(accountCalendarId);
         childAccountMoneyEntity.setRemainingMoney(childMoneyAccount.getChildMoney().remainingMoney().remainingMoney());
         childAccountMoneyEntity.setMoneyAtPeriodStart(childMoneyAccount.getChildMoney().childMoneyAtPeriodStart());
         return childAccountMoneyEntity;
@@ -231,4 +235,50 @@ public class ToInfraMapper {
     }
 
 
+    /**
+     * Map les données vers une liste ChildAccountMoneyMovementCodeEntity
+     * Cette liste renvoyée permets de spécialiser chaqye raison d'un mouvement dargent pour un compte d'enfant
+     *
+     * @param childAccountId Le compte d'argent de pohe
+     * @param movements La liste des rasion de mouvement d'argent d'isponible
+     *
+     * @return La liste des raison de mouvement d'argent disponible spécialisé pour un compte d'argent de poche
+     */
+    public List<ChildAccountMoneyMovementCodeEntity> toChildMovementReasonEntities(
+            Long childAccountId,
+            BigDecimal defaultFluctuationPrice,
+            List<MovementReasonEntity> movements) {
+
+        return movements
+                .stream()
+                .map(movementReason -> {
+                    ChildAccountMoneyMovementCodeEntity  childMovementReason = new ChildAccountMoneyMovementCodeEntity();
+                    childMovementReason.setMovementCodeId(movementReason.getId());
+                    childMovementReason.setChildAccountId(childAccountId);
+                    childMovementReason.setMovementFluctuationPrice(defaultFluctuationPrice);
+                    return  childMovementReason;
+                })
+                .toList();
+    }
+
+    /**
+     *
+     * @param accountMovementByChildAccount
+     * @param childAccountId
+     * @param parentIdAddingMovement
+     * @param actionCode
+     * @return
+     */
+    public MoneyMovementEntity toChildAccountMovementEntity(
+            long childAccountId,
+            long accountMovementByChildAccount,
+            long parentIdAddingMovement,
+            String actionCode) {
+        MoneyMovementEntity childAccountMovement = new MoneyMovementEntity();
+        childAccountMovement.setChildAccountMovementCodeId(accountMovementByChildAccount);
+        childAccountMovement.setChildAccountId(childAccountId);
+        childAccountMovement.setAddByParentId(parentIdAddingMovement);
+        childAccountMovement.setMovementActionCode(actionCode);
+        return childAccountMovement;
+    }
 }

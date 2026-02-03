@@ -13,7 +13,7 @@ import com.ctoutweb.argentDePoche.core.domain.childAccount.valueObject.remaining
 import com.ctoutweb.argentDePoche.core.domain.childAccount.valueObject.remainingMoney.RemainingMoney;
 import com.ctoutweb.argentDePoche.core.domain.exception.ChildException;
 import com.ctoutweb.argentDePoche.core.domain.exception.ChildImageException;
-import com.ctoutweb.argentDePoche.core.domain.exception.ChildMoneyException;
+import com.ctoutweb.argentDePoche.core.domain.exception.UnvalidMoneyAtPeriodStartException;
 import com.ctoutweb.argentDePoche.core.domain.familyAccount.entity.parent.Parent;
 import com.ctoutweb.argentDePoche.core.generateData.GenerateCalendar;
 import com.ctoutweb.argentDePoche.core.generateData.GenerateChild;
@@ -26,57 +26,10 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ChildMoneyAccountTest {
-
-    @Test
-    void should_load_week_account() {
-        /**
-         * Given
-         */
-        BigDecimal monthlyMovementPrice = BigDecimal.valueOf(-1.2);
-        BigDecimal weeklyMovementPrice = BigDecimal.valueOf(1.1);
-        BigDecimal moneyAtPeriodStart = BigDecimal.valueOf(2);
-
-        ChildMoneyAccountIdentity childMoneyAccountId = new ChildMoneyAccountIdentity(1L);
-        Child child = new GenerateChild().generate();
-        Parent parent = new GenerateParent().generate();
-        SubscriptionCalendar monthlyCalendar = new GenerateCalendar().generate();
-
-        ChildMoney monthlyChildMoney = new GenerateChildMoney(parent)
-                .generateMonthly(moneyAtPeriodStart, monthlyMovementPrice, weeklyMovementPrice);
-
-        ChildMoneyAccount monthlyAccount = new ChildMoneyAccount(childMoneyAccountId, child, monthlyCalendar, monthlyChildMoney);
-
-        /**
-         * When
-         */
-        ChildMoneyAccount weeklyAccount = monthlyAccount.loadWeekPeriodSubscription();
-
-        /**
-         * Then
-         */
-        BigDecimal actualPrice = weeklyAccount
-                .getChildMoney()
-                .moneyMovements()
-                .stream()
-                .map(moneyMovement -> {
-                    BigDecimal movementPrice = moneyMovement.fluctuationPrice();
-                    return MovementActionType.ADD_MONEY == moneyMovement.action() ?
-                            movementPrice
-                            :movementPrice.negate();
-                })
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        assertEquals(0, actualPrice.compareTo(weeklyMovementPrice), "Le montant des mouvements d'argent de la semaine actuel devrait être de " + weeklyMovementPrice + " mais est actuellement de " + actualPrice);
-        assertEquals(6, ChronoUnit.DAYS.between(weeklyAccount.getCalendarSubscription().startDay(), weeklyAccount.getCalendarSubscription().endDay()));
-        assertEquals(moneyAtPeriodStart, weeklyAccount.getChildMoney().remainingMoney().remainingMoney());
-
-    }
 
     @Test
     void should_update_child_image() {
@@ -321,28 +274,21 @@ public class ChildMoneyAccountTest {
         /**
          * Given
          */
-        BigDecimal monthlyMovementPrice = BigDecimal.valueOf(4);
-        BigDecimal weeklyMovementPrice = BigDecimal.valueOf(-1);
-        BigDecimal moneyAtPeriodStart = BigDecimal.valueOf(2);
-
-        // Le mouvement d'argent sur la semaine doit être négatif
-        Assertions.assertTrue(weeklyMovementPrice.compareTo(BigDecimal.ZERO) < 0, "Le mouvement d'argent sur la semaine doit être négatif");
-
         ChildMoneyAccountIdentity childMoneyAccountId = new ChildMoneyAccountIdentity(1L);
         Child child = new GenerateChild().generate();
-        Parent parent = new GenerateParent().generate();
         SubscriptionCalendar monthlyCalendar = new GenerateCalendar().generate();
-        ChildMoney monthlyChildMoney = new GenerateChildMoney(parent).generateMonthly(moneyAtPeriodStart, monthlyMovementPrice, weeklyMovementPrice);
+        BigDecimal moneyAtPeriodStart = BigDecimal.valueOf(10);
+        BigDecimal remainingMoney = BigDecimal.valueOf(5);
+        ChildMoney childMoney = new ChildMoney(moneyAtPeriodStart, new RemainingMoney(remainingMoney, Devise.EUR));
 
-        ChildMoneyAccount monthlyAccount = new ChildMoneyAccount(childMoneyAccountId, child, monthlyCalendar, monthlyChildMoney);
-        ChildMoneyAccount weeklyAccount = monthlyAccount.loadWeekPeriodSubscription();
-
-        // Vérification argent restant la semaine
-        assertEquals(moneyAtPeriodStart.add(weeklyMovementPrice).setScale(2, RoundingMode.UNNECESSARY), weeklyAccount.getChildMoney().remainingMoney().remainingMoney().setScale(2, RoundingMode.UNNECESSARY));
+        ChildMoneyAccount childMoneyAccount = new ChildMoneyAccount(
+                childMoneyAccountId, child, monthlyCalendar, childMoney
+        );
 
         /**
          * When
          */
+        Parent parent = new GenerateParent().generate();
         MoneyMovement moneyMovementToAdd = new MoneyMovement(
             new BigDecimal("0.5"),
                 MovementActionType.ADD_MONEY,
@@ -351,14 +297,13 @@ public class ChildMoneyAccountTest {
                 parent.parentIdentity()
         );
 
-        ChildMoneyAccount updateChildMoneyAccount = weeklyAccount.addMoneyMovement(moneyMovementToAdd);
+        ChildMoneyAccount updateChildMoneyAccount = childMoneyAccount.addMoneyMovement(moneyMovementToAdd);
 
         /**
          * Then
          */
         // RemainingMoney attendu
-        BigDecimal expectedRemainingMoney = weeklyMovementPrice.add(moneyAtPeriodStart).add(moneyMovementToAdd.fluctuationPrice()).setScale(2, RoundingMode.UNNECESSARY);
-        assertEquals(expectedRemainingMoney, updateChildMoneyAccount.getChildMoney().remainingMoney().remainingMoney().setScale(2, RoundingMode.UNNECESSARY));
+        assertEquals(remainingMoney.add(BigDecimal.valueOf(0.5)), updateChildMoneyAccount.getChildMoney().remainingMoney().remainingMoney());
     }
 
     @Test
@@ -380,7 +325,6 @@ public class ChildMoneyAccountTest {
         ChildMoney monthlyChildMoney = new GenerateChildMoney(parent).generateMonthly(moneyAtPeriodStart, monthlyMovementPrice, weeklyMovementPrice);
 
         ChildMoneyAccount monthlyAccount = new ChildMoneyAccount(childMoneyAccountId, child, monthlyCalendar, monthlyChildMoney);
-        ChildMoneyAccount weeklyAccount = monthlyAccount.loadWeekPeriodSubscription();
 
         /**
          * When
@@ -393,7 +337,7 @@ public class ChildMoneyAccountTest {
                 parent.parentIdentity()
         );
 
-        ChildMoneyAccount updateChildMoneyAccount = weeklyAccount.addMoneyMovement(moneyMovementToAdd);
+        ChildMoneyAccount updateChildMoneyAccount = monthlyAccount.addMoneyMovement(moneyMovementToAdd);
 
         /**
          * Then
@@ -423,20 +367,18 @@ public class ChildMoneyAccountTest {
         ChildMoney monthlyChildMoney = new GenerateChildMoney(parent).generateMonthly(moneyAtPeriodStart, monthlyMovementPrice, weeklyMovementPrice);
 
         ChildMoneyAccount monthlyAccount = new ChildMoneyAccount(childMoneyAccountId, child, monthlyCalendar, monthlyChildMoney);
-        ChildMoneyAccount weeklyAccount = monthlyAccount.loadWeekPeriodSubscription();
 
         /**
          * When
          */
         BigDecimal newMoneyAtPeriodStart = BigDecimal.valueOf(5);
-        ChildMoneyAccount updatedWeeklyAccount = weeklyAccount.updateInitialMoneyAtPeriodStart(newMoneyAtPeriodStart);
+        ChildMoneyAccount updatedWeeklyAccount = monthlyAccount.updateInitialMoneyAtPeriodStart(newMoneyAtPeriodStart);
 
         /**
          * Then
          */
         assertEquals(newMoneyAtPeriodStart, updatedWeeklyAccount.getChildMoney().childMoneyAtPeriodStart());
-        assertEquals(weeklyAccount.getChildMoney().moneyMovements(), updatedWeeklyAccount.getChildMoney().moneyMovements());
-        assertEquals(weeklyAccount.getChildMoney().remainingMoney().remainingMoney(), updatedWeeklyAccount.getChildMoney().remainingMoney().remainingMoney());
+        assertEquals(monthlyAccount.getChildMoney().remainingMoney().remainingMoney(), updatedWeeklyAccount.getChildMoney().remainingMoney().remainingMoney());
     }
 
     @Test
@@ -458,15 +400,47 @@ public class ChildMoneyAccountTest {
         ChildMoney monthlyChildMoney = new GenerateChildMoney(parent).generateMonthly(moneyAtPeriodStart, monthlyMovementPrice, weeklyMovementPrice);
 
         ChildMoneyAccount monthlyAccount = new ChildMoneyAccount(childMoneyAccountId, child, monthlyCalendar, monthlyChildMoney);
-        ChildMoneyAccount weeklyAccount = monthlyAccount.loadWeekPeriodSubscription();
         /**
          * Then
          */
         final BigDecimal newMoneyAtPeriodStart = null;
-        Exception exception = Assertions.assertThrows(ChildMoneyException.class, () -> weeklyAccount.updateInitialMoneyAtPeriodStart(newMoneyAtPeriodStart));
+        Exception exception = Assertions.assertThrows(UnvalidMoneyAtPeriodStartException.class, () -> monthlyAccount.updateInitialMoneyAtPeriodStart(newMoneyAtPeriodStart));
 
         final BigDecimal newMoneyAtPeriodStartAtZero = BigDecimal.valueOf(0);
-        exception = Assertions.assertThrows(ChildMoneyException.class, () -> weeklyAccount.updateInitialMoneyAtPeriodStart(newMoneyAtPeriodStartAtZero));
+        exception = Assertions.assertThrows(UnvalidMoneyAtPeriodStartException.class, () -> monthlyAccount.updateInitialMoneyAtPeriodStart(newMoneyAtPeriodStartAtZero));
+    }
+
+    @Test
+    void remaining_money_should_be_equal_to_money_at_period_start_when_money_at_period_start_update() {
+        /**
+         * Given
+         */
+        ChildMoneyAccountIdentity childMoneyAccountId = new ChildMoneyAccountIdentity(1L);
+        Child child = new GenerateChild().generate();
+        SubscriptionCalendar monthlyCalendar = new GenerateCalendar().generate();
+        BigDecimal moneyAtPeriodStart = BigDecimal.valueOf(10);
+        BigDecimal remainingMoney = BigDecimal.valueOf(7);
+        ChildMoney childMoney = new ChildMoney(moneyAtPeriodStart, new RemainingMoney(remainingMoney, Devise.EUR));
+
+        ChildMoneyAccount childMoneyAccount = new ChildMoneyAccount(
+                childMoneyAccountId, child, monthlyCalendar, childMoney
+        );
+
+        /**
+         * When
+         */
+        Parent parent = new GenerateParent().generate();
+        BigDecimal updatedMoneyAtPeriodStart = BigDecimal.valueOf(5);
+
+
+        ChildMoneyAccount updateChildMoneyAccount = childMoneyAccount.updateInitialMoneyAtPeriodStart(updatedMoneyAtPeriodStart);
+
+        /**
+         * Then
+         */
+        // RemainingMoney attendu
+
+        assertEquals(updatedMoneyAtPeriodStart, updateChildMoneyAccount.getChildMoney().remainingMoney().remainingMoney());
     }
 
     @Test
@@ -488,7 +462,6 @@ public class ChildMoneyAccountTest {
         ChildMoney monthlyChildMoney = new GenerateChildMoney(parent).generateMonthly(moneyAtPeriodStart, monthlyMovementPrice, weeklyMovementPrice);
 
         ChildMoneyAccount monthlyAccount = new ChildMoneyAccount(childMoneyAccountId, child, monthlyCalendar, monthlyChildMoney);
-        ChildMoneyAccount weeklyAccount = monthlyAccount.loadWeekPeriodSubscription();
 
         /**
          * when
@@ -496,7 +469,7 @@ public class ChildMoneyAccountTest {
          * - Ajout d'un nouveau mouvement d'argent
          */
         final BigDecimal newMoneyAtPeriodStart = BigDecimal.valueOf(3);
-        ChildMoneyAccount updatedMoneyStartAccount = weeklyAccount.updateInitialMoneyAtPeriodStart(newMoneyAtPeriodStart);
+        ChildMoneyAccount updatedMoneyStartAccount = monthlyAccount.updateInitialMoneyAtPeriodStart(newMoneyAtPeriodStart);
         MoneyMovement moneyMovementToAdd = new MoneyMovement(
                 new BigDecimal("0.5"),
                 MovementActionType.ADD_MONEY,
@@ -539,7 +512,6 @@ public class ChildMoneyAccountTest {
         ChildMoney monthlyChildMoney = new GenerateChildMoney(parent).generateMonthly(moneyAtPeriodStart, monthlyMovementPrice, weeklyMovementPrice);
 
         ChildMoneyAccount monthlyAccount = new ChildMoneyAccount(childMoneyAccountId, child, monthlyCalendar, monthlyChildMoney);
-        ChildMoneyAccount weeklyAccount = monthlyAccount.loadWeekPeriodSubscription();
 
         /**
          * when
@@ -547,7 +519,7 @@ public class ChildMoneyAccountTest {
          * - Ajout d'un nouveau mouvement d'argent
          */
         final BigDecimal newMoneyAtPeriodStart = BigDecimal.valueOf(3);
-        ChildMoneyAccount updatedMoneyStartAccount = weeklyAccount.updateInitialMoneyAtPeriodStart(newMoneyAtPeriodStart);
+        ChildMoneyAccount updatedMoneyStartAccount = monthlyAccount.updateInitialMoneyAtPeriodStart(newMoneyAtPeriodStart);
         MoneyMovement moneyMovementToAdd = new MoneyMovement(
                 new BigDecimal("0.5"),
                 MovementActionType.REMOVE_MONEY,
@@ -575,6 +547,35 @@ public class ChildMoneyAccountTest {
     }
 
     @Test
+    void reinitialize_remaining_money() {
+        /**
+         * Given
+         */
+        ChildMoneyAccountIdentity childMoneyAccountId = new ChildMoneyAccountIdentity(1L);
+        Child child = new GenerateChild().generate();
+        SubscriptionCalendar monthlyCalendar = new GenerateCalendar().generate();
+        BigDecimal moneyAtPeriodStart = BigDecimal.valueOf(10);
+        BigDecimal remainingMoney = BigDecimal.valueOf(2);
+        ChildMoney childMoney = new ChildMoney(moneyAtPeriodStart, new RemainingMoney(remainingMoney, Devise.EUR));
+
+        ChildMoneyAccount childMoneyAccount = new ChildMoneyAccount(
+                childMoneyAccountId, child, monthlyCalendar, childMoney
+        );
+
+        /**
+         * When
+         */
+        ChildMoneyAccount updateChildMoneyAccount = childMoneyAccount.reinitializeRemainingMoney();
+
+        /**
+         * Then
+         */
+        // RemainingMoney attendu
+
+        assertEquals(moneyAtPeriodStart, updateChildMoneyAccount.getChildMoney().remainingMoney().remainingMoney());
+    }
+
+    @Test
     void next_calendar_period_for_week_subscription() {
         /**
          * Given
@@ -591,7 +592,7 @@ public class ChildMoneyAccountTest {
 
         BigDecimal moneyAtPeriodStart = BigDecimal.valueOf(4);
         RemainingMoney remainingMoney = new RemainingMoney(BigDecimal.valueOf(1.0), Devise.EUR);
-        ChildMoney monthlyChildMoney = new ChildMoney(moneyAtPeriodStart, List.of(), remainingMoney);
+        ChildMoney monthlyChildMoney = new ChildMoney(moneyAtPeriodStart, remainingMoney);
 
         ChildMoneyAccount childAccount = new ChildMoneyAccount(childMoneyAccountId, child, monthlyCalendar, monthlyChildMoney);
 
@@ -628,7 +629,7 @@ public class ChildMoneyAccountTest {
 
         BigDecimal moneyAtPeriodStart = BigDecimal.valueOf(4);
         RemainingMoney remainingMoney = new RemainingMoney(BigDecimal.valueOf(1.0), Devise.EUR);
-        ChildMoney monthlyChildMoney = new ChildMoney(moneyAtPeriodStart, List.of(), remainingMoney);
+        ChildMoney monthlyChildMoney = new ChildMoney(moneyAtPeriodStart, remainingMoney);
 
         ChildMoneyAccount childAccount = new ChildMoneyAccount(childMoneyAccountId, child, monthlyCalendar, monthlyChildMoney);
 
