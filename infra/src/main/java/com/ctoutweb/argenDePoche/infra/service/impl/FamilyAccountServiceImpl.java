@@ -33,7 +33,7 @@ public class FamilyAccountServiceImpl implements FamilyAccountService {
          // Enregistrement
           authService.registerParent(dto.email(), dto.parentName(), dto.password())
           .flatMap(registerParentId ->
-              familyAccountManagerAdapter.createFamilyAccount(registerParentId, dto.parentName())
+              familyAccountManagerAdapter.createFamilyAccount(registerParentId, dto.familyName())
               .map(familyAccountId ->toDtoMapper.mapToCreateFamilyAccountResponseDto(familyAccountId, registerParentId)))
 
       );

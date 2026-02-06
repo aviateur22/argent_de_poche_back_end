@@ -15,7 +15,6 @@ import com.ctoutweb.argentDePoche.application.query.dto.FamilyInformationDto;
 import com.ctoutweb.argentDePoche.application.query.dto.ChildAccountDto;
 import com.ctoutweb.argentDePoche.application.repository.QueryRepository;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.aggregate.ChildMoneyAccountIdentity;
-import com.ctoutweb.argentDePoche.core.domain.exception.ChildMoneyAccountException;
 import com.ctoutweb.argentDePoche.core.domain.familyAccount.aggregate.FamilyAccountIdentity;
 import com.ctoutweb.argentDePoche.core.domain.familyAccount.entity.parent.ParentIdentity;
 import org.springframework.stereotype.Component;
