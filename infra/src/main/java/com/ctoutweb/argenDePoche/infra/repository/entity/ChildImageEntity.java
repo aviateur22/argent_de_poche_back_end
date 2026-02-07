@@ -14,6 +14,8 @@ public class ChildImageEntity extends Temporal {
     @Column("image_name")
     private String imageName;
 
+    private String extension;
+
     public Long getId() {
         return id;
     }
@@ -30,18 +32,25 @@ public class ChildImageEntity extends Temporal {
         this.imageName = imageName;
     }
 
+    public String getExtension() {
+        return extension;
+    }
+
+    public void setExtension(String extension) {
+        this.extension = extension;
+    }
+
     @Override
     public boolean equals(Object o) {
-
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         ChildImageEntity that = (ChildImageEntity) o;
-        return Objects.equals(id, that.id) && Objects.equals(imageName, that.imageName);
+        return Objects.equals(id, that.id) && Objects.equals(imageName, that.imageName) && Objects.equals(extension, that.extension);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), id, imageName);
+        return Objects.hash(super.hashCode(), id, imageName, extension);
     }
 
     @Override
@@ -49,6 +58,7 @@ public class ChildImageEntity extends Temporal {
         return "ChildImageEntity{" +
                 "id=" + id +
                 ", imageName='" + imageName + '\'' +
+                ", extension='" + extension + '\'' +
                 '}';
     }
 }

@@ -94,6 +94,7 @@ CREATE INDEX IF NOT EXISTS idx_child_account_family_account_id ON sc_argent_de_p
 CREATE TABLE if NOT EXISTS sc_argent_de_poche.child_image(
     "id" BIGINT PRIMARY KEY,
     "image_name" VARCHAR(255) NOT NULL,
+     "extension" VARCHAR(10) NOT NULL,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT now(),
     "updated_at" TIMESTAMPTZ
 );
@@ -322,7 +323,6 @@ ALTER TABLE sc_argent_de_poche.child_account_money ALTER COLUMN id SET DEFAULT n
 ALTER TABLE sc_argent_de_poche.movement_action_code ALTER COLUMN id SET DEFAULT nextval('sc_argent_de_poche.movement_action_code_id_seq');
 ALTER TABLE sc_argent_de_poche.child_account_movement_code ALTER COLUMN id SET DEFAULT nextval('sc_argent_de_poche.child_account_movement_code_id_seq');
 
-insert into sc_argent_de_poche.family_account default values;
 insert into sc_argent_de_poche.movement_action_code (movement_code, movement_name)
  values
  ('hih', 'Aide à la maison'),

@@ -3,6 +3,7 @@ package com.ctoutweb.argentDePoche.core.domain.childAccount;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.aggregate.ChildMoneyAccount;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.aggregate.ChildMoneyAccountIdentity;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.entity.child.Child;
+import com.ctoutweb.argentDePoche.core.domain.childAccount.entity.childImage.ImageExtension;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.valueObject.account.MovementActionType;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.valueObject.account.MovementReason;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.valueObject.account.ChildMoney;
@@ -58,7 +59,8 @@ public class ChildMoneyAccountTest {
          * When
          */
         String updatedRandomImageName = "vvvv";
-        ChildMoneyAccount updateChildMoneyAccount = monthlyAccount.updateChildImage(updatedRandomImageName);
+        ImageExtension imageExtension = ImageExtension.PNG;
+        ChildMoneyAccount updateChildMoneyAccount = monthlyAccount.updateChildImage(updatedRandomImageName, imageExtension);
 
         /**
          * Then
@@ -98,8 +100,10 @@ public class ChildMoneyAccountTest {
         /**
          * When
          */
+        ImageExtension imageExtension = ImageExtension.PNG;
         String updatedRandomImageName = "";
-        Exception exception = Assertions.assertThrows(ChildImageException.class, () -> monthlyAccount.updateChildImage(updatedRandomImageName));
+        Exception exception = Assertions.assertThrows(ChildImageException.class, () ->
+                monthlyAccount.updateChildImage(updatedRandomImageName, imageExtension));
         assertEquals("Le nom de la nouvelle image ne peut pas être nulle", exception.getMessage());
 
     }
@@ -130,8 +134,10 @@ public class ChildMoneyAccountTest {
         /**
          * When
          */
+        ImageExtension imageExtension = ImageExtension.PNG;
         String updatedRandomImageName = null;
-        Exception exception = Assertions.assertThrows(ChildImageException.class, () -> monthlyAccount.updateChildImage(updatedRandomImageName));
+        Exception exception = Assertions.assertThrows(ChildImageException.class, () ->
+                monthlyAccount.updateChildImage(updatedRandomImageName, imageExtension));
         assertEquals("Le nom de la nouvelle image ne peut pas être nulle", exception.getMessage());
 
     }

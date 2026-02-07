@@ -5,7 +5,6 @@ import com.ctoutweb.argentDePoche.application.command.dto.UpdatedChildImage;
 import com.ctoutweb.argentDePoche.application.command.dto.command.UpdateChildImageCommand;
 import com.ctoutweb.argentDePoche.application.command.helper.LoaderChildAccount;
 import com.ctoutweb.argentDePoche.application.configuration.annotation.CoreService;
-import com.ctoutweb.argentDePoche.application.configuration.bus.EventBus;
 import com.ctoutweb.argentDePoche.application.repository.CommandRepository;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.aggregate.ChildMoneyAccount;
 import com.ctoutweb.argentDePoche.application.policy.ChildAccessPolicy;
@@ -24,8 +23,7 @@ public class UpdateChildImageCommandHandler extends BaseCommandHandler<UpdateChi
             CommandRepository commandRepository,
             LoaderChildAccount loaderChildAccount,
             FamilyAccessPolicy familyAccessPolicy,
-            ChildAccessPolicy childAccessPolicy,
-            EventBus eventBus) {
+            ChildAccessPolicy childAccessPolicy) {
         super(familyAccessPolicy, childAccessPolicy, commandRepository);
         this.commandRepository = commandRepository;
         this.loaderChildAccount = loaderChildAccount;
@@ -36,7 +34,10 @@ public class UpdateChildImageCommandHandler extends BaseCommandHandler<UpdateChi
         return loaderChildAccount.load(command.childAccountUpdated())
                 .flatMap(childAccount -> {
                     var initialImageName = childAccount.getChild().childImage().imageRandomName();
-                    ChildMoneyAccount updatedChildAccount = childAccount.updateChildImage(command.imageRandomName());
+                    ChildMoneyAccount updatedChildAccount = childAccount.updateChildImage(
+                            command.imageRandomName(),
+                            command.imageExtension()
+                    );
                     return commandRepository.updateActiveChildMoneyAccount(updatedChildAccount)
                             .thenReturn(new UpdatedChildImage(
                                     childAccount.getChildMoneyAccountId(),

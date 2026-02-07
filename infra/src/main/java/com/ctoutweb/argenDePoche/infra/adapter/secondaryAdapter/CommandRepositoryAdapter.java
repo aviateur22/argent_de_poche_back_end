@@ -130,6 +130,7 @@ public class CommandRepositoryAdapter implements CommandRepository {
           var oldChildMoneyEntity = dataTuple.getT4();
 
           var updatedImageName = updatedChildAccount.getChild().childImage().imageRandomName();
+          var imageExtension = updatedChildAccount.getChild().childImage().imageExtension().getFileExtensionText();
           var updatedChildName = updatedChildAccount.getChild().firstName();
           var updatedRemainingMoney = updatedChildAccount.getChildMoney().remainingMoney().remainingMoney();
           var updatedMoneyAtPeriodStart = updatedChildAccount.getChildMoney().childMoneyAtPeriodStart();
@@ -137,6 +138,7 @@ public class CommandRepositoryAdapter implements CommandRepository {
 
           oldChildEntity.setNickname(updatedChildName);
           oldChileImageEntity.setImageName(updatedImageName);
+          oldChileImageEntity.setExtension(imageExtension);
           oldChildCalendarEntity.setCalendarPeriod(toInfraMapper.toPeriodCalendar(updateCalendarPeriod));
           oldChildMoneyEntity.setRemainingMoney(updatedRemainingMoney);
           oldChildMoneyEntity.setMoneyAtPeriodStart(updatedMoneyAtPeriodStart);
@@ -184,7 +186,6 @@ public class CommandRepositoryAdapter implements CommandRepository {
                familyAccount,
                isChildAccountIdToIncludeInEntity);
 
-       //ChildAccountCalendarEntity calendar = toInfraMapper.toCalendarEntity(childMoneyAccountToBeCreated);
        ChildImageEntity childImageEntityToSave = toInfraMapper.toChildImageEntity(childMoneyAccountToBeCreated);
 
        return Mono.zip(

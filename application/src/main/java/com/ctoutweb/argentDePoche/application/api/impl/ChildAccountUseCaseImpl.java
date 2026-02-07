@@ -12,6 +12,7 @@ import com.ctoutweb.argentDePoche.application.query.dto.ChildAccountDto;
 import com.ctoutweb.argentDePoche.application.query.dto.query.LoadChildAccountQuery;
 import com.ctoutweb.argentDePoche.application.spi.RandomProvider;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.aggregate.ChildMoneyAccountIdentity;
+import com.ctoutweb.argentDePoche.core.domain.childAccount.entity.childImage.ImageExtension;
 import com.ctoutweb.argentDePoche.core.domain.exception.ChildImageException;
 import com.ctoutweb.argentDePoche.core.domain.familyAccount.entity.parent.ParentIdentity;
 import org.reactivestreams.Publisher;
@@ -49,23 +50,30 @@ public class ChildAccountUseCaseImpl implements ChildAccountUseCase {
     @Override
     public Mono<ChildMoneyAccountIdentity> createChildMoneyAccount(
             ParentIdentity parentIdentity,
-            String childName) {
+            String childName,
+            String childImageName,
+            ImageExtension imageExtension) {
         // Création d'un nouveau compte
-        CreateChildAccountCommand createAccountCommand = CreateChildAccountCommand.create(parentIdentity, childName);
+        CreateChildAccountCommand createAccountCommand = CreateChildAccountCommand.create(
+                parentIdentity,
+                childName,
+                childImageName,
+                imageExtension);
         return commandBus.executeCommand(createAccountCommand);
     }
 
     @Override
     public Mono<UpdatedChildImage> updateChildImage(
             ChildMoneyAccountIdentity childMoneyAccountId,
-            ParentIdentity parentIdentity) {
+            ParentIdentity parentIdentity,
+            ImageExtension imageExtension) {
         try {
             // Génération d'un nouveau nom aléatoire
             String newRandomImageName = randomProvider.generateUniqueRandomUuid();
 
             // Sauvegarde en base des nouvelle données
             UpdateChildImageCommand updateAccoundCommand = UpdateChildImageCommand
-                    .create(childMoneyAccountId, parentIdentity, newRandomImageName);
+                    .create(childMoneyAccountId, parentIdentity, newRandomImageName, imageExtension);
 
             return commandBus.executeCommand(updateAccoundCommand);
 
@@ -129,5 +137,12 @@ public class ChildAccountUseCaseImpl implements ChildAccountUseCase {
 
         // Mise a jour des données
         return commandBus.executeCommand(reinitializeRemainingMoneyCommand);
+    }
+
+    @Override
+    public Mono<ImageExtension> streamChildImage(ChildMoneyAccountIdentity childMoneyAccountId, ParentIdentity parentIdentity) {
+        var streamChildImageCommand = StreamChildImageCommand.create(parentIdentity, childMoneyAccountId);
+
+        return commandBus.executeCommand(streamChildImageCommand);
     }
 }

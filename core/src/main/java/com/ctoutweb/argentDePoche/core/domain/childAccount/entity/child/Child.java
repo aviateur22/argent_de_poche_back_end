@@ -1,6 +1,7 @@
 package com.ctoutweb.argentDePoche.core.domain.childAccount.entity.child;
 
 import com.ctoutweb.argentDePoche.core.domain.childAccount.entity.childImage.ChildImage;
+import com.ctoutweb.argentDePoche.core.domain.childAccount.entity.childImage.ImageExtension;
 import com.ctoutweb.argentDePoche.core.domain.exception.ChildException;
 
 import java.util.Objects;
@@ -51,8 +52,8 @@ public record Child(ChildIdentity childIdentity, String firstName, ChildImage ch
        return  with(updatedChildName);
     }
 
-    public Child updateImage(String newImageRandomName) {
-        ChildImage updatedChildImage = this.childImage.updateChildImage(newImageRandomName);
+    public Child updateImage(String newImageRandomName, ImageExtension imageExtension) {
+        ChildImage updatedChildImage = this.childImage.updateChildImage(newImageRandomName, imageExtension);
         return with(updatedChildImage);
     }
 }

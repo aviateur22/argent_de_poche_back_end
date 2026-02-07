@@ -3,6 +3,7 @@ package com.ctoutweb.argentDePoche.application.api;
 import com.ctoutweb.argentDePoche.application.command.dto.UpdatedChildImage;
 import com.ctoutweb.argentDePoche.application.query.dto.ChildAccountDto;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.aggregate.ChildMoneyAccountIdentity;
+import com.ctoutweb.argentDePoche.core.domain.childAccount.entity.childImage.ImageExtension;
 import com.ctoutweb.argentDePoche.core.domain.familyAccount.entity.parent.ParentIdentity;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Mono;
@@ -25,20 +26,30 @@ public interface ChildAccountUseCase {
      *
      * @param parentIdentity L'identité du parent faisant la demande
      * @param childName Le nom de l'enfant associé au nouveau compte
+     * @param defaultChildImageName nom de l'image imposé par default à la création du compte
+     * @param imageExtension Extension de l'image par default
      *
      * @return Les données d'argent de poche de la famille mise a jour
      */
-    Mono<ChildMoneyAccountIdentity> createChildMoneyAccount(ParentIdentity parentIdentity, String childName);
+    Mono<ChildMoneyAccountIdentity> createChildMoneyAccount(
+            ParentIdentity parentIdentity,
+            String childName,
+            String defaultChildImageName,
+            ImageExtension imageExtension);
 
     /**
      * Mise à jour de l'image de l'enfant
      *
      * @param parentIdentity  L'identifiant du parent mettant à jour l"image
      * @param childMoneyAccountId L'identifiant du compte de l'enfant
+     * @param imageExtension L'extension de l'image
      *
      * @return Les données de compte d'argent de poche de l'enfant mise a jour
      */
-    Mono<UpdatedChildImage> updateChildImage(ChildMoneyAccountIdentity childMoneyAccountId, ParentIdentity parentIdentity);
+    Mono<UpdatedChildImage> updateChildImage(
+            ChildMoneyAccountIdentity childMoneyAccountId,
+            ParentIdentity parentIdentity,
+            ImageExtension imageExtension);
 
     /**
      * Ajout d'une balance d'argent positive ou negative d'argent dans le compte d'une enfant
@@ -84,6 +95,18 @@ public interface ChildAccountUseCase {
      * @return L'identifiant du compte d'argent de poche mis a jour
      */
     Mono<ChildMoneyAccountIdentity> reinitializeRemainingMoney(
+            ChildMoneyAccountIdentity childMoneyAccountId,
+            ParentIdentity parentUpdatedChildAccount);
+
+    /**
+     * Récupération de l'image de l'enfant
+     *
+     * @param childMoneyAccountId
+     * @param parentUpdatedChildAccount
+     *
+     * @return Renvoie L'extension de l'image
+     */
+    Mono<ImageExtension> streamChildImage(
             ChildMoneyAccountIdentity childMoneyAccountId,
             ParentIdentity parentUpdatedChildAccount);
 

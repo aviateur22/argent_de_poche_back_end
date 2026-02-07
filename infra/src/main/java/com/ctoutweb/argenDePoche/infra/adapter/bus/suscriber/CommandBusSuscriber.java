@@ -16,6 +16,7 @@ public class CommandBusSuscriber {
     private final UpdateInitialChildMoneyCommandHandler updateInitialChildMoneyCommandHandler;
     private final InitializeNexPeriodCommandHandler initializeNexPeriodCommandHandler;
     private final ReinitializeRemainingMoneyCommandHandler reinitializeRemainingMoneyCommandHandler;
+    private final StreamChildImageCommandHandler streamChildImageCommandHandler;
 
     public CommandBusSuscriber(
             CommandBus commandBus,
@@ -25,7 +26,7 @@ public class CommandBusSuscriber {
             UpdateChildImageCommandHandler updateChildImageCommandHandler,
             UpdateInitialChildMoneyCommandHandler updateInitialChildMoneyCommandHandler,
             InitializeNexPeriodCommandHandler initializeNexPeriodCommandHandler,
-            ReinitializeRemainingMoneyCommandHandler reinitializeRemainingMoneyCommandHandler
+            ReinitializeRemainingMoneyCommandHandler reinitializeRemainingMoneyCommandHandler, StreamChildImageCommandHandler streamChildImageCommandHandler
     ) {
         this.commandBus = commandBus;
         this.createChildAccountCommandHandler = createChildAccountCommandHandler;
@@ -35,6 +36,7 @@ public class CommandBusSuscriber {
         this.updateInitialChildMoneyCommandHandler = updateInitialChildMoneyCommandHandler;
       this.initializeNexPeriodCommandHandler = initializeNexPeriodCommandHandler;
       this.reinitializeRemainingMoneyCommandHandler = reinitializeRemainingMoneyCommandHandler;
+      this.streamChildImageCommandHandler = streamChildImageCommandHandler;
 
       suscribe();
     }
@@ -47,5 +49,6 @@ public class CommandBusSuscriber {
         commandBus.registerMonoHandler(UpdateInitialChildMoneyCommand.class, updateInitialChildMoneyCommandHandler);
         commandBus.registerMonoHandler(InitializeNextPeriodCommand.class, initializeNexPeriodCommandHandler);
         commandBus.registerMonoHandler(ReinitializeRemainingMoneyCommand.class, reinitializeRemainingMoneyCommandHandler);
+        commandBus.registerMonoHandler(StreamChildImageCommand.class, streamChildImageCommandHandler);
     }
 }

@@ -51,7 +51,8 @@
                 <is.file.to.compress>true</is.file.to.compress>
 
                 <!--Image Path-->
-                <default.child_image>dtushfgld.jpg</default.child_image>
+                <default.image.extension>jpg</default.image.extension>
+                <default.child.image.name>dtushfgld</default.child.image.name>
                 <folder.path>C:/Programmation/java/argentDePoche/images</folder.path>
             </properties>
         </profile>
@@ -77,8 +78,9 @@
                 <is.file.to.compress>true</is.file.to.compress>
 
                 <!--Image Path-->
-                <default.child_image>moe_default_image.jpg</default.child_image>
-                <folder.path>C:/Programmation/java/argentDePoche/images</folder.path>
+                <default.image.extension>jpg</default.image.extension>
+                <default.child.image.name>dtushfgld</default.child.image.name>
+                <folder.path>/home/ubuntu/moe/argentDePoche/images</folder.path>
             </properties>
         </profile>
         <profile>
@@ -103,8 +105,9 @@
                 <is.file.to.compress>true</is.file.to.compress>
 
                 <!--Image Path-->
-                <default.child_image>default_image.jpg</default.child_image>
-                <folder.path>C:/Programmation/java/argentDePoche/images</folder.path>
+                <default.image.extension>jpg</default.image.extension>
+                <default.child.image.name>dtushfgld</default.child.image.name>
+                <folder.path>/home/ubuntu/moe/argentDePoche/images</folder.path>
             </properties>
         </profile>
     </profiles>

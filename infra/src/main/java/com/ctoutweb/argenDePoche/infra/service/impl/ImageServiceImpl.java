@@ -2,8 +2,12 @@ package com.ctoutweb.argenDePoche.infra.service.impl;
 
 import com.ctoutweb.argenDePoche.infra.service.ImageService;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.core.io.buffer.DataBufferUtils;
+import org.springframework.core.io.buffer.DefaultDataBufferFactory;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
@@ -13,18 +17,26 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.stream.Stream;
 
+import static com.ctoutweb.argenDePoche.infra.util.FileUtil.getFileExtension;
+
 @Service
 public class ImageServiceImpl implements ImageService {
 
     @Value("${folder.image.path}")
     String folderPath;
 
-    @Value("${default.child_image.name}")
+    @Value("${default.child.image.name}")
     String defaultChildImageName;
 
     @Override
+    public Flux<DataBuffer> streamImage(String childImageNameWithExtension) {
+        Path destination = Paths.get(folderPath, childImageNameWithExtension);
+        return DataBufferUtils.read(destination, new DefaultDataBufferFactory(), 4096);
+    }
+
+    @Override
     public Mono<String> saveImage(FilePart childImageFile, String childImageRandomName) {
-        var uniqueChildRandomImageName = childImageRandomName + getFileExtension(childImageFile);
+        var uniqueChildRandomImageName = String.format("%s.%s", childImageRandomName, getFileExtension(childImageFile));
         Path destination = Paths.get(folderPath, uniqueChildRandomImageName);
 
         return childImageFile.transferTo(destination)
@@ -57,25 +69,5 @@ public class ImageServiceImpl implements ImageService {
                 throw new RuntimeException(e);
             }
         }).subscribeOn(Schedulers.boundedElastic()).then();
-    }
-
-    /**
-     * Renvoie l'extension de l'image
-     *
-     * @param childImageFile L'image recu par le client
-     *
-     * @return L'extension
-     */
-    private String getFileExtension(FilePart childImageFile) {
-        var initialFileName = childImageFile.filename();
-        // Extract extension
-        String extension = "";
-
-        int dotIndex = initialFileName.lastIndexOf(".");
-        if (dotIndex > 0) {
-            extension = initialFileName.substring(dotIndex);
-        }
-
-        return extension;
     }
 }

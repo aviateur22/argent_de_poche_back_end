@@ -62,4 +62,14 @@ public class HandlerException {
     );
   }
 
+  @ExceptionHandler(ChildImageExtensionInvalidExtension.class)
+  public Mono<ResponseEntity<ErrorDto>> imageExtensionException(ChildImageExtensionInvalidExtension exception) {
+    return Mono.just(
+            ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(ErrorDto.createErrorDto(exception.getMessage()))
+    );
+
+
+  }
+
 }

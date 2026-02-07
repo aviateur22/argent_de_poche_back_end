@@ -2,6 +2,7 @@ package com.ctoutweb.argenDePoche.infra.adapter.mapper;
 
 import com.ctoutweb.argenDePoche.infra.repository.dto.FamilyAccountProjection;
 import com.ctoutweb.argenDePoche.infra.repository.entity.*;
+import com.ctoutweb.argentDePoche.application.exception.ChildImageExtensionInvalidExtension;
 import com.ctoutweb.argentDePoche.application.port.NextChildAccountIdentities;
 import com.ctoutweb.argentDePoche.application.port.NextFamilyAccountIdentities;
 import com.ctoutweb.argentDePoche.application.query.dto.ChildAccountDto;
@@ -12,6 +13,7 @@ import com.ctoutweb.argentDePoche.core.domain.childAccount.aggregate.ChildMoneyA
 import com.ctoutweb.argentDePoche.core.domain.childAccount.entity.child.Child;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.entity.child.ChildIdentity;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.entity.childImage.ChildImage;
+import com.ctoutweb.argentDePoche.core.domain.childAccount.entity.childImage.ImageExtension;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.valueObject.account.ChildMoney;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.valueObject.calendar.PeriodSubscription;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.valueObject.calendar.SubscriptionCalendar;
@@ -156,6 +158,16 @@ public class ToCoreMapper {
         return mapToFamilyAccountIdentity(familyAccountId);
     }
 
+    public ImageExtension toImageExtension(String extension) {
+        return switch (extension.toLowerCase()) {
+            case "png" -> ImageExtension.PNG;
+            case "svg" -> ImageExtension.SVG;
+            case "jpeg" -> ImageExtension.JPEG;
+            case "jpg" -> ImageExtension.JPEG;
+            default -> throw new ChildImageExtensionInvalidExtension("L'exyension de l'image n'est pas valide");
+        };
+    }
+
     /**
      * Renvoie un objet de type ChildAccountDto
      *
@@ -222,7 +234,8 @@ public class ToCoreMapper {
      * @return L'Entity Child de l'aggregat
      */
     public Child toChild(ChildEntity childEntity, ChildImageEntity childImageEntity) {
-        var childImage = new ChildImage(childImageEntity.getImageName());
+        ImageExtension childImageExtension = this.toImageExtension(childImageEntity.getExtension());
+        var childImage = new ChildImage(childImageEntity.getImageName(), childImageExtension);
         return new Child(
                 toChildIdentity(childEntity.getId()),
                 childEntity.getNickname(),

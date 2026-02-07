@@ -1,6 +1,7 @@
 package com.ctoutweb.argenDePoche.infra.service.impl;
 
 import com.ctoutweb.argenDePoche.infra.adapter.primaryAdapter.ChildAccountUseCaseAdapter;
+import com.ctoutweb.argenDePoche.infra.model.dto.ImageStreaming;
 import com.ctoutweb.argenDePoche.infra.model.dto.controller.*;
 import com.ctoutweb.argenDePoche.infra.adapter.mapper.ToDtoMapper;
 import com.ctoutweb.argenDePoche.infra.model.mapper.InfraMapper;
@@ -8,14 +9,26 @@ import com.ctoutweb.argenDePoche.infra.service.ChildAccountService;
 import com.ctoutweb.argenDePoche.infra.service.ImageService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.http.MediaType;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.reactive.TransactionalOperator;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import static com.ctoutweb.argenDePoche.infra.util.FileUtil.getFileExtension;
 
 @Service("infraChildAccountServiceImpl")
 public class ChildAccountServiceImpl implements ChildAccountService {
     private static final Logger LOGGER = LogManager.getLogger();
+
+    @Value("${default.child.image.name}")
+    private String defaultImageName;
+
+    @Value("${default.image.extension}")
+    private String defaultImageExtension;
 
     private final TransactionalOperator txOperator;
     private final ToDtoMapper toDtoMapper;
@@ -39,7 +52,7 @@ public class ChildAccountServiceImpl implements ChildAccountService {
     public Mono<CreateChildAccountResponseDto> createChildAccount(CreateChildAccountRequestDto dto) {
         return txOperator.transactional(
             Mono.defer(() ->
-                childAccountUseCaseAdapter.createChildAccount(dto.parentId(), dto.childName())
+                childAccountUseCaseAdapter.createChildAccount(dto.parentId(), dto.childName(), defaultImageName, defaultImageExtension)
                         .map(toDtoMapper::mapToCreateChildAccountResponseDto)
                         .doOnSuccess(childAccount -> LOGGER.info(() -> String.format("Réussite de la création du compte d'argent de poche avec comme identifiant %s", childAccount.createdChildAccountId())))
                         .doOnError(e -> LOGGER.error("Erreur dans l'appel au service loadChildAccount", e))
@@ -56,7 +69,8 @@ public class ChildAccountServiceImpl implements ChildAccountService {
 
     @Override
     public Mono<UpdatedChildAccountResponseDto> updateChildImage(FilePart childImageFile, long parentId, long childAccountId) {
-        return txOperator.transactional(childAccountUseCaseAdapter.updateChildImage(parentId, childAccountId)
+        String imageExtension = getFileExtension(childImageFile);
+        return txOperator.transactional(childAccountUseCaseAdapter.updateChildImage(parentId, childAccountId, imageExtension)
                         .flatMap(dto ->
                                 imageService.saveImage(childImageFile, dto.newImageName())
                                 .flatMap( uploadImageFileName ->
@@ -103,6 +117,22 @@ public class ChildAccountServiceImpl implements ChildAccountService {
         return txOperator.transactional(childAccountUseCaseAdapter.reinitializeRemainingMoney(parentId, childAccountId))
                 .doOnSuccess(childAccountUpdated ->
                         LOGGER.info(() -> String.format("Le compte est mise à jour %s", childAccountUpdated)))
+                .doOnError(e ->
+                        LOGGER.error("Erreur dans l'appel au service reinitializeRemainingMoney", e));
+    }
+
+    @Override
+    public Mono<ImageStreaming> streamChildImage(long parentId, long childAccountId, String childImageName) {
+        return txOperator.transactional(childAccountUseCaseAdapter.streamChildImage(parentId, childAccountId)
+                    .flatMap(imageExtensionToStream -> {
+                        var childImageNameWithExtension = String.format("%s.%s",childImageName, imageExtensionToStream);
+                        Flux<DataBuffer> stream = imageService.streamImage(childImageNameWithExtension);
+                        MediaType streamingMediaType = infraMapper.toMediaTypeFromExtension(imageExtensionToStream);
+                        return Mono.just(new ImageStreaming(streamingMediaType, stream));
+                    })
+                )
+                .doOnSuccess( imageStreaming->
+                        LOGGER.info(() -> String.format("L'image suivante a été streamé: %s", childImageName)))
                 .doOnError(e ->
                         LOGGER.error("Erreur dans l'appel au service addMoneyMovement", e));
     }

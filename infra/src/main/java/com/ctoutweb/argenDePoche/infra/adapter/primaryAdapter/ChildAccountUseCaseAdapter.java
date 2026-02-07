@@ -7,6 +7,7 @@ import com.ctoutweb.argenDePoche.infra.model.dto.controller.ChildAccountResponse
 import com.ctoutweb.argenDePoche.infra.model.dto.UpdatedChildImageDto;
 import com.ctoutweb.argenDePoche.infra.model.dto.controller.UpdatedChildAccountResponseDto;
 import com.ctoutweb.argentDePoche.application.api.ChildAccountUseCase;
+import com.ctoutweb.argentDePoche.core.domain.childAccount.entity.childImage.ImageExtension;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
@@ -35,15 +36,25 @@ public class ChildAccountUseCaseAdapter {
      *
      * @param parentCreatingChildAccount Lidentifiant du parent faisant la création
      * @param childName Le nom de l'enfant
+     * @param defaultImageName nom de l'image imposé par default à la création du compte
+     * @param defaultImageExtension Extension de l'image par default
      *
      * @return L'identifiant du compte créé
      */
-    public Mono<Long> createChildAccount(long parentCreatingChildAccount, String childName) {
+    public Mono<Long> createChildAccount(
+            long parentCreatingChildAccount,
+            String childName,
+            String defaultImageName,
+            String defaultImageExtension) {
         var parentIdentity = toCoreMapper.toParentIdentity(parentCreatingChildAccount);
 
+        ImageExtension imageExtension = toCoreMapper.toImageExtension(defaultImageExtension);
+
         return childAccountUseCase.createChildMoneyAccount(
-            parentIdentity,
-            childName
+                parentIdentity,
+                childName,
+                defaultImageName,
+                imageExtension
         ).map(toInfraMapper::toTechnicalId);
     }
 
@@ -72,19 +83,20 @@ public class ChildAccountUseCaseAdapter {
         return childAccountUseCase.initializeNextCalendarPeriod();
     }
 
-
     /**
      * Mise à jour de l'image de l'enfant
      *
      * @param parentId L'identifiant du parent faisant l'action
      * @param childAccountId Le compte de l'enfant qui est modifié
+     * @param imageExtension L'extension de l'image
      *
      * @return renvoie L'identifiant du compte, le nom de la nouvelle image, le nom de l'ancienne image
      */
-    public Mono<UpdatedChildImageDto> updateChildImage(long parentId, long childAccountId) {
+    public Mono<UpdatedChildImageDto> updateChildImage(long parentId, long childAccountId, String imageExtension) {
+        ImageExtension coreImageExtension = toCoreMapper.toImageExtension(imageExtension);
         var parentIdentity = toCoreMapper.toParentIdentity(parentId);
         var childAccountIdentity = toCoreMapper.toChildAccountIdentity(childAccountId);
-        return childAccountUseCase.updateChildImage(childAccountIdentity, parentIdentity)
+        return childAccountUseCase.updateChildImage(childAccountIdentity, parentIdentity, coreImageExtension)
                 .map(toDtoMapper::toUpdatedChildImageDto);
     }
 
@@ -125,10 +137,12 @@ public class ChildAccountUseCaseAdapter {
     }
 
     /**
+     * Réinitialisation de l'argent restant a son niveau initial
      *
-     * @param parentId
-     * @param childAccountId
-     * @return
+     * @param parentId Lidentifiant du parent
+     * @param childAccountId Le compte d'argent de poche touché
+     *
+     * @return  L'identifiant du compte d'argent de poche qui a été modifié
      */
     public Mono<UpdatedChildAccountResponseDto> reinitializeRemainingMoney(long parentId, long childAccountId) {
         var parentIdentity = toCoreMapper.toParentIdentity(parentId);
@@ -137,6 +151,22 @@ public class ChildAccountUseCaseAdapter {
         return childAccountUseCase.reinitializeRemainingMoney(childAccountIdentity, parentIdentity)
                 .map(s-> toDtoMapper.toUpdatedChildResponseDto(s));
     }
+
+    /**
+     * Validation du stream d'une image
+     *
+     * @param parentId Lidentifiant du parent
+     * @param childAccountId L'identifiant du compte d'argent de poche
+     *
+     * @return Renvoie l'extension de l'image a charger
+     */
+    public Mono<String> streamChildImage(long parentId, long childAccountId) {
+        var parentIdentity = toCoreMapper.toParentIdentity(parentId);
+        var childAccountIdentity = toCoreMapper.toChildAccountIdentity(childAccountId);
+
+        return childAccountUseCase.streamChildImage(childAccountIdentity, parentIdentity)
+                .map(ImageExtension::getFileExtensionText);
+    } 
 
 
 

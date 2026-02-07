@@ -43,7 +43,9 @@ public class CreateChildAccountCommandHandler implements MonoCommandHandler<Crea
                     var childMoneyAccount = ChildMoneyAccount.createDefaultChildAccount(
                             nextChildAccountIdentities.getNextChildMoneyAccountId(),
                             nextChildAccountIdentities.getNextChildIdentity(),
-                            createChildAccountCommand.childName()
+                            createChildAccountCommand.childName(),
+                            createChildAccountCommand.defaultImageName(),
+                            createChildAccountCommand.imageExtension()
                     );
 
                     // Peristance du compte

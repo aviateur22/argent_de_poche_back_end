@@ -8,6 +8,7 @@ import com.ctoutweb.argentDePoche.application.spi.NextIdentityProvider;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.aggregate.ChildMoneyAccount;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.aggregate.ChildMoneyAccountIdentity;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.entity.child.ChildIdentity;
+import com.ctoutweb.argentDePoche.core.domain.childAccount.entity.childImage.ImageExtension;
 import com.ctoutweb.argentDePoche.core.domain.exception.FamilyAccountException;
 import com.ctoutweb.argentDePoche.core.domain.familyAccount.aggregate.FamilyAccount;
 import com.ctoutweb.argentDePoche.core.domain.familyAccount.entity.parent.ParentIdentity;
@@ -20,9 +21,6 @@ import org.mockito.MockitoAnnotations;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 public class CreateChildAccountCommandHandlerTest {
@@ -58,6 +56,8 @@ public class CreateChildAccountCommandHandlerTest {
         CreateChildAccountCommand command = mock(CreateChildAccountCommand.class);
         when(command.parentCreatingChildAccount()).thenReturn(mock(ParentIdentity.class));
         when(command.childName()).thenReturn("cyril");
+        when(command.defaultImageName()).thenReturn("dfdd");
+        when(command.imageExtension()).thenReturn(ImageExtension.JPEG);
 
         // Mock generate de familyAccount
         FamilyAccount familyAccount = mock(FamilyAccount.class);
@@ -85,7 +85,6 @@ public class CreateChildAccountCommandHandlerTest {
         StepVerifier.create(createChildAccountCommandHandler.handle(command))
                 .expectNext(createdChildAccount)
                 .verifyComplete();
-
 
         /**
          * Then

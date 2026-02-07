@@ -5,6 +5,7 @@ import com.ctoutweb.argenDePoche.infra.repository.entity.*;
 import com.ctoutweb.argentDePoche.core.domain.base.identity.Ident;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.aggregate.ChildMoneyAccount;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.entity.child.Child;
+import com.ctoutweb.argentDePoche.core.domain.childAccount.entity.childImage.ImageExtension;
 import com.ctoutweb.argentDePoche.core.domain.familyAccount.aggregate.FamilyAccount;
 import com.ctoutweb.argentDePoche.core.domain.familyAccount.entity.parent.ParentIdentity;
 import org.springframework.stereotype.Component;
@@ -168,6 +169,7 @@ public class ToInfraMapper {
         var childImage = childMoneyAccount.getChild().childImage();
        ChildImageEntity childImageEntity = new ChildImageEntity();
        childImageEntity.setImageName(childImage.imageRandomName());
+       childImageEntity.setExtension(childImage.imageExtension().getFileExtensionText());
        return childImageEntity;
     }
 

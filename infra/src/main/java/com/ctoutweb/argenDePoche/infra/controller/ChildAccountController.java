@@ -6,9 +6,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.net.URI;
@@ -112,6 +115,15 @@ public class ChildAccountController {
                               .body(responseDto);
                     }
             );
+  }
+
+  @GetMapping(value = "/stream/image/{imageName}/parent/{parentId}/child-account/{childAccountId}")
+  public Mono<ResponseEntity<Flux<DataBuffer>>> streamImage(@PathVariable String imageName, @PathVariable Long parentId, @PathVariable Long childAccountId) {
+
+    return childAccountService.streamChildImage(parentId, childAccountId, imageName)
+            .map(result -> ResponseEntity.ok()
+            .contentType(result.imageMediaType())
+            .body(result.childImageDate()));
   }
 
 }

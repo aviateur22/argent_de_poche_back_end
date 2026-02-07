@@ -2,6 +2,7 @@ package com.ctoutweb.argentDePoche.core.domain.childAccount.aggregate;
 
 import com.ctoutweb.argentDePoche.core.domain.childAccount.entity.child.ChildIdentity;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.entity.childImage.ChildImage;
+import com.ctoutweb.argentDePoche.core.domain.childAccount.entity.childImage.ImageExtension;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.valueObject.account.MoneyMovement;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.valueObject.calendar.SubscriptionCalendar;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.entity.child.Child;
@@ -40,9 +41,11 @@ public final class ChildMoneyAccount {
     public static ChildMoneyAccount createDefaultChildAccount(
             ChildMoneyAccountIdentity childMoneyAccountId,
             ChildIdentity childIdentity,
-            String childName) {
+            String childName,
+            String defaultImageName,
+            ImageExtension imageExtension) {
         // Image par default à la creation d'un compte
-        final String DEFAULT_CHILD_IMAGE = "default_child.png";
+        final String DEFAULT_CHILD_IMAGE = defaultImageName;
 
         // Devise par default à la creation d'un compte
         final Devise DEFAULT_DEVISE = Devise.EUR;
@@ -56,7 +59,7 @@ public final class ChildMoneyAccount {
         // Argent restant à l'initialisation d'un nouveau compte
         final BigDecimal DEFAULT_REMAINING_MONEY = BigDecimal.ZERO;
 
-        ChildImage createdChildImage = ChildImage.create(DEFAULT_CHILD_IMAGE);
+        ChildImage createdChildImage = ChildImage.create(DEFAULT_CHILD_IMAGE, imageExtension);
         Child createdChild = new Child(childIdentity, childName, createdChildImage);
         SubscriptionCalendar createdSubscriptionCalendar = SubscriptionCalendar.created(LocalDate.now(), DEFAULT_PERIOD_SUBSCRIPTION);
         RemainingMoney createdRemainingMoney = new RemainingMoney(DEFAULT_REMAINING_MONEY, DEFAULT_DEVISE);
@@ -72,8 +75,8 @@ public final class ChildMoneyAccount {
      *
      * @return Données du compte de l'enfant mis à jour avec sa nouvelle photo
      */
-    public ChildMoneyAccount updateChildImage(String updateRandomImageName) {
-        Child updateChild = this.child.updateImage(updateRandomImageName);
+    public ChildMoneyAccount updateChildImage(String updateRandomImageName, ImageExtension imageExtension) {
+        Child updateChild = this.child.updateImage(updateRandomImageName, imageExtension);
         return new ChildMoneyAccount(this.childMoneyAccountId, updateChild, this.calendarSubscription, this.childMoney);
     }
 
