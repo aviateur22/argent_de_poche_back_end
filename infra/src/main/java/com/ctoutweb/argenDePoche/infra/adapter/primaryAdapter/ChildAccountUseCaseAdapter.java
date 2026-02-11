@@ -70,7 +70,11 @@ public class ChildAccountUseCaseAdapter {
         var parentIdentity = toCoreMapper.toParentIdentity(parentId);
         var childAccountIdentity = toCoreMapper.toChildAccountIdentity(childAccountId);
         return childAccountUseCase.loadChildAccount(childAccountIdentity, parentIdentity)
-                .map(toDtoMapper::toChildAccountResponseDto);
+                .map(childAccount -> {
+                    var childName= childAccount.childName();
+                    var responseMessage = String.format("Données d'argent de poche de %s", childName);
+                    return toDtoMapper.toChildAccountResponseDto(childAccount, responseMessage);
+                });
     }
 
     /**

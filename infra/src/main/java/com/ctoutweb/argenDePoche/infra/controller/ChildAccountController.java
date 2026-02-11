@@ -43,10 +43,10 @@ public class ChildAccountController {
             );
     }
 
-    @GetMapping("/")
-    public Mono<ResponseEntity<ChildAccountResponseDto>> loadChildAccount(@RequestParam Long childAccountId, @RequestParam Long parenId) {
+    @GetMapping("/parent/{parentId}/child-account/{childAccountId}/load-child-money-account")
+    public Mono<ResponseEntity<ChildAccountResponseDto>> loadChildAccount(@PathVariable Long childAccountId, @PathVariable Long parentId) {
         LOGGER.info(() -> "Chargement d'un compte d'argent de poche");
-        return childAccountService.loadChildAccount(parenId, childAccountId)
+        return childAccountService.loadChildAccount(parentId, childAccountId)
                 .map(responseDto -> {
                     return ResponseEntity
                       .ok()

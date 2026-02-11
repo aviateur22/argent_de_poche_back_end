@@ -55,10 +55,11 @@ public class ToDtoMapper {
      * Renvoie un DTO de type ChildAccountResponseDto
      *
      * @param childAccountDto Compte d'argent provenant du Core et qui est a mapper
+     * @param message Le message a afficher sur le client
      *
      * @return ChildAccountResponseDto
      */
-    public ChildAccountResponseDto toChildAccountResponseDto(ChildAccountDto childAccountDto) {
+    public ChildAccountResponseDto toChildAccountResponseDto(ChildAccountDto childAccountDto, String message) {
         return new ChildAccountResponseDto(
                 infraMapper.toTechnicalId(childAccountDto.childAccountIdentity()),
                 infraMapper.toTechnicalId(childAccountDto.childIdentity()),
@@ -69,7 +70,8 @@ public class ToDtoMapper {
                 childAccountDto.periodName(),
                 childAccountDto.actualDate(),
                 childAccountDto.startPeriodDate(),
-                childAccountDto.endPeriodDate()
+                childAccountDto.endPeriodDate(),
+                message
         );
     }
 

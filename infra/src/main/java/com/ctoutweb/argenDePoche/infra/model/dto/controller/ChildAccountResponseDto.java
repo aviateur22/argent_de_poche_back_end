@@ -13,5 +13,10 @@ public record ChildAccountResponseDto(
         String periodName,
         LocalDate actualDate,
         LocalDate startPeriodDate,
-        LocalDate endPeriodDate) {
+        LocalDate endPeriodDate,
+        String message) implements ResponseMessage {
+  @Override
+  public String getMessage() {
+    return message;
+  }
 }
