@@ -4,6 +4,8 @@ import com.ctoutweb.argenDePoche.infra.adapter.helper.AdapterHelper;
 import com.ctoutweb.argenDePoche.infra.adapter.mapper.ToCoreMapper;
 import com.ctoutweb.argenDePoche.infra.adapter.mapper.ToInfraMapper;
 import com.ctoutweb.argenDePoche.infra.model.dto.childAccount.calendar.PeriodSubscription;
+import com.ctoutweb.argenDePoche.infra.model.dto.childAccount.moneyMovement.MoneyMovementActionType;
+import com.ctoutweb.argenDePoche.infra.model.dto.controller.AvailableMovementReasonDto;
 import com.ctoutweb.argenDePoche.infra.repository.*;
 import com.ctoutweb.argenDePoche.infra.repository.entity.ChildAccountCalendarEntity;
 import com.ctoutweb.argentDePoche.application.exception.CalendarPeriodNotFound;
@@ -22,6 +24,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Component
 public class QueryRepositoryAdapter implements QueryRepository {
@@ -133,7 +136,7 @@ public class QueryRepositoryAdapter implements QueryRepository {
                     .flatMap( childImage ->
                             childMoneyRepository.findByAccountCalendarId(activeAccountCalendar.getId())
                                     .switchIfEmpty(Mono.error(new ChildMoneyNotFoundException("L'argent associé au compte d'argent de poche n'est pas trouvé")))
-                                    .map(childMoney -> {
+                                    .flatMap(childMoney -> {
                                       var childId = child.getId();
                                       var childName = child.getNickname();
                                       var imageName = childImage.getImageName();
@@ -143,23 +146,48 @@ public class QueryRepositoryAdapter implements QueryRepository {
                                       var calendarStartDate = activeAccountCalendar.getPeriodStartDay();
                                       var calendarEndDate = activeAccountCalendar.getPeriodEndDay();
                                       var periodSubscription = activeAccountCalendar.getCalendarPeriod();
-
-                                      return toCoreMapper.toChildAccountDto(
-                                              childAccountId,
-                                              childId,
-                                              childName,
-                                              imageName,
-                                              moneyAtPeriodStart,
-                                              moneyRemaining,
-                                              actualDate,
-                                              calendarStartDate,
-                                              calendarEndDate,
-                                              periodSubscription
-                                      );
+                                      return this.availableReasonMovements(childAccountId)
+                                              .collectList()
+                                              .map(availableMovementReasons  ->
+                                                    toCoreMapper.toChildAccountDto(
+                                                      childAccountId,
+                                                      childId,
+                                                      childName,
+                                                      imageName,
+                                                      moneyAtPeriodStart,
+                                                      moneyRemaining,
+                                                      actualDate,
+                                                      calendarStartDate,
+                                                      calendarEndDate,
+                                                      periodSubscription,
+                                                      availableMovementReasons
+                                                    )
+                                              );
                                     })
                     )
 
 
             );
+  }
+
+  /**
+   * Renvoie la liste des reaison de mouvement d'argent disponible pour le compte
+   *
+   * @param childAccountId Le compte d'argent de poche
+   *
+   * @return
+   */
+  private Flux<AvailableMovementReasonDto> availableReasonMovements(long childAccountId) {
+    return sqlQueryRepository.getMovementReasons(childAccountId)
+      .map(  reasonMovement -> {
+        var addMoney = MoneyMovementActionType.ADD;
+        var removeMoney = MoneyMovementActionType.REMOVE;
+        return new AvailableMovementReasonDto(
+                reasonMovement.reasonName(),
+                reasonMovement.reasonCode(),
+                addMoney.actionCode(),
+                removeMoney.actionCode()
+        );
+      });
   }
 }

@@ -80,7 +80,7 @@ public interface ChildAccountUseCase {
      *
      * @return  Les données de compte d'argent de poche de l'enfant mise a jour
      */
-    Publisher<ChildMoneyAccountIdentity> updateChildName(ChildMoneyAccountIdentity childMoneyAccountId, String updatedChildName, ParentIdentity parentIdentity);
+    Mono<ChildMoneyAccountIdentity> updateChildName(ChildMoneyAccountIdentity childMoneyAccountId,  ParentIdentity parentIdentity, String updatedChildName);
 
     /**
      * Génération du nouveau calendrier et réinitialisation de l'argent de poche pour la nouvelle période

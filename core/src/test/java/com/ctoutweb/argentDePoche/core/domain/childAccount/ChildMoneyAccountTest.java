@@ -10,16 +10,14 @@ import com.ctoutweb.argentDePoche.core.domain.childAccount.valueObject.account.C
 import com.ctoutweb.argentDePoche.core.domain.childAccount.valueObject.account.MoneyMovement;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.valueObject.calendar.PeriodSubscription;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.valueObject.calendar.SubscriptionCalendar;
+import com.ctoutweb.argentDePoche.core.domain.childAccount.valueObject.movementReason.AvailableReasonMovement;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.valueObject.remainingMoney.Devise;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.valueObject.remainingMoney.RemainingMoney;
 import com.ctoutweb.argentDePoche.core.domain.exception.ChildException;
 import com.ctoutweb.argentDePoche.core.domain.exception.ChildImageException;
 import com.ctoutweb.argentDePoche.core.domain.exception.UnvalidMoneyAtPeriodStartException;
 import com.ctoutweb.argentDePoche.core.domain.familyAccount.entity.parent.Parent;
-import com.ctoutweb.argentDePoche.core.generateData.GenerateCalendar;
-import com.ctoutweb.argentDePoche.core.generateData.GenerateChild;
-import com.ctoutweb.argentDePoche.core.generateData.GenerateChildMoney;
-import com.ctoutweb.argentDePoche.core.generateData.GenerateParent;
+import com.ctoutweb.argentDePoche.core.generateData.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -27,6 +25,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -46,8 +45,9 @@ public class ChildMoneyAccountTest {
         Parent parent = new GenerateParent().generate();
         SubscriptionCalendar monthlyCalendar = new GenerateCalendar().generate();
         ChildMoney monthlyChildMoney = new GenerateChildMoney(parent).generateMonthly(moneyAtPeriodStart, monthlyMovementPrice, weeklyMovementPrice);
+        List<AvailableReasonMovement> availableReasonMovements = new GenerateReasonMovement().generate();
 
-        ChildMoneyAccount monthlyAccount = new ChildMoneyAccount(childMoneyAccountId, child, monthlyCalendar, monthlyChildMoney);
+        ChildMoneyAccount monthlyAccount = new ChildMoneyAccount(childMoneyAccountId, child, monthlyCalendar, monthlyChildMoney, availableReasonMovements);
 
         /**
          * Vérification de la génération mensuelle
@@ -88,8 +88,9 @@ public class ChildMoneyAccountTest {
         Parent parent = new GenerateParent().generate();
         SubscriptionCalendar monthlyCalendar = new GenerateCalendar().generate();
         ChildMoney monthlyChildMoney = new GenerateChildMoney(parent).generateMonthly(moneyAtPeriodStart, monthlyMovementPrice, weeklyMovementPrice);
+        List<AvailableReasonMovement> availableReasonMovements = new GenerateReasonMovement().generate();
 
-        ChildMoneyAccount monthlyAccount = new ChildMoneyAccount(childMoneyAccountId, child, monthlyCalendar, monthlyChildMoney);
+        ChildMoneyAccount monthlyAccount = new ChildMoneyAccount(childMoneyAccountId, child, monthlyCalendar, monthlyChildMoney, availableReasonMovements);
 
         /**
          * Vérification de la génération mensuelle
@@ -122,8 +123,9 @@ public class ChildMoneyAccountTest {
         Parent parent = new GenerateParent().generate();
         SubscriptionCalendar monthlyCalendar = new GenerateCalendar().generate();
         ChildMoney monthlyChildMoney = new GenerateChildMoney(parent).generateMonthly(moneyAtPeriodStart, monthlyMovementPrice, weeklyMovementPrice);
+        List<AvailableReasonMovement> availableReasonMovements = new GenerateReasonMovement().generate();
 
-        ChildMoneyAccount monthlyAccount = new ChildMoneyAccount(childMoneyAccountId, child, monthlyCalendar, monthlyChildMoney);
+        ChildMoneyAccount monthlyAccount = new ChildMoneyAccount(childMoneyAccountId, child, monthlyCalendar, monthlyChildMoney, availableReasonMovements);
 
         /**
          * Vérification de la génération mensuelle
@@ -156,8 +158,9 @@ public class ChildMoneyAccountTest {
         Parent parent = new GenerateParent().generate();
         SubscriptionCalendar monthlyCalendar = new GenerateCalendar().generate();
         ChildMoney monthlyChildMoney = new GenerateChildMoney(parent).generateMonthly(moneyAtPeriodStart, monthlyMovementPrice, weeklyMovementPrice);
+        List<AvailableReasonMovement> availableReasonMovements = new GenerateReasonMovement().generate();
 
-        ChildMoneyAccount monthlyAccount = new ChildMoneyAccount(childMoneyAccountId, child, monthlyCalendar, monthlyChildMoney);
+        ChildMoneyAccount monthlyAccount = new ChildMoneyAccount(childMoneyAccountId, child, monthlyCalendar, monthlyChildMoney, availableReasonMovements);
 
         /**
          * Vérification de la génération mensuelle
@@ -193,8 +196,9 @@ public class ChildMoneyAccountTest {
         Parent parent = new GenerateParent().generate();
         SubscriptionCalendar monthlyCalendar = new GenerateCalendar().generate();
         ChildMoney monthlyChildMoney = new GenerateChildMoney(parent).generateMonthly(moneyAtPeriodStart, monthlyMovementPrice, weeklyMovementPrice);
+        List<AvailableReasonMovement> availableReasonMovements = new GenerateReasonMovement().generate();
 
-        ChildMoneyAccount monthlyAccount = new ChildMoneyAccount(childMoneyAccountId, child, monthlyCalendar, monthlyChildMoney);
+        ChildMoneyAccount monthlyAccount = new ChildMoneyAccount(childMoneyAccountId, child, monthlyCalendar, monthlyChildMoney, availableReasonMovements);
 
         /**
          * Vérification de la génération mensuelle
@@ -225,8 +229,9 @@ public class ChildMoneyAccountTest {
         Parent parent = new GenerateParent().generate();
         SubscriptionCalendar monthlyCalendar = new GenerateCalendar().generate();
         ChildMoney monthlyChildMoney = new GenerateChildMoney(parent).generateMonthly(moneyAtPeriodStart, monthlyMovementPrice, weeklyMovementPrice);
+        List<AvailableReasonMovement> availableReasonMovements = new GenerateReasonMovement().generate();
 
-        ChildMoneyAccount monthlyAccount = new ChildMoneyAccount(childMoneyAccountId, child, monthlyCalendar, monthlyChildMoney);
+        ChildMoneyAccount monthlyAccount = new ChildMoneyAccount(childMoneyAccountId, child, monthlyCalendar, monthlyChildMoney, availableReasonMovements);
 
         /**
          * Vérification de la génération mensuelle
@@ -257,8 +262,9 @@ public class ChildMoneyAccountTest {
         Parent parent = new GenerateParent().generate();
         SubscriptionCalendar monthlyCalendar = new GenerateCalendar().generate();
         ChildMoney monthlyChildMoney = new GenerateChildMoney(parent).generateMonthly(moneyAtPeriodStart, monthlyMovementPrice, weeklyMovementPrice);
+        List<AvailableReasonMovement> availableReasonMovements = new GenerateReasonMovement().generate();
 
-        ChildMoneyAccount monthlyAccount = new ChildMoneyAccount(childMoneyAccountId, child, monthlyCalendar, monthlyChildMoney);
+        ChildMoneyAccount monthlyAccount = new ChildMoneyAccount(childMoneyAccountId, child, monthlyCalendar, monthlyChildMoney, availableReasonMovements);
 
         /**
          * Vérification de la génération mensuelle
@@ -286,9 +292,10 @@ public class ChildMoneyAccountTest {
         BigDecimal moneyAtPeriodStart = BigDecimal.valueOf(10);
         BigDecimal remainingMoney = BigDecimal.valueOf(5);
         ChildMoney childMoney = new ChildMoney(moneyAtPeriodStart, new RemainingMoney(remainingMoney, Devise.EUR));
+        List<AvailableReasonMovement> availableReasonMovements = new GenerateReasonMovement().generate();
 
         ChildMoneyAccount childMoneyAccount = new ChildMoneyAccount(
-                childMoneyAccountId, child, monthlyCalendar, childMoney
+                childMoneyAccountId, child, monthlyCalendar, childMoney, availableReasonMovements
         );
 
         /**
@@ -329,8 +336,9 @@ public class ChildMoneyAccountTest {
         Parent parent = new GenerateParent().generate();
         SubscriptionCalendar monthlyCalendar = new GenerateCalendar().generate();
         ChildMoney monthlyChildMoney = new GenerateChildMoney(parent).generateMonthly(moneyAtPeriodStart, monthlyMovementPrice, weeklyMovementPrice);
+        List<AvailableReasonMovement> availableReasonMovements = new GenerateReasonMovement().generate();
 
-        ChildMoneyAccount monthlyAccount = new ChildMoneyAccount(childMoneyAccountId, child, monthlyCalendar, monthlyChildMoney);
+        ChildMoneyAccount monthlyAccount = new ChildMoneyAccount(childMoneyAccountId, child, monthlyCalendar, monthlyChildMoney, availableReasonMovements);
 
         /**
          * When
@@ -371,8 +379,9 @@ public class ChildMoneyAccountTest {
         Parent parent = new GenerateParent().generate();
         SubscriptionCalendar monthlyCalendar = new GenerateCalendar().generate();
         ChildMoney monthlyChildMoney = new GenerateChildMoney(parent).generateMonthly(moneyAtPeriodStart, monthlyMovementPrice, weeklyMovementPrice);
+        List<AvailableReasonMovement> availableReasonMovements = new GenerateReasonMovement().generate();
 
-        ChildMoneyAccount monthlyAccount = new ChildMoneyAccount(childMoneyAccountId, child, monthlyCalendar, monthlyChildMoney);
+        ChildMoneyAccount monthlyAccount = new ChildMoneyAccount(childMoneyAccountId, child, monthlyCalendar, monthlyChildMoney, availableReasonMovements);
 
         /**
          * When
@@ -404,8 +413,9 @@ public class ChildMoneyAccountTest {
         Parent parent = new GenerateParent().generate();
         SubscriptionCalendar monthlyCalendar = new GenerateCalendar().generate();
         ChildMoney monthlyChildMoney = new GenerateChildMoney(parent).generateMonthly(moneyAtPeriodStart, monthlyMovementPrice, weeklyMovementPrice);
+        List<AvailableReasonMovement> availableReasonMovements = new GenerateReasonMovement().generate();
 
-        ChildMoneyAccount monthlyAccount = new ChildMoneyAccount(childMoneyAccountId, child, monthlyCalendar, monthlyChildMoney);
+        ChildMoneyAccount monthlyAccount = new ChildMoneyAccount(childMoneyAccountId, child, monthlyCalendar, monthlyChildMoney, availableReasonMovements);
         /**
          * Then
          */
@@ -427,9 +437,10 @@ public class ChildMoneyAccountTest {
         BigDecimal moneyAtPeriodStart = BigDecimal.valueOf(10);
         BigDecimal remainingMoney = BigDecimal.valueOf(7);
         ChildMoney childMoney = new ChildMoney(moneyAtPeriodStart, new RemainingMoney(remainingMoney, Devise.EUR));
+        List<AvailableReasonMovement> availableReasonMovements = new GenerateReasonMovement().generate();
 
         ChildMoneyAccount childMoneyAccount = new ChildMoneyAccount(
-                childMoneyAccountId, child, monthlyCalendar, childMoney
+                childMoneyAccountId, child, monthlyCalendar, childMoney, availableReasonMovements
         );
 
         /**
@@ -466,8 +477,9 @@ public class ChildMoneyAccountTest {
         Parent parent = new GenerateParent().generate();
         SubscriptionCalendar monthlyCalendar = new GenerateCalendar().generate();
         ChildMoney monthlyChildMoney = new GenerateChildMoney(parent).generateMonthly(moneyAtPeriodStart, monthlyMovementPrice, weeklyMovementPrice);
+        List<AvailableReasonMovement> availableReasonMovements = new GenerateReasonMovement().generate();
 
-        ChildMoneyAccount monthlyAccount = new ChildMoneyAccount(childMoneyAccountId, child, monthlyCalendar, monthlyChildMoney);
+        ChildMoneyAccount monthlyAccount = new ChildMoneyAccount(childMoneyAccountId, child, monthlyCalendar, monthlyChildMoney, availableReasonMovements);
 
         /**
          * when
@@ -516,8 +528,9 @@ public class ChildMoneyAccountTest {
         Parent parent = new GenerateParent().generate();
         SubscriptionCalendar monthlyCalendar = new GenerateCalendar().generate();
         ChildMoney monthlyChildMoney = new GenerateChildMoney(parent).generateMonthly(moneyAtPeriodStart, monthlyMovementPrice, weeklyMovementPrice);
+        List<AvailableReasonMovement> availableReasonMovements = new GenerateReasonMovement().generate();
 
-        ChildMoneyAccount monthlyAccount = new ChildMoneyAccount(childMoneyAccountId, child, monthlyCalendar, monthlyChildMoney);
+        ChildMoneyAccount monthlyAccount = new ChildMoneyAccount(childMoneyAccountId, child, monthlyCalendar, monthlyChildMoney, availableReasonMovements);
 
         /**
          * when
@@ -563,9 +576,10 @@ public class ChildMoneyAccountTest {
         BigDecimal moneyAtPeriodStart = BigDecimal.valueOf(10);
         BigDecimal remainingMoney = BigDecimal.valueOf(2);
         ChildMoney childMoney = new ChildMoney(moneyAtPeriodStart, new RemainingMoney(remainingMoney, Devise.EUR));
+        List<AvailableReasonMovement> availableReasonMovements = new GenerateReasonMovement().generate();
 
         ChildMoneyAccount childMoneyAccount = new ChildMoneyAccount(
-                childMoneyAccountId, child, monthlyCalendar, childMoney
+                childMoneyAccountId, child, monthlyCalendar, childMoney, availableReasonMovements
         );
 
         /**
@@ -599,8 +613,9 @@ public class ChildMoneyAccountTest {
         BigDecimal moneyAtPeriodStart = BigDecimal.valueOf(4);
         RemainingMoney remainingMoney = new RemainingMoney(BigDecimal.valueOf(1.0), Devise.EUR);
         ChildMoney monthlyChildMoney = new ChildMoney(moneyAtPeriodStart, remainingMoney);
+        List<AvailableReasonMovement> availableReasonMovements = new GenerateReasonMovement().generate();
 
-        ChildMoneyAccount childAccount = new ChildMoneyAccount(childMoneyAccountId, child, monthlyCalendar, monthlyChildMoney);
+        ChildMoneyAccount childAccount = new ChildMoneyAccount(childMoneyAccountId, child, monthlyCalendar, monthlyChildMoney, availableReasonMovements);
 
         /**
          * when
@@ -636,8 +651,9 @@ public class ChildMoneyAccountTest {
         BigDecimal moneyAtPeriodStart = BigDecimal.valueOf(4);
         RemainingMoney remainingMoney = new RemainingMoney(BigDecimal.valueOf(1.0), Devise.EUR);
         ChildMoney monthlyChildMoney = new ChildMoney(moneyAtPeriodStart, remainingMoney);
+        List<AvailableReasonMovement> availableReasonMovements = new GenerateReasonMovement().generate();
 
-        ChildMoneyAccount childAccount = new ChildMoneyAccount(childMoneyAccountId, child, monthlyCalendar, monthlyChildMoney);
+        ChildMoneyAccount childAccount = new ChildMoneyAccount(childMoneyAccountId, child, monthlyCalendar, monthlyChildMoney, availableReasonMovements);
 
         /**
          * when

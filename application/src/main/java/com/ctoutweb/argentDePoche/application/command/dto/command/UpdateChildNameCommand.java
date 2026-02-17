@@ -19,11 +19,11 @@ public record UpdateChildNameCommand(
 
     @Override
     public ChildMoneyAccountIdentity getChildAccountUpdated() {
-        return null;
+        return childAccountUpdated;
     }
 
     @Override
     public ParentIdentity getParentUpdatedChildAccount() {
-        return null;
+        return parentUpdatingAccount;
     }
 }

@@ -1,13 +1,13 @@
 package com.ctoutweb.argenDePoche.infra.controller;
 
 import com.ctoutweb.argenDePoche.infra.model.dto.controller.*;
+import com.ctoutweb.argenDePoche.infra.model.dto.controller.childAccount.ChildAccountResponseDto;
 import com.ctoutweb.argenDePoche.infra.service.ChildAccountService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.web.bind.annotation.*;
@@ -89,20 +89,33 @@ public class ChildAccountController {
               );
     }
 
-    @PostMapping(path = "/add-money-movment")
-    public Mono<ResponseEntity<UpdatedChildAccountResponseDto>> addMoneyMovment(@RequestBody AddMoneyMovementRequestDto dto) {
-      LOGGER.info(() -> "Ajout d'un mouvement d'argent");
-      return childAccountService.addMoneyMovement(dto)
-              .map(responseDto -> {
-                        URI location = URI.create(apiPath + "/child-accounts/" + responseDto.childAccountId());
-                        return ResponseEntity
-                                .ok()
-                                .location(location)
-                                .body(responseDto);
-                      }
-              );
-    }
+  @PutMapping(path = "/add-money-movement")
+  public Mono<ResponseEntity<UpdatedChildAccountResponseDto>> addMoneyMovement(@RequestBody AddMoneyMovementRequestDto dto) {
+    LOGGER.info(() -> "Ajout d'un mouvement d'argent");
+    return childAccountService.addMoneyMovement(dto)
+            .map(responseDto -> {
+                      URI location = URI.create(apiPath + "/child-accounts/" + responseDto.childAccountId());
+                      return ResponseEntity
+                              .ok()
+                              .location(location)
+                              .body(responseDto);
+                    }
+            );
+  }
 
+  @PutMapping(path = "/update-child-name")
+  public Mono<ResponseEntity<UpdatedChildAccountResponseDto>> updateChildName(@RequestBody UpdateChildNameRequestDto dto) {
+    LOGGER.info(() -> "Mise à jour du nom de l'enfant");
+    return childAccountService.updateChildName(dto)
+            .map(responseDto -> {
+                      URI location = URI.create(apiPath + "/child-accounts/" + responseDto.childAccountId());
+                      return ResponseEntity
+                              .ok()
+                              .location(location)
+                              .body(responseDto);
+                    }
+            );
+  }
   @PostMapping(path = "/reinitialize-remaining-money")
   public Mono<ResponseEntity<UpdatedChildAccountResponseDto>> reinitializeRemainingMoney(@RequestBody ReinitializeRemainingMoneyDto dto) {
     LOGGER.info(() -> "Reinitimaisation de l'argent de poche restant");
@@ -125,5 +138,4 @@ public class ChildAccountController {
             .contentType(result.imageMediaType())
             .body(result.childImageDate()));
   }
-
 }

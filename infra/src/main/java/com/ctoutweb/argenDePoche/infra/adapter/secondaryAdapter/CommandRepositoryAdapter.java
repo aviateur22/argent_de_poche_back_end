@@ -5,6 +5,8 @@ import com.ctoutweb.argenDePoche.infra.adapter.mapper.ToCoreMapper;
 import com.ctoutweb.argenDePoche.infra.adapter.mapper.ToInfraMapper;
 import com.ctoutweb.argenDePoche.infra.model.dto.AddMoneyMovementReasonDto;
 import com.ctoutweb.argenDePoche.infra.model.dto.childAccount.calendar.PeriodSubscription;
+import com.ctoutweb.argenDePoche.infra.model.dto.childAccount.moneyMovement.MoneyMovementActionType;
+import com.ctoutweb.argenDePoche.infra.model.dto.controller.AvailableMovementReasonDto;
 import com.ctoutweb.argenDePoche.infra.repository.*;
 import com.ctoutweb.argenDePoche.infra.repository.entity.*;
 import com.ctoutweb.argentDePoche.application.exception.CalendarPeriodNotFound;
@@ -30,7 +32,7 @@ import java.util.List;
 public class CommandRepositoryAdapter implements CommandRepository {
   private static final Logger LOGGER = LogManager.getLogger();
 
-    private final SqlQueryRepository cmdRepository;
+    private final SqlQueryRepository sqlQueryRepository;
     private final ChildMoneyRepository childMoneyRepository;
     private final ChildAccountRepository childAccountRepository;
     private final ChildRepository childRepository;
@@ -61,7 +63,7 @@ public class CommandRepositoryAdapter implements CommandRepository {
             ChildAccountMoneyMovementCodeRepository childAccountMoneyMovementCodeRepository, MovementReasonCodeRepository movementActionCodeRepository,
             ToCoreMapper toCoreIdentity,
             ToInfraMapper toInfraMapper, AdapterHelper adapterHelper) {
-        this.cmdRepository = commandHandlerRepository;
+        this.sqlQueryRepository = commandHandlerRepository;
         this.childCalendarRepository = childCalendarRepository;
         this.childMoneyRepository = childMoneyRepository;
         this.childAccountRepository = childAccountRepository;
@@ -104,7 +106,7 @@ public class CommandRepositoryAdapter implements CommandRepository {
     @Override
     public Mono<FamilyAccount> loadFamilyAccountFromParent(ParentIdentity parent) {
         long parentId = Long.parseLong(parent.getIdentity());
-        return cmdRepository
+        return sqlQueryRepository
                 .findFamilyAccount(parentId)
                 .switchIfEmpty(Mono.error(new FamilyAccountForbiddenException("Aucun compte de famille n'est associé à votre compte")))
                 .map(toCoreIdentity::toCoreFamilyAccount);
@@ -334,19 +336,33 @@ public class CommandRepositoryAdapter implements CommandRepository {
     var childEntity = childRepository.findByChildAccountId(childAccountId);
     var childImageEntity = childEntity.flatMap(child -> childImageRepository.findById(child.getChildImageId()));
     var accountMoneyEntity = childMoneyRepository.findByAccountCalendarId(activeAccountCalendar.getId());
+    var availableMovementReasons = sqlQueryRepository.getMovementReasons(childAccountId)
+            .map(  reasonMovement -> {
+                  var addMoney = MoneyMovementActionType.ADD;
+                  var removeMoney = MoneyMovementActionType.REMOVE;
+                  return new AvailableMovementReasonDto(
+                      reasonMovement.reasonName(),
+                      reasonMovement.reasonCode(),
+                      addMoney.actionCode(),
+                      removeMoney.actionCode()
+                  );
+              })
+            .collectList();
 
-    return Mono.zip(childEntity, childImageEntity, accountMoneyEntity)
+    return Mono.zip(childEntity, childImageEntity, accountMoneyEntity, availableMovementReasons)
             .map(tupleData -> {
                 var child = tupleData.getT1();
                 var childImage = tupleData.getT2();
                 var accountMoney = tupleData.getT3();
+                var availableReasons = tupleData.getT4();
 
                 return toCoreIdentity.toChildMoneyAccount(
                     childAccountId,
                     child,
                     childImage,
                     activeAccountCalendar,
-                    accountMoney);
+                    accountMoney,
+                    availableReasons);
             });
   }
 

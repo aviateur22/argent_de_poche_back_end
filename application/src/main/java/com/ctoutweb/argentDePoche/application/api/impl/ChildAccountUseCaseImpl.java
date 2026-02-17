@@ -110,10 +110,10 @@ public class ChildAccountUseCaseImpl implements ChildAccountUseCase {
     }
 
     @Override
-    public Publisher<ChildMoneyAccountIdentity> updateChildName(
+    public Mono<ChildMoneyAccountIdentity> updateChildName(
             ChildMoneyAccountIdentity childMoneyAccountId,
-            String updatedChildName,
-            ParentIdentity parentUpdatedChildAccount) {
+            ParentIdentity parentUpdatedChildAccount,
+            String updatedChildName) {
         // Persistance des nouvelles données
         UpdateChildNameCommand updateChildNameCommand = UpdateChildNameCommand
                 .create(parentUpdatedChildAccount, childMoneyAccountId, updatedChildName);

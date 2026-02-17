@@ -4,6 +4,7 @@ import com.ctoutweb.argenDePoche.infra.adapter.primaryAdapter.ChildAccountUseCas
 import com.ctoutweb.argenDePoche.infra.model.dto.ImageStreaming;
 import com.ctoutweb.argenDePoche.infra.model.dto.controller.*;
 import com.ctoutweb.argenDePoche.infra.adapter.mapper.ToDtoMapper;
+import com.ctoutweb.argenDePoche.infra.model.dto.controller.childAccount.ChildAccountResponseDto;
 import com.ctoutweb.argenDePoche.infra.model.mapper.InfraMapper;
 import com.ctoutweb.argenDePoche.infra.service.ChildAccountService;
 import com.ctoutweb.argenDePoche.infra.service.ImageService;
@@ -85,7 +86,20 @@ public class ChildAccountServiceImpl implements ChildAccountService {
 
     }
 
-    @Override
+  @Override
+  public Mono<UpdatedChildAccountResponseDto> updateChildName(UpdateChildNameRequestDto dto) {
+    return txOperator.transactional(childAccountUseCaseAdapter.updateChildName(
+                    dto.parentId(),
+                    dto.childAccountId(),
+                    dto.updateChildName()
+            ))
+            .doOnSuccess(childAccountUpdated ->
+                    LOGGER.info(() -> String.format("Le compte est mise à jour %s", childAccountUpdated)))
+            .doOnError(e ->
+                    LOGGER.error("Erreur dans l'appel au service updateChildName", e));
+  }
+
+  @Override
     public Mono<UpdatedChildAccountResponseDto> updateChildMoneyAtPeriodStart(UpdateChildMoneyAtPeriodStartRequestDto dto) {
         return txOperator.transactional(childAccountUseCaseAdapter.updateChildMoneyAtPeriodStart(
                 dto.parentId(),

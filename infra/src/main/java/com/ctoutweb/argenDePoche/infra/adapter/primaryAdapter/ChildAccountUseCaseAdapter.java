@@ -3,12 +3,13 @@ package com.ctoutweb.argenDePoche.infra.adapter.primaryAdapter;
 import com.ctoutweb.argenDePoche.infra.adapter.mapper.ToCoreMapper;
 import com.ctoutweb.argenDePoche.infra.adapter.mapper.ToDtoMapper;
 import com.ctoutweb.argenDePoche.infra.adapter.mapper.ToInfraMapper;
-import com.ctoutweb.argenDePoche.infra.model.dto.controller.ChildAccountResponseDto;
+import com.ctoutweb.argenDePoche.infra.model.dto.controller.childAccount.ChildAccountResponseDto;
 import com.ctoutweb.argenDePoche.infra.model.dto.UpdatedChildImageDto;
 import com.ctoutweb.argenDePoche.infra.model.dto.controller.UpdatedChildAccountResponseDto;
 import com.ctoutweb.argentDePoche.application.api.ChildAccountUseCase;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.entity.childImage.ImageExtension;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
@@ -170,8 +171,15 @@ public class ChildAccountUseCaseAdapter {
 
         return childAccountUseCase.streamChildImage(childAccountIdentity, parentIdentity)
                 .map(ImageExtension::getFileExtensionText);
-    } 
+    }
 
 
+    public Mono<UpdatedChildAccountResponseDto> updateChildName(long parentId, long childAccountId, String updateChildName) {
+        var parentIdentity = toCoreMapper.toParentIdentity(parentId);
+        var childAccountIdentity = toCoreMapper.toChildAccountIdentity(childAccountId);
 
+        return childAccountUseCase.updateChildName(childAccountIdentity, parentIdentity, updateChildName)
+                .map(s-> toDtoMapper.toUpdatedChildResponseDto(s));
+
+    }
 }

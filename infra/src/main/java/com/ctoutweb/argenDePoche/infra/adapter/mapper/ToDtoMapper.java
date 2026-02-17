@@ -1,6 +1,7 @@
 package com.ctoutweb.argenDePoche.infra.adapter.mapper;
 
-import com.ctoutweb.argenDePoche.infra.model.dto.controller.ChildAccountResponseDto;
+import com.ctoutweb.argenDePoche.infra.model.dto.controller.AvailableMovementReasonDto;
+import com.ctoutweb.argenDePoche.infra.model.dto.controller.childAccount.ChildAccountResponseDto;
 import com.ctoutweb.argenDePoche.infra.model.dto.controller.CreateChildAccountResponseDto;
 import com.ctoutweb.argenDePoche.infra.model.dto.controller.CreateFamilyAccountResponseDto;
 import com.ctoutweb.argenDePoche.infra.model.dto.UpdatedChildImageDto;
@@ -12,7 +13,10 @@ import com.ctoutweb.argentDePoche.application.query.dto.ChildAccountDto;
 import com.ctoutweb.argentDePoche.application.query.dto.FamilyChildDto;
 import com.ctoutweb.argentDePoche.application.query.dto.FamilyDto;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.aggregate.ChildMoneyAccountIdentity;
+import com.ctoutweb.argentDePoche.core.domain.childAccount.valueObject.movementReason.AvailableReasonMovement;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 /**
  * Mapper utilisé uniquement pour mapper les données du layer Domaine / Core vers:
@@ -71,6 +75,10 @@ public class ToDtoMapper {
                 childAccountDto.actualDate(),
                 childAccountDto.startPeriodDate(),
                 childAccountDto.endPeriodDate(),
+                childAccountDto.availableReasonMovements()
+                        .stream()
+                        .map(this::toAvailableMovementReasonDto)
+                        .toList(),
                 message
         );
     }
@@ -135,6 +143,15 @@ public class ToDtoMapper {
                 infraMapper.toTechnicalId(childDto.childMoneyAccountIdentity()),
                 childDto.name(),
                 childDto.imageRandomName()
+        );
+    }
+
+    private AvailableMovementReasonDto toAvailableMovementReasonDto(AvailableReasonMovement availableReasonMovement) {
+        return new AvailableMovementReasonDto(
+                availableReasonMovement.actionName(),
+                availableReasonMovement.reasonCode(),
+                availableReasonMovement.addActionCode(),
+                availableReasonMovement.removeActionCode()
         );
     }
 

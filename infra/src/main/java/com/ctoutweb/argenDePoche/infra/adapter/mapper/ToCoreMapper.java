@@ -1,5 +1,6 @@
 package com.ctoutweb.argenDePoche.infra.adapter.mapper;
 
+import com.ctoutweb.argenDePoche.infra.model.dto.controller.AvailableMovementReasonDto;
 import com.ctoutweb.argenDePoche.infra.repository.dto.FamilyAccountProjection;
 import com.ctoutweb.argenDePoche.infra.repository.entity.*;
 import com.ctoutweb.argentDePoche.application.exception.ChildImageExtensionInvalidExtension;
@@ -15,6 +16,7 @@ import com.ctoutweb.argentDePoche.core.domain.childAccount.entity.child.ChildIde
 import com.ctoutweb.argentDePoche.core.domain.childAccount.entity.childImage.ChildImage;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.entity.childImage.ImageExtension;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.valueObject.account.ChildMoney;
+import com.ctoutweb.argentDePoche.core.domain.childAccount.valueObject.movementReason.AvailableReasonMovement;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.valueObject.calendar.PeriodSubscription;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.valueObject.calendar.SubscriptionCalendar;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.valueObject.remainingMoney.Devise;
@@ -183,7 +185,8 @@ public class ToCoreMapper {
             LocalDate actualDate,
             LocalDate calendarStartDate,
             LocalDate calendarEndDate,
-            String periodSubscription
+            String periodSubscription,
+            List<AvailableMovementReasonDto> availableMovementReasonDtos
     ) {
         return new ChildAccountDto(
                 toChildAccountIdentity(childAccountId),
@@ -195,7 +198,8 @@ public class ToCoreMapper {
                 actualDate,
                 calendarStartDate,
                 calendarEndDate,
-                periodSubscription
+                periodSubscription,
+                availableMovementReasonDtos.stream().map(this::mapToAvailableReasonMovement).toList()
         );
     }
 
@@ -294,16 +298,19 @@ public class ToCoreMapper {
             ChildEntity child,
             ChildImageEntity childImage,
             ChildAccountCalendarEntity activeAccountCalendar,
-            ChildMoneyEntity accountMoney) {
+            ChildMoneyEntity accountMoney,
+            List<AvailableMovementReasonDto> availableMovementReasonDtos) {
         var childIdentity = toChild(child, childImage);
         var subscriptionCalendar = toSubscriptionCalendar(activeAccountCalendar, LocalDate.now());
         var childMoney = toChildMoneyAccount(accountMoney);
+
 
         return new ChildMoneyAccount(
                 toChildAccountIdentity(childAccountId),
                 childIdentity,
                 subscriptionCalendar,
-                childMoney
+                childMoney,
+                availableMovementReasonDtos.stream().map(this::mapToAvailableReasonMovement).toList()
         );
     }
 
@@ -321,5 +328,14 @@ public class ToCoreMapper {
 
     private ChildMoneyAccountIdentity mapToChildMoneyAccountIdentity(long childAccountId) {
         return new ChildMoneyAccountIdentity(childAccountId);
+    }
+
+    private AvailableReasonMovement mapToAvailableReasonMovement(AvailableMovementReasonDto dto) {
+        return new AvailableReasonMovement(
+                dto.reasonName(),
+                dto.reasonCode(),
+                dto.addMoneyActionCode(),
+                dto.removeMoneyActionCode()
+        );
     }
 }

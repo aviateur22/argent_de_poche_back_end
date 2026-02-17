@@ -2,9 +2,8 @@ package com.ctoutweb.argenDePoche.infra.service;
 
 import com.ctoutweb.argenDePoche.infra.model.dto.ImageStreaming;
 import com.ctoutweb.argenDePoche.infra.model.dto.controller.*;
-import org.springframework.core.io.buffer.DataBuffer;
+import com.ctoutweb.argenDePoche.infra.model.dto.controller.childAccount.ChildAccountResponseDto;
 import org.springframework.http.codec.multipart.FilePart;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public interface ChildAccountService {
@@ -35,6 +34,15 @@ public interface ChildAccountService {
      * @return L'identifiant du compte d'argent de poche
      */
     Mono<UpdatedChildAccountResponseDto> updateChildImage(FilePart childImageFile, long parentId, long childAccountId);
+
+    /**
+     * Mise a jour du prénom de l'enfant
+     *
+     * @param dto Les données permttant de mettre à jour le nom de l'enfant
+     *
+     * @return L'identifiant du compte d'argent de poche
+     */
+    Mono<UpdatedChildAccountResponseDto> updateChildName(UpdateChildNameRequestDto dto);
 
     /**
      * Mise à jour de l'argent de poche disponible en début de periode

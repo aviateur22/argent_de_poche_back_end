@@ -4,6 +4,7 @@ import com.ctoutweb.argentDePoche.core.domain.childAccount.entity.child.ChildIde
 import com.ctoutweb.argentDePoche.core.domain.childAccount.entity.childImage.ChildImage;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.entity.childImage.ImageExtension;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.valueObject.account.MoneyMovement;
+import com.ctoutweb.argentDePoche.core.domain.childAccount.valueObject.movementReason.AvailableReasonMovement;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.valueObject.calendar.SubscriptionCalendar;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.entity.child.Child;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.valueObject.account.ChildMoney;
@@ -13,22 +14,26 @@ import com.ctoutweb.argentDePoche.core.domain.childAccount.valueObject.remaining
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 public final class ChildMoneyAccount {
     private final ChildMoneyAccountIdentity childMoneyAccountId;
     private final Child child;
     private final SubscriptionCalendar calendarSubscription;
     private final ChildMoney childMoney;
+    private final List<AvailableReasonMovement> availableReasonMovements;
 
     public ChildMoneyAccount(
             ChildMoneyAccountIdentity childMoneyAccountId,
             Child child,
             SubscriptionCalendar calendarManager,
-            ChildMoney childMoney) {
+            ChildMoney childMoney,
+            List<AvailableReasonMovement> availableReasonMovements) {
         this.childMoneyAccountId = childMoneyAccountId;
         this.child = child;
         this.calendarSubscription = calendarManager;
         this.childMoney = childMoney;
+        this.availableReasonMovements = availableReasonMovements;
     }
 
     /**
@@ -64,8 +69,9 @@ public final class ChildMoneyAccount {
         SubscriptionCalendar createdSubscriptionCalendar = SubscriptionCalendar.created(LocalDate.now(), DEFAULT_PERIOD_SUBSCRIPTION);
         RemainingMoney createdRemainingMoney = new RemainingMoney(DEFAULT_REMAINING_MONEY, DEFAULT_DEVISE);
         ChildMoney createdChildMoney = new ChildMoney(DEFAULT_MONEY, createdRemainingMoney);
+        List<AvailableReasonMovement> accountActions = AvailableReasonMovement.create();
 
-        return new ChildMoneyAccount(childMoneyAccountId, createdChild, createdSubscriptionCalendar, createdChildMoney);
+        return new ChildMoneyAccount(childMoneyAccountId, createdChild, createdSubscriptionCalendar, createdChildMoney, accountActions);
     }
 
     /**
@@ -77,7 +83,7 @@ public final class ChildMoneyAccount {
      */
     public ChildMoneyAccount updateChildImage(String updateRandomImageName, ImageExtension imageExtension) {
         Child updateChild = this.child.updateImage(updateRandomImageName, imageExtension);
-        return new ChildMoneyAccount(this.childMoneyAccountId, updateChild, this.calendarSubscription, this.childMoney);
+        return new ChildMoneyAccount(this.childMoneyAccountId, updateChild, this.calendarSubscription, this.childMoney, this.availableReasonMovements);
     }
 
     /**
@@ -89,7 +95,7 @@ public final class ChildMoneyAccount {
      */
     public ChildMoneyAccount addMoneyMovement(MoneyMovement newMoneyMovementInPeriod){
         ChildMoney updatedChildMoney = this.childMoney.addMoneyMovement(newMoneyMovementInPeriod);
-        return new ChildMoneyAccount(this.childMoneyAccountId, this.child, this.calendarSubscription, updatedChildMoney);
+        return new ChildMoneyAccount(this.childMoneyAccountId, this.child, this.calendarSubscription, updatedChildMoney, this.availableReasonMovements);
     }
 
     /**
@@ -101,7 +107,7 @@ public final class ChildMoneyAccount {
      */
     public ChildMoneyAccount updateInitialMoneyAtPeriodStart(BigDecimal updatedMoneyAtPeriodStart) {
         ChildMoney updatedChildMoney = this.childMoney.updateMoneyAtPeriodStart(updatedMoneyAtPeriodStart);
-        return new ChildMoneyAccount(this.childMoneyAccountId, this.child, this.calendarSubscription, updatedChildMoney);
+        return new ChildMoneyAccount(this.childMoneyAccountId, this.child, this.calendarSubscription, updatedChildMoney, this.availableReasonMovements);
     }
 
     /**
@@ -113,7 +119,7 @@ public final class ChildMoneyAccount {
      */
     public ChildMoneyAccount updateChildName(String updateChildName) {
         Child updatedChild = this.child.updateChildName(updateChildName);
-        return new ChildMoneyAccount(this.childMoneyAccountId, updatedChild, this.calendarSubscription, this.childMoney);
+        return new ChildMoneyAccount(this.childMoneyAccountId, updatedChild, this.calendarSubscription, this.childMoney, this.availableReasonMovements);
     }
 
     /**
@@ -133,7 +139,7 @@ public final class ChildMoneyAccount {
             return this;
 
         var updateChildMoney = this.childMoney.nextPeriod();
-        return new ChildMoneyAccount(this.childMoneyAccountId, this.child, nextCalendarPeriod, updateChildMoney);
+        return new ChildMoneyAccount(this.childMoneyAccountId, this.child, nextCalendarPeriod, updateChildMoney, this.availableReasonMovements);
     }
 
     /**
@@ -143,7 +149,7 @@ public final class ChildMoneyAccount {
      */
     public ChildMoneyAccount reinitializeRemainingMoney() {
         ChildMoney reinitializeRemainingMoney = this.childMoney.reinitializeRemainingMoney();
-        return new ChildMoneyAccount(this.childMoneyAccountId, this.child, this.calendarSubscription, reinitializeRemainingMoney);
+        return new ChildMoneyAccount(this.childMoneyAccountId, this.child, this.calendarSubscription, reinitializeRemainingMoney, this.availableReasonMovements);
     }
 
     public ChildMoneyAccountIdentity getChildMoneyAccountId() {
@@ -161,6 +167,5 @@ public final class ChildMoneyAccount {
     public ChildMoney getChildMoney() {
         return childMoney;
     }
-
 
 }

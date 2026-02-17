@@ -25,4 +25,12 @@ public class SqlQuery {
         where pfa.parent_id = :parentId
         group by pfa.family_account_id, f.name;
         """;
+
+    public static final String getAvailableMovementReasonsByChildAccount =
+        """
+        select movement_name, movement_code
+        from sc_argent_de_poche.child_account_movement_code camc 
+        join sc_argent_de_poche.movement_action_code mac on camc.movement_code_id = mac.id
+        where camc.child_account_id = :childAccountid;
+        """;
 }

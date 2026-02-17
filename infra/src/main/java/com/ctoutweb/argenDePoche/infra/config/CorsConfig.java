@@ -29,7 +29,7 @@ public class CorsConfig {
     CorsConfiguration productCorsConfig = new CorsConfiguration();
     productCorsConfig.setAllowCredentials(true);
     productCorsConfig.setAllowedOrigins(Arrays.asList(corsDomains.split(",")));
-    productCorsConfig.setAllowedMethods(Arrays.asList("GET", "POST", "PUT"));
+    productCorsConfig.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "OPTIONS"));
     productCorsConfig.setAllowedHeaders(Arrays.asList( "multipart/form-data", "Content-Type", "Authorization", "Post-Csrf-Token"));
     productCorsConfig.setExposedHeaders(List.of("Post-Csrf-Token"));
     source.registerCorsConfiguration(apiVersion+"/child-accounts/**", productCorsConfig);
