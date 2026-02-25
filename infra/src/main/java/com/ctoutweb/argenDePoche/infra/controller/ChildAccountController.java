@@ -30,7 +30,7 @@ public class ChildAccountController {
         this.childAccountService = childAccountService;
     }
 
-    @PostMapping("/")
+    @PostMapping("/create-child-account")
     public Mono<ResponseEntity<CreateChildAccountResponseDto>> createChildAccount(@RequestBody CreateChildAccountRequestDto dto) {
         LOGGER.info(() -> "Création d'un nouveau compte pour enfant");
         return childAccountService.createChildAccount(dto)

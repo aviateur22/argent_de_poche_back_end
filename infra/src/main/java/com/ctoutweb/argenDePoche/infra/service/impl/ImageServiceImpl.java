@@ -1,6 +1,9 @@
 package com.ctoutweb.argenDePoche.infra.service.impl;
 
+import com.ctoutweb.argenDePoche.infra.exception.ChildImageNotFoundException;
 import com.ctoutweb.argenDePoche.infra.service.ImageService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferUtils;
@@ -21,6 +24,7 @@ import static com.ctoutweb.argenDePoche.infra.util.FileUtil.getFileExtension;
 
 @Service
 public class ImageServiceImpl implements ImageService {
+    private static final Logger LOGGER = LogManager.getLogger();
 
     @Value("${folder.image.path}")
     String folderPath;
@@ -30,8 +34,13 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     public Flux<DataBuffer> streamImage(String childImageNameWithExtension) {
-        Path destination = Paths.get(folderPath, childImageNameWithExtension);
-        return DataBufferUtils.read(destination, new DefaultDataBufferFactory(), 4096);
+        try {
+            Path destination = Paths.get(folderPath, childImageNameWithExtension);
+            return DataBufferUtils.read(destination, new DefaultDataBufferFactory(), 4096);
+        } catch (Exception exception) {
+            LOGGER.error(exception::getMessage);
+            throw new ChildImageNotFoundException(String.format("L'image %s n'existe pas", childImageNameWithExtension));
+        }
     }
 
     @Override

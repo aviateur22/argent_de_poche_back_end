@@ -68,8 +68,14 @@ public class HandlerException {
             ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(ErrorDto.createErrorDto(exception.getMessage()))
     );
+  }
 
-
+  @ExceptionHandler(ChildImageNotFoundException.class)
+  public Mono<ResponseEntity<ErrorDto>> childImageNotFoundException(ChildImageNotFoundException exception) {
+    return Mono.just(
+            ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(ErrorDto.createErrorDto(exception.getMessage()))
+    );
   }
 
 }

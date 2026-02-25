@@ -25,14 +25,23 @@ public class CorsConfig {
   public CorsConfigurationSource corsConfigurationSource() {
     UrlBasedCorsConfigurationSource source =new UrlBasedCorsConfigurationSource();
 
-    // Configuration Cors pour la gestion Product
-    CorsConfiguration productCorsConfig = new CorsConfiguration();
-    productCorsConfig.setAllowCredentials(true);
-    productCorsConfig.setAllowedOrigins(Arrays.asList(corsDomains.split(",")));
-    productCorsConfig.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "OPTIONS"));
-    productCorsConfig.setAllowedHeaders(Arrays.asList( "multipart/form-data", "Content-Type", "Authorization", "Post-Csrf-Token"));
-    productCorsConfig.setExposedHeaders(List.of("Post-Csrf-Token"));
-    source.registerCorsConfiguration(apiVersion+"/child-accounts/**", productCorsConfig);
+    // Configuration Cors pour la gestion compte enfant
+    CorsConfiguration childAccount = new CorsConfiguration();
+    childAccount.setAllowCredentials(true);
+    childAccount.setAllowedOrigins(Arrays.asList(corsDomains.split(",")));
+    childAccount.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "OPTIONS"));
+    childAccount.setAllowedHeaders(Arrays.asList( "multipart/form-data", "Content-Type", "Authorization", "Post-Csrf-Token"));
+    childAccount.setExposedHeaders(List.of("Post-Csrf-Token"));
+    source.registerCorsConfiguration(apiVersion+"/child-accounts/**", childAccount);
+
+    // Configuration Cors pour la gestion famille
+    CorsConfiguration familyAccount = new CorsConfiguration();
+    familyAccount.setAllowCredentials(true);
+    familyAccount.setAllowedOrigins(Arrays.asList(corsDomains.split(",")));
+    familyAccount.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "OPTIONS"));
+    familyAccount.setAllowedHeaders(Arrays.asList( "multipart/form-data", "Content-Type", "Authorization", "Post-Csrf-Token"));
+    familyAccount.setExposedHeaders(List.of("Post-Csrf-Token"));
+    source.registerCorsConfiguration(apiVersion+"/family-accounts/**", familyAccount);
     return source;
   }
 }
