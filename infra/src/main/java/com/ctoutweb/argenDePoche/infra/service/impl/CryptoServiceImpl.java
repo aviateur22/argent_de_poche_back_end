@@ -16,4 +16,9 @@ public class CryptoServiceImpl implements CryptoService {
   public String hashText(String textToHash) {
     return passwordEncoder.encode(textToHash);
   }
+
+  @Override
+  public boolean isHashValid(String plainText, String hash) {
+    return passwordEncoder.matches(plainText, hash);
+  }
 }

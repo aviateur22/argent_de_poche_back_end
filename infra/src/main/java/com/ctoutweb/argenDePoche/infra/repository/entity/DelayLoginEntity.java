@@ -18,6 +18,11 @@ public class DelayLoginEntity extends Temporal {
     @Column("delay_login_until")
     private LocalDateTime delayLoginUntil;
 
+    public DelayLoginEntity(Long parentId, LocalDateTime delayLoginUntil) {
+        this.parentId = parentId;
+        this.delayLoginUntil = delayLoginUntil;
+    }
+
     public Long getId() {
         return id;
     }

@@ -18,6 +18,9 @@ public class ParentEntity extends Temporal {
 
     private String password;
 
+    @Column("is_account_active")
+    private Boolean isAccountActive;
+
     public String getNickname() {
         return nickname;
     }
@@ -48,6 +51,14 @@ public class ParentEntity extends Temporal {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Boolean getIsAccountActive() {
+        return isAccountActive;
+    }
+
+    public void setIsAccountActive(Boolean accountActive) {
+        isAccountActive = accountActive;
     }
 
     @Override

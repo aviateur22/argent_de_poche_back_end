@@ -33,4 +33,12 @@ public class SqlQuery {
         join sc_argent_de_poche.movement_action_code mac on camc.movement_code_id = mac.id
         where camc.child_account_id = :childAccountid;
         """;
+
+    public static final String getAllParentRoles =
+            """
+            select role from sc_argent_de_poche.role_parent rp
+            join sc_argent_de_poche."role" r
+            on r.id = rp.role_id
+            where rp.parent_id = :parentId
+            """;
 }

@@ -1,5 +1,6 @@
 package com.ctoutweb.argenDePoche.infra.config;
 
+import com.ctoutweb.argenDePoche.infra.config.authentication.CustomAuthenicationProvider;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -19,22 +20,20 @@ public class WebSecurityConfig {
 
   @Value("${api.version}")
   private String apiVersion;
-  private final CorsConfigurationSource corsConfigurationSource;
-
-
-  public WebSecurityConfig(
-          @Qualifier("corsConfiguration") CorsConfigurationSource corsConfigurationSource) {
-      this.corsConfigurationSource = corsConfigurationSource;
-  }
 
   @Bean
-  SecurityWebFilterChain securityFilterChain(ServerHttpSecurity http) throws Exception {
+  SecurityWebFilterChain securityFilterChain(
+          @Qualifier("corsConfiguration") CorsConfigurationSource corsConfigurationSource,
+          ServerHttpSecurity http,
+          CustomAuthenicationProvider customAuthenicationProvider) throws Exception {
     LOGGER.debug(apiVersion);
     http
             .csrf(ServerHttpSecurity.CsrfSpec::disable)
             .cors(cors->cors.configurationSource(corsConfigurationSource))
+            .authenticationManager(customAuthenicationProvider)
             .authorizeExchange(exchange -> exchange
                     .pathMatchers(
+                            apiVersion+"/auth/**",
                             apiVersion+"/child-accounts/**",
                             apiVersion+"/family-accounts/**",
                             apiVersion+"/admin/**")

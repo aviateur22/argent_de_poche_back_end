@@ -54,6 +54,13 @@
                 <default.image.extension>jpg</default.image.extension>
                 <default.child.image.name>dtushfgld</default.child.image.name>
                 <folder.path>C:/Programmation/java/argentDePoche/images</folder.path>
+
+                <!--Horaire -->
+                <zone.id>Europe/Paris</zone.id>
+
+                <!--JWT -->
+                <jwt.validity.hour>72</jwt.validity.hour>
+                <jwt.issuer>ctoutweb_argent_de_poche</jwt.issuer>
             </properties>
         </profile>
         <profile>
@@ -81,6 +88,13 @@
                 <default.image.extension>jpg</default.image.extension>
                 <default.child.image.name>dtushfgld</default.child.image.name>
                 <folder.path>/home/ubuntu/moe/argentDePoche/images</folder.path>
+
+                <!--Horaire -->
+                <zone.id>Europe/Paris</zone.id>
+
+                <!--JWT -->
+                <jwt.validity.hour>72</jwt.validity.hour>
+                <jwt.issuer>ctoutweb_argent_de_poche</jwt.issuer>
             </properties>
         </profile>
         <profile>
@@ -108,6 +122,13 @@
                 <default.image.extension>jpg</default.image.extension>
                 <default.child.image.name>dtushfgld</default.child.image.name>
                 <folder.path>/home/ubuntu/moe/argentDePoche/images</folder.path>
+
+                <!--JWT -->
+                <jwt.validity.hour>72</jwt.validity.hour>
+                <jwt.issuer>ctoutweb_argent_de_poche</jwt.issuer>
+
+                <!--Horaire -->
+                <zone.id>Europe/Paris</zone.id>
             </properties>
         </profile>
     </profiles>
