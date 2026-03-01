@@ -43,6 +43,7 @@ public class ParentFamilyAccountEntity extends Temporal {
 
     @Override
     public boolean equals(Object o) {
+
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         ParentFamilyAccountEntity that = (ParentFamilyAccountEntity) o;
@@ -59,7 +60,7 @@ public class ParentFamilyAccountEntity extends Temporal {
         return "ParentFamilyAccountEntity{" +
                 "id=" + id +
                 ", parentId=" + parentId +
-                ", familyAccountIdentity=" + familyAccountId +
+                ", familyAccountId=" + familyAccountId +
                 '}';
     }
 }

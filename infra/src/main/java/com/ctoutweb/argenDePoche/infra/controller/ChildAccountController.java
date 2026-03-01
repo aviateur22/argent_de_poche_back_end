@@ -89,53 +89,54 @@ public class ChildAccountController {
               );
     }
 
-  @PutMapping(path = "/add-money-movement")
-  public Mono<ResponseEntity<UpdatedChildAccountResponseDto>> addMoneyMovement(@RequestBody AddMoneyMovementRequestDto dto) {
-    LOGGER.info(() -> "Ajout d'un mouvement d'argent");
-    return childAccountService.addMoneyMovement(dto)
-            .map(responseDto -> {
-                      URI location = URI.create(apiPath + "/child-accounts/" + responseDto.childAccountId());
-                      return ResponseEntity
-                              .ok()
-                              .location(location)
-                              .body(responseDto);
-                    }
-            );
-  }
+    @PutMapping(path = "/add-money-movement")
+    public Mono<ResponseEntity<UpdatedChildAccountResponseDto>> addMoneyMovement(@RequestBody AddMoneyMovementRequestDto dto) {
+      LOGGER.info(() -> "Ajout d'un mouvement d'argent");
+      return childAccountService.addMoneyMovement(dto)
+              .map(responseDto -> {
+                        URI location = URI.create(apiPath + "/child-accounts/" + responseDto.childAccountId());
+                        return ResponseEntity
+                                .ok()
+                                .location(location)
+                                .body(responseDto);
+                      }
+              );
+    }
 
-  @PutMapping(path = "/update-child-name")
-  public Mono<ResponseEntity<UpdatedChildAccountResponseDto>> updateChildName(@RequestBody UpdateChildNameRequestDto dto) {
-    LOGGER.info(() -> "Mise à jour du nom de l'enfant");
-    return childAccountService.updateChildName(dto)
-            .map(responseDto -> {
-                      URI location = URI.create(apiPath + "/child-accounts/" + responseDto.childAccountId());
-                      return ResponseEntity
-                              .ok()
-                              .location(location)
-                              .body(responseDto);
-                    }
-            );
-  }
-  @PostMapping(path = "/reinitialize-remaining-money")
-  public Mono<ResponseEntity<UpdatedChildAccountResponseDto>> reinitializeRemainingMoney(@RequestBody ReinitializeRemainingMoneyDto dto) {
-    LOGGER.info(() -> "Reinitimaisation de l'argent de poche restant");
-    return childAccountService.reinitializeRemainingMoney(dto.parentId(), dto.childAccountId())
-            .map(responseDto -> {
-                      URI location = URI.create(apiPath + "/child-accounts/" + responseDto.childAccountId());
-                      return ResponseEntity
-                              .ok()
-                              .location(location)
-                              .body(responseDto);
-                    }
-            );
-  }
+    @PutMapping(path = "/update-child-name")
+    public Mono<ResponseEntity<UpdatedChildAccountResponseDto>> updateChildName(@RequestBody UpdateChildNameRequestDto dto) {
+      LOGGER.info(() -> "Mise à jour du nom de l'enfant");
+      return childAccountService.updateChildName(dto)
+              .map(responseDto -> {
+                        URI location = URI.create(apiPath + "/child-accounts/" + responseDto.childAccountId());
+                        return ResponseEntity
+                                .ok()
+                                .location(location)
+                                .body(responseDto);
+                      }
+              );
+    }
 
-  @GetMapping(value = "/stream/image/{imageName}/parent/{parentId}/child-account/{childAccountId}")
-  public Mono<ResponseEntity<Flux<DataBuffer>>> streamImage(@PathVariable String imageName, @PathVariable Long parentId, @PathVariable Long childAccountId) {
+    @PostMapping(path = "/reinitialize-remaining-money")
+    public Mono<ResponseEntity<UpdatedChildAccountResponseDto>> reinitializeRemainingMoney(@RequestBody ReinitializeRemainingMoneyDto dto) {
+      LOGGER.info(() -> "Reinitimaisation de l'argent de poche restant");
+      return childAccountService.reinitializeRemainingMoney(dto.parentId(), dto.childAccountId())
+              .map(responseDto -> {
+                        URI location = URI.create(apiPath + "/child-accounts/" + responseDto.childAccountId());
+                        return ResponseEntity
+                                .ok()
+                                .location(location)
+                                .body(responseDto);
+                      }
+              );
+    }
 
-    return childAccountService.streamChildImage(parentId, childAccountId, imageName)
-            .map(result -> ResponseEntity.ok()
-            .contentType(result.imageMediaType())
-            .body(result.childImageDate()));
-  }
+    @GetMapping(value = "/stream/image/{imageName}/parent/{parentId}/child-account/{childAccountId}")
+    public Mono<ResponseEntity<Flux<DataBuffer>>> streamImage(@PathVariable String imageName, @PathVariable Long parentId, @PathVariable Long childAccountId) {
+
+      return childAccountService.streamChildImage(parentId, childAccountId, imageName)
+              .map(result -> ResponseEntity.ok()
+              .contentType(result.imageMediaType())
+              .body(result.childImageDate()));
+    }
 }

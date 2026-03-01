@@ -78,4 +78,12 @@ public class HandlerException {
     );
   }
 
+  @ExceptionHandler(AuthenticationException.class)
+  public Mono<ResponseEntity<ErrorDto>> authenticationExceptionNotFoundException(AuthenticationException exception) {
+    return Mono.just(
+            ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(ErrorDto.createErrorDto(exception.getMessage()))
+    );
+  }
+
 }

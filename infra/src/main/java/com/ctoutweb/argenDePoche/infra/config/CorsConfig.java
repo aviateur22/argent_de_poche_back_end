@@ -42,6 +42,16 @@ public class CorsConfig {
     familyAccount.setAllowedHeaders(Arrays.asList( "multipart/form-data", "Content-Type", "Authorization", "Post-Csrf-Token"));
     familyAccount.setExposedHeaders(List.of("Post-Csrf-Token"));
     source.registerCorsConfiguration(apiVersion+"/family-accounts/**", familyAccount);
+
+    // Configuration Cors pour la gestion auth
+    CorsConfiguration auth = new CorsConfiguration();
+    auth.setAllowCredentials(true);
+    auth.setAllowedOrigins(Arrays.asList(corsDomains.split(",")));
+    auth.setAllowedMethods(Arrays.asList("GET", "POST", "OPTIONS"));
+    auth.setAllowedHeaders(Arrays.asList("Content-Type", "Authorization", "Post-Csrf-Token"));
+    auth.setExposedHeaders(List.of("Post-Csrf-Token"));
+    source.registerCorsConfiguration(apiVersion+"/auth/**", auth);
+
     return source;
   }
 }

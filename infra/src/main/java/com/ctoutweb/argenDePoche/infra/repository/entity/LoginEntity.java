@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Table(schema = "sc_argent_de_poche", name = "login")
-public class LoginEntity extends Temporal {
+public class LoginEntity {
     @Id
     private Long id;
 
@@ -23,6 +23,16 @@ public class LoginEntity extends Temporal {
 
     @Column("login_at")
     private LocalDateTime loginAt;
+
+    public LoginEntity() {
+    }
+
+    public LoginEntity(Long parentId, Boolean isLoginSuccess, Boolean hasToBeCheck, LocalDateTime loginAt) {
+        this.parentId = parentId;
+        this.isLoginSuccess = isLoginSuccess;
+        this.hasToBeCheck = hasToBeCheck;
+        this.loginAt = loginAt;
+    }
 
     public Long getId() {
         return id;
@@ -40,11 +50,11 @@ public class LoginEntity extends Temporal {
         this.parentId = parentId;
     }
 
-    public Boolean getLoginSuccess() {
+    public Boolean getIsLoginSuccess() {
         return isLoginSuccess;
     }
 
-    public void setLoginSuccess(Boolean loginSuccess) {
+    public void setIsLoginSuccess(Boolean loginSuccess) {
         isLoginSuccess = loginSuccess;
     }
 
