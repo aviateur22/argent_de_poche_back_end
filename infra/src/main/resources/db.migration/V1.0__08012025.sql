@@ -81,6 +81,7 @@ CREATE INDEX IF NOT EXISTS idx_family_family_account_id ON sc_argent_de_poche.fa
 CREATE TABLE if NOT EXISTS sc_argent_de_poche.child_account(
     "id" BIGINT PRIMARY KEY,
     "family_account_id" BIGINT NOT NULL REFERENCES sc_argent_de_poche."family_account"("id") on delete cascade,
+    "is_account_active" BOOLEAN NOT NULL DEFAULT true,
     "created_at" TIMESTAMP NOT NULL DEFAULT now(),
     "updated_at" TIMESTAMP
 );

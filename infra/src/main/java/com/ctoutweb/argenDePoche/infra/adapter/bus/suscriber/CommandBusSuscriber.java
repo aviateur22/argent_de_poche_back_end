@@ -18,6 +18,7 @@ public class CommandBusSuscriber {
     private final ReinitializeRemainingMoneyCommandHandler reinitializeRemainingMoneyCommandHandler;
     private final StreamChildImageCommandHandler streamChildImageCommandHandler;
     private final UpdateChildNameCommandHandler updateChildNameCommandHandler;
+    private final DesactivateChildAccountCommandHandler desactivateChildAccountCommandHandler;
 
     public CommandBusSuscriber(
             CommandBus commandBus,
@@ -27,7 +28,9 @@ public class CommandBusSuscriber {
             UpdateChildImageCommandHandler updateChildImageCommandHandler,
             UpdateInitialChildMoneyCommandHandler updateInitialChildMoneyCommandHandler,
             InitializeNexPeriodCommandHandler initializeNexPeriodCommandHandler,
-            ReinitializeRemainingMoneyCommandHandler reinitializeRemainingMoneyCommandHandler, StreamChildImageCommandHandler streamChildImageCommandHandler, UpdateChildNameCommandHandler updateChildNameCommandHandler
+            ReinitializeRemainingMoneyCommandHandler reinitializeRemainingMoneyCommandHandler,
+            StreamChildImageCommandHandler streamChildImageCommandHandler,
+            UpdateChildNameCommandHandler updateChildNameCommandHandler, DesactivateChildAccountCommandHandler desactivateChildAccountCommandHandler
     ) {
         this.commandBus = commandBus;
         this.createChildAccountCommandHandler = createChildAccountCommandHandler;
@@ -35,11 +38,13 @@ public class CommandBusSuscriber {
         this.createFamilyAccountCommandHandler = createFamilyAccountCommandHandler;
         this.updateChildImageCommandHandler = updateChildImageCommandHandler;
         this.updateInitialChildMoneyCommandHandler = updateInitialChildMoneyCommandHandler;
-      this.initializeNexPeriodCommandHandler = initializeNexPeriodCommandHandler;
-      this.reinitializeRemainingMoneyCommandHandler = reinitializeRemainingMoneyCommandHandler;
-      this.streamChildImageCommandHandler = streamChildImageCommandHandler;
-      this.updateChildNameCommandHandler = updateChildNameCommandHandler;
+        this.initializeNexPeriodCommandHandler = initializeNexPeriodCommandHandler;
+        this.reinitializeRemainingMoneyCommandHandler = reinitializeRemainingMoneyCommandHandler;
+        this.streamChildImageCommandHandler = streamChildImageCommandHandler;
+        this.updateChildNameCommandHandler = updateChildNameCommandHandler;
+        this.desactivateChildAccountCommandHandler = desactivateChildAccountCommandHandler;
 
+        // Enregistrement des Handler
       suscribe();
     }
 
@@ -53,5 +58,6 @@ public class CommandBusSuscriber {
         commandBus.registerMonoHandler(ReinitializeRemainingMoneyCommand.class, reinitializeRemainingMoneyCommandHandler);
         commandBus.registerMonoHandler(StreamChildImageCommand.class, streamChildImageCommandHandler);
         commandBus.registerMonoHandler(UpdateChildNameCommand.class, updateChildNameCommandHandler);
+        commandBus.registerMonoHandler(DesactivateChildAccountCommand.class, desactivateChildAccountCommandHandler);
     }
 }

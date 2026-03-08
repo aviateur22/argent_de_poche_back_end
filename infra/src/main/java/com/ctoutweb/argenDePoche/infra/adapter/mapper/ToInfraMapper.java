@@ -148,13 +148,19 @@ public class ToInfraMapper {
      *
      * @return ChildAccountEntity
      */
-    public ChildAccountEntity toChildAccountEntity(ChildMoneyAccount childMoneyAccount, FamilyAccount familyAccount, boolean includeChildAccountId) {
+    public ChildAccountEntity toChildAccountEntity(
+            ChildMoneyAccount childMoneyAccount,
+            FamilyAccount familyAccount,
+            boolean includeChildAccountId,
+            boolean isAccountActive) {
         ChildAccountEntity childAccountEntity = new ChildAccountEntity();
 
         if(includeChildAccountId)
             childAccountEntity.setId(toTechnicalId(childMoneyAccount.getChildMoneyAccountId()));
 
         childAccountEntity.setFamilyAccountId(toTechnicalId(familyAccount.getFamilyAccountId()));
+        childAccountEntity.setIsAccountActive(isAccountActive);
+
         return childAccountEntity;
     }
 

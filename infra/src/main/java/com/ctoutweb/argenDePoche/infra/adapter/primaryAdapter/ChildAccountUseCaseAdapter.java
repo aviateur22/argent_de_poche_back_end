@@ -173,7 +173,15 @@ public class ChildAccountUseCaseAdapter {
                 .map(ImageExtension::getFileExtensionText);
     }
 
-
+    /**
+     * Mise a jour du nom de l'enfant qui est associé au compte
+     *
+     * @param parentId L'identification du parent
+     * @param childAccountId Le compte d'argent de poche impacté
+     * @param updateChildName Le nouveau nom de l'enfant
+     *
+     * @return L'identifiant du compte modifié
+     */
     public Mono<UpdatedChildAccountResponseDto> updateChildName(long parentId, long childAccountId, String updateChildName) {
         var parentIdentity = toCoreMapper.toParentIdentity(parentId);
         var childAccountIdentity = toCoreMapper.toChildAccountIdentity(childAccountId);
@@ -181,5 +189,21 @@ public class ChildAccountUseCaseAdapter {
         return childAccountUseCase.updateChildName(childAccountIdentity, parentIdentity, updateChildName)
                 .map(s-> toDtoMapper.toUpdatedChildResponseDto(s));
 
+    }
+
+    /**
+     * Désactivation d'un compte
+     *
+     * @param parentId L'identification du parent désactivant le compte
+     * @param childAccountId Le compte d'argent de poche désactivé
+     *
+     * @return L'identifiant du compte modifié
+     */
+    public Mono<UpdatedChildAccountResponseDto> desactivateChildAccount(long parentId, long childAccountId) {
+        var parentIdentity = toCoreMapper.toParentIdentity(parentId);
+        var childAccountIdentity = toCoreMapper.toChildAccountIdentity(childAccountId);
+
+        return childAccountUseCase.desactivateChildAccount(childAccountIdentity, parentIdentity)
+                .map(s-> toDtoMapper.toUpdatedChildResponseDto(s));
     }
 }

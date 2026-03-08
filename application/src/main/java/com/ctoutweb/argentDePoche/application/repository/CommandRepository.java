@@ -62,6 +62,11 @@ public interface CommandRepository {
      */
     Mono<FamilyAccountIdentity> createFamilyAccount(FamilyAccount familyAccount, ParentIdentity parentCreatingFamilyAccount);
 
+    /**
+     * Vérifie si une nouvelle période doit être initialisée
+     *
+     * @return
+     */
     Mono<Boolean> initializeNextPeriod();
 
     /**
@@ -83,4 +88,13 @@ public interface CommandRepository {
      * @return L'identifiant du compte d'argent de poche quia recu le mouvemrnt
      */
     Mono<ChildMoneyAccountIdentity> addMoneyMovement(MoneyMovement moneyMovementToAdd, ChildMoneyAccountIdentity childAccountToBeUpdated);
+
+    /**
+     * Désactivation d'un compte d'argent de poche
+     *
+     * @param childAccountIdentityToDesactivate L'identifiant du compte a déactiver
+     *
+     * @return L'identifiant du compte qui est desactivé
+     */
+    Mono<ChildMoneyAccountIdentity> desactivateAccount(ChildMoneyAccountIdentity childAccountIdentityToDesactivate);
 }

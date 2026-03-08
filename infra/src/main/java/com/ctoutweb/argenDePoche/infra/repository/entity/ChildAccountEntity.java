@@ -14,6 +14,9 @@ public class ChildAccountEntity extends Temporal {
     @Column("family_account_id")
     private Long familyAccountId;
 
+    @Column("is_account_active")
+    private boolean isAccountActive;
+
     public Long getId() {
         return id;
     }
@@ -30,24 +33,33 @@ public class ChildAccountEntity extends Temporal {
         this.familyAccountId = familyAccountId;
     }
 
+    public boolean getIsAccountActive() {
+        return isAccountActive;
+    }
+
+    public void setIsAccountActive(boolean accountActive) {
+        isAccountActive = accountActive;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         ChildAccountEntity that = (ChildAccountEntity) o;
-        return Objects.equals(id, that.id) && Objects.equals(familyAccountId, that.familyAccountId);
+        return isAccountActive == that.isAccountActive && Objects.equals(id, that.id) && Objects.equals(familyAccountId, that.familyAccountId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), id, familyAccountId);
+        return Objects.hash(super.hashCode(), id, familyAccountId, isAccountActive);
     }
 
     @Override
     public String toString() {
         return "ChildAccountEntity{" +
                 "id=" + id +
-                ", familyAccountIdentity=" + familyAccountId +
+                ", familyAccountId=" + familyAccountId +
+                ", isAccountActive=" + isAccountActive +
                 '}';
     }
 }

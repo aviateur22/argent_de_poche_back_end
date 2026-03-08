@@ -8,10 +8,7 @@ import com.ctoutweb.argenDePoche.infra.model.dto.childAccount.moneyMovement.Mone
 import com.ctoutweb.argenDePoche.infra.model.dto.controller.AvailableMovementReasonDto;
 import com.ctoutweb.argenDePoche.infra.repository.*;
 import com.ctoutweb.argenDePoche.infra.repository.entity.ChildAccountCalendarEntity;
-import com.ctoutweb.argentDePoche.application.exception.CalendarPeriodNotFound;
-import com.ctoutweb.argentDePoche.application.exception.ChildImageNotFindException;
-import com.ctoutweb.argentDePoche.application.exception.ChildMoneyNotFoundException;
-import com.ctoutweb.argentDePoche.application.exception.ChildNotFindException;
+import com.ctoutweb.argentDePoche.application.exception.*;
 import com.ctoutweb.argentDePoche.application.query.dto.FamilyChildDto;
 import com.ctoutweb.argentDePoche.application.query.dto.FamilyInformationDto;
 import com.ctoutweb.argentDePoche.application.query.dto.ChildAccountDto;
@@ -44,7 +41,13 @@ public class QueryRepositoryAdapter implements QueryRepository {
           SqlQueryRepository sqlQueryRepository,
           ParentFamilyAccountRepository parentFamilyAccountRepository,
           ToInfraMapper toInfraMapper,
-          ToCoreMapper toCoreMapper, AdapterHelper adapterHelper, ChildAccountRepository childAccountRepository, ChildRepository childRepository, ChildImageRepository childImageRepository, FamilyRepository familyRepository, ChildCalendarRepository childCalendarRepository, ChildMoneyRepository childMoneyRepository) {
+          ToCoreMapper toCoreMapper, AdapterHelper adapterHelper,
+          ChildAccountRepository childAccountRepository,
+          ChildRepository childRepository,
+          ChildImageRepository childImageRepository,
+          FamilyRepository familyRepository,
+          ChildCalendarRepository childCalendarRepository,
+          ChildMoneyRepository childMoneyRepository) {
     this.sqlQueryRepository = sqlQueryRepository;
     this.parentFamilyAccountRepository = parentFamilyAccountRepository;
     this.toInfraMapper = toInfraMapper;
@@ -61,7 +64,7 @@ public class QueryRepositoryAdapter implements QueryRepository {
     @Override
     public Flux<FamilyChildDto> loadChildAccountsByFamily(FamilyAccountIdentity familyAccountIdentity) {
 
-    return childAccountRepository.findAllByFamilyAccountId(toInfraMapper.toTechnicalId(familyAccountIdentity))
+    return childAccountRepository.findAllByFamilyAccountIdAndIsAccountActiveTrue(toInfraMapper.toTechnicalId(familyAccountIdentity))
             .flatMap(childAccount ->
                 childRepository.findByChildAccountId(childAccount.getId())
                         .flatMap(child ->
@@ -92,12 +95,19 @@ public class QueryRepositoryAdapter implements QueryRepository {
       LocalDate startWeekDate = adapterHelper.loadStartDate(actualDate, PeriodSubscription.WEEK);
       LocalDate endWeekDate = adapterHelper.loadEndDay(actualDate, PeriodSubscription.WEEK);
 
-      return loadActiveChildAccountCalendar(childAccountId, startMonthDate, endMonthDate)
-          .switchIfEmpty(loadActiveChildAccountCalendar(childAccountId, startWeekDate, endWeekDate))
-          .switchIfEmpty(Mono.error(new CalendarPeriodNotFound("Il n'y a pas de periode mensuelle ou hebdomadaire associée a ce compte d'argent de poche")))
-          .flatMap(activeAccountCalendar ->
-                  loadChildAccount(childAccountId, activeAccountCalendar)
-          );
+      return childAccountRepository.findFirstByIdAndIsAccountActiveTrue(childAccountId)
+              .switchIfEmpty(
+                      Mono.error(new ChildAccountDesactivateException("Ce compte n'existe pas ou est désactivé"))
+              )
+              .flatMap(childAccount-> {
+                  return loadActiveChildAccountCalendar(childAccountId, startMonthDate, endMonthDate)
+                          .switchIfEmpty(loadActiveChildAccountCalendar(childAccountId, startWeekDate, endWeekDate))
+                          .switchIfEmpty(Mono.error(new CalendarPeriodNotFound("Il n'y a pas de periode mensuelle ou hebdomadaire associée a ce compte d'argent de poche")))
+                          .flatMap(activeAccountCalendar ->
+                                  loadChildAccount(childAccountId, activeAccountCalendar)
+                          );
+
+              });
     }
 
     @Override

@@ -73,11 +73,22 @@ public interface ChildAccountService {
     Mono<UpdatedChildAccountResponseDto> reinitializeRemainingMoney(long parentId, long childAccountId);
 
     /**
+     * Stream l'image d'un compte d'argent de poche
+     *
+     * @param parentId L'identifiant du parent
+     * @param childAccountId L'identifiant de ompte d'argent de poche
+     * @param childImageName Le nom de l'image a streamer
+     *
+     * @return Le stream + le Mime type du fichier a streamer
+     */
+    Mono<ImageStreaming> streamChildImage(long parentId, long childAccountId, String childImageName);
+
+    /**
+     * Désactivation du compte d'argent de poche d'un enfant
      *
      * @param parentId
      * @param childAccountId
-     * @param childImageName
-     * @return
+     * @return Renvoie l'identifiant du compte qui a été desaxtivé
      */
-    Mono<ImageStreaming> streamChildImage(long parentId, long childAccountId, String childImageName);
+    Mono<UpdatedChildAccountResponseDto> desactivateChildAccount(Long parentId, Long childAccountId);
 }

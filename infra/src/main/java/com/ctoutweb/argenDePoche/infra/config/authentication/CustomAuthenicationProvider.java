@@ -1,6 +1,7 @@
 package com.ctoutweb.argenDePoche.infra.config.authentication;
 ;
 import com.ctoutweb.argenDePoche.infra.exception.AuthenticationException;
+import com.ctoutweb.argenDePoche.infra.repository.FamilyRepository;
 import com.ctoutweb.argenDePoche.infra.repository.ParentFamilyAccountRepository;
 import com.ctoutweb.argenDePoche.infra.repository.ParentRepository;
 import com.ctoutweb.argenDePoche.infra.repository.RoleParentRepository;
@@ -19,18 +20,20 @@ public class CustomAuthenicationProvider implements ReactiveAuthenticationManage
     private final MapToUserPrincipal mapToUserPrincipal;
     private final ParentFamilyAccountRepository parentFamilyAccountRepository;
     private final LoginManagerService loginManagerService;
+    private final FamilyRepository familyRepository;
 
     public CustomAuthenicationProvider(
             ParentRepository parentRepository,
             RoleParentRepository roleParentRepository,
             MapToUserPrincipal mapToUserPrincipal,
             ParentFamilyAccountRepository parentFamilyAccountRepository,
-            LoginManagerService loginManagerService) {
+            LoginManagerService loginManagerService, FamilyRepository familyRepository) {
         this.parentRepository = parentRepository;
       this.roleParentRepository = roleParentRepository;
       this.mapToUserPrincipal = mapToUserPrincipal;
       this.parentFamilyAccountRepository = parentFamilyAccountRepository;
       this.loginManagerService = loginManagerService;
+      this.familyRepository = familyRepository;
     }
 
     @Override
@@ -53,6 +56,8 @@ public class CustomAuthenicationProvider implements ReactiveAuthenticationManage
                                         .flatMap(passwordStatus -> {
                                               if(!passwordStatus.isLoginAuthorized())
                                                 throw new AuthenticationException(passwordStatus.loginErrorMessage());
+
+
                                           return Mono.just(new UsernamePasswordAuthenticationToken(userPrincipal, authentication.getCredentials()));
                                         });
                             });
@@ -63,15 +68,23 @@ public class CustomAuthenicationProvider implements ReactiveAuthenticationManage
         return parentRepository
                 .findByEmail(email)
                 .flatMap(parent -> {
-                      return roleParentRepository.getParentRoles(parent.getId())
-                          .collectList()
-                          .map(parentRoles -> {
-                              var roles = parentRoles
-                                    .stream()
-                                    .map(ParentRoleProjection::roleName)
-                                    .toList();
-                              return mapToUserPrincipal.map(parent, roles, plainTextPassword);
-                      });
+                      return parentFamilyAccountRepository.findAllByParentId(parent.getId())
+                              .collectList()
+                              .flatMap(families -> {
+                                  return familyRepository.findByFamilyAccountId(families.get(0).getFamilyAccountId())
+                                          .flatMap(family -> {
+                                            return roleParentRepository.getParentRoles(parent.getId())
+                                                    .collectList()
+                                                    .map(parentRoles -> {
+                                                      var roles = parentRoles
+                                                              .stream()
+                                                              .map(ParentRoleProjection::roleName)
+                                                              .toList();
+                                                      return mapToUserPrincipal.map(parent, family.getName(), roles, plainTextPassword);
+                                                    });
+                                          });
+                              });
+
                 });
     }
 }

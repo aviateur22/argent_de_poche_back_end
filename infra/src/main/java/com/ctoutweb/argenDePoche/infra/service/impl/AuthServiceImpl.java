@@ -15,17 +15,11 @@ import com.ctoutweb.argenDePoche.infra.service.CryptoService;
 import com.ctoutweb.argenDePoche.infra.service.JwtService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.dao.NonTransientDataAccessException;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.ReactiveSecurityContextHolder;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.reactive.TransactionalOperator;
-import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 
 @Service
@@ -60,7 +54,7 @@ public class AuthServiceImpl implements AuthService {
     final var isParentActif = true;
 
     var parentToRegister = new ParentEntity();
-    parentToRegister.setNickname(parentNickName);
+    parentToRegister.setName(parentNickName);
     parentToRegister.setEmail(email);
     parentToRegister.setPassword(cryptoService.hashText(password));
     parentToRegister.setIsAccountActive(isParentActif);
@@ -100,37 +94,13 @@ public class AuthServiceImpl implements AuthService {
                                 new LoginResponseDto(
                                         jwt.getJwtToken(),
                                         userPrincipal.getId(),
-                                        userPrincipal.getNickname(),
+                                        userPrincipal.getParentName(),
+                                        userPrincipal.getFamilyName(),
                                         userPrincipal.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList(),
                                         jwt.getExpiredAt(),
-                                        String.format("Bonjour %s", userPrincipal.getNickname()))
+                                        String.format("Bonjour %s", userPrincipal.getParentName()))
                         );
               })
               .doOnError(e -> LOGGER.error("Login failed", e));
-//
-//
-//      return txOperator.transactional(reactiveAuthenticationManager.authenticate(user)
-//              .onErrorMap(e -> {
-//                if (e instanceof AuthenticationException) {
-//                  // Map AuthenticationException to a non-rollback exception
-//                  return new AuthenticationException(e.getMessage());
-//                }
-//                return e;
-//              })
-//            .flatMap(authentication  -> {
-//              UserPrincipal userPrincipal = (UserPrincipal)authentication.getPrincipal();
-//
-//              JwtGenerated jwt = jwtService.generate(userPrincipal);
-//              return jwtService.saveJwt(userPrincipal.getId(), jwt, loginDto.email())
-//                      .map(data ->
-//                              new LoginResponseDto(
-//                                      jwt.getJwtToken(),
-//                                      userPrincipal.getId(),
-//                                      userPrincipal.getNickname(),
-//                                      userPrincipal.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList(),
-//                                      String.format("Bonjour %s", userPrincipal.getNickname()))
-//                      );
-//            })
-//      );
   }
 }

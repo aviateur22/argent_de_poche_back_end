@@ -3,6 +3,7 @@ package com.ctoutweb.argentDePoche.core.domain.childAccount.entity.child;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.entity.childImage.ChildImage;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.entity.childImage.ImageExtension;
 import com.ctoutweb.argentDePoche.core.domain.exception.ChildException;
+import com.ctoutweb.argentDePoche.core.domain.exception.ChildNameException;
 
 import java.util.Objects;
 
@@ -14,7 +15,7 @@ public record Child(ChildIdentity childIdentity, String firstName, ChildImage ch
         Objects.requireNonNull(firstName, "Le nom de l'enfant est obligatoire: " + this);
 
         if(firstName.length() < FIRST_NAME_MIN_LENGTH)
-            throw new ChildException("Le prénom ne peux pas être inférieur a 3 charactères");
+            throw new ChildNameException("Le prénom ne peux pas être inférieur a 3 charactères");
     }
 
     /**

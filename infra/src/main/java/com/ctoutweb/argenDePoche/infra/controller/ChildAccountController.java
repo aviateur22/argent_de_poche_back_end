@@ -139,4 +139,16 @@ public class ChildAccountController {
               .contentType(result.imageMediaType())
               .body(result.childImageDate()));
     }
+
+    @DeleteMapping(value = "/parent/{parentId}/child-account/{childAccountId}/desactivate-child-account")
+    public Mono<ResponseEntity<UpdatedChildAccountResponseDto>> desactivateChildAccount(@PathVariable Long childAccountId, @PathVariable Long parentId){
+      LOGGER.info(() -> "Désactivation d'un compte enfant");
+      return childAccountService.desactivateChildAccount(parentId, childAccountId)
+              .map(responseDto -> {
+                        return ResponseEntity
+                                .ok()
+                                .body(responseDto);
+                      }
+              );
+    }
 }

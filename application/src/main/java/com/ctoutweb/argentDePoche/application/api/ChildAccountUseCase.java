@@ -110,4 +110,14 @@ public interface ChildAccountUseCase {
             ChildMoneyAccountIdentity childMoneyAccountId,
             ParentIdentity parentUpdatedChildAccount);
 
+    /**
+     * Désactivation d'un compte d'argent de poche
+
+     * @param childMoneyAccountId L'identifiant du compte de l'enfant a désactiver
+     * @param parentIdentity  L'identifiant du parent qui desactive le compte
+     *
+     * @return  L'identifiant du compte désactivé
+     */
+    Mono<ChildMoneyAccountIdentity> desactivateChildAccount(ChildMoneyAccountIdentity childMoneyAccountId,  ParentIdentity parentIdentity);
+
 }

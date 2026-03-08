@@ -2,6 +2,8 @@ package com.ctoutweb.argenDePoche.infra.exception;
 
 import com.ctoutweb.argenDePoche.infra.model.dto.ErrorDto;
 import com.ctoutweb.argentDePoche.application.exception.*;
+import com.ctoutweb.argentDePoche.core.domain.exception.ChildNameException;
+import com.ctoutweb.argentDePoche.core.domain.exception.UnvalidMoneyAtPeriodStartException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
@@ -78,8 +80,32 @@ public class HandlerException {
     );
   }
 
+  @ExceptionHandler(ChildNameException.class)
+  public Mono<ResponseEntity<ErrorDto>> childNameException(ChildNameException exception) {
+    return Mono.just(
+            ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(ErrorDto.createErrorDto(exception.getMessage()))
+    );
+  }
+
   @ExceptionHandler(AuthenticationException.class)
   public Mono<ResponseEntity<ErrorDto>> authenticationExceptionNotFoundException(AuthenticationException exception) {
+    return Mono.just(
+            ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(ErrorDto.createErrorDto(exception.getMessage()))
+    );
+  }
+
+  @ExceptionHandler(UnvalidMoneyAtPeriodStartException.class)
+  public Mono<ResponseEntity<ErrorDto>> unvalidMoneyAtPeriodStartException(UnvalidMoneyAtPeriodStartException exception) {
+    return Mono.just(
+            ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(ErrorDto.createErrorDto(exception.getMessage()))
+    );
+  }
+
+  @ExceptionHandler(ChildAccountDesactivateException.class)
+  public  Mono<ResponseEntity<ErrorDto>> childAccountDesactivateException(ChildAccountDesactivateException exception) {
     return Mono.just(
             ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(ErrorDto.createErrorDto(exception.getMessage()))

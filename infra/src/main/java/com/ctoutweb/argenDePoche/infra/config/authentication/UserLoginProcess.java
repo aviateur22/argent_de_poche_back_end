@@ -24,5 +24,5 @@ public interface UserLoginProcess {
      *
      * @return Le nickname
      */
-    String getNickname();
+    String getParentName();
 }

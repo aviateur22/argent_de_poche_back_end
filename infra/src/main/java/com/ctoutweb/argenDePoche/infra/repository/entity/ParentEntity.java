@@ -4,7 +4,6 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Table(name = "parent", schema = "sc_argent_de_poche")
@@ -12,7 +11,8 @@ public class ParentEntity extends Temporal {
     @Id
     private Long id;
 
-    private String nickname;
+    @Column("nickname")
+    private String name;
 
     private String email;
 
@@ -21,12 +21,12 @@ public class ParentEntity extends Temporal {
     @Column("is_account_active")
     private Boolean isAccountActive;
 
-    public String getNickname() {
-        return nickname;
+    public String getName() {
+        return name;
     }
 
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getEmail() {
@@ -65,7 +65,7 @@ public class ParentEntity extends Temporal {
     public String toString() {
         return "ParentEntity{" +
                 "id=" + id +
-                ", nickname='" + nickname + '\'' +
+                ", nickname='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 '}';
@@ -76,11 +76,11 @@ public class ParentEntity extends Temporal {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         ParentEntity that = (ParentEntity) o;
-        return Objects.equals(id, that.id) && Objects.equals(nickname, that.nickname) && Objects.equals(email, that.email) && Objects.equals(password, that.password);
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(email, that.email) && Objects.equals(password, that.password);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), id, nickname, email, password);
+        return Objects.hash(super.hashCode(), id, name, email, password);
     }
 }

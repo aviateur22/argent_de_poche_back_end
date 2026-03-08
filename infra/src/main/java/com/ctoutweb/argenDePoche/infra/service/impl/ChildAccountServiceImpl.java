@@ -150,4 +150,13 @@ public class ChildAccountServiceImpl implements ChildAccountService {
                 .doOnError(e ->
                         LOGGER.error("Erreur dans l'appel au service addMoneyMovement", e));
     }
+
+  @Override
+  public Mono<UpdatedChildAccountResponseDto> desactivateChildAccount(Long parentId, Long childAccountId) {
+    return txOperator.transactional(childAccountUseCaseAdapter.desactivateChildAccount(parentId, childAccountId))
+            .doOnSuccess(childAccountUpdated ->
+                    LOGGER.info(() -> String.format("Le compte est mise à jour %s", childAccountUpdated)))
+            .doOnError(e ->
+                    LOGGER.error("Erreur dans l'appel au service reinitializeRemainingMoney", e));
+  }
 }

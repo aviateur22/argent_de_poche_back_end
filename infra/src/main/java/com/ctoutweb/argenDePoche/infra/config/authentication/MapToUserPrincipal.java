@@ -13,11 +13,12 @@ public class MapToUserPrincipal {
      * @param parentIdentity ParentIdentity - Le parent qui est connecté
      * @return UserPrincipal
      */
-    public UserPrincipal map(ParentEntity parentIdentity, List<String> parentRoles, String plainTextPassword) {
+    public UserPrincipal map(ParentEntity parentIdentity, String familyName, List<String> parentRoles, String plainTextPassword) {
         return new UserPrincipal(
                 parentIdentity.getId(),
                 parentIdentity.getEmail(),
-                parentIdentity.getNickname(),
+                parentIdentity.getName(),
+                familyName,
                 plainTextPassword,
                 parentIdentity.getPassword(),
                 parentRoles,

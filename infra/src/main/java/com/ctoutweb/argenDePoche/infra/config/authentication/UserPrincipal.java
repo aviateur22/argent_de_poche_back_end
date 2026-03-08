@@ -10,7 +10,8 @@ import java.util.stream.Collectors;
 
 public class UserPrincipal  implements UserDetails, UserLoginProcess {
         private long id;
-        private String nickname;
+        private String parentName;
+        private String familyName;
         private String email;
         private String hashPassword;
         private String plainTextPassword;
@@ -20,14 +21,16 @@ public class UserPrincipal  implements UserDetails, UserLoginProcess {
     public UserPrincipal(
             long id,
             String email,
-            String nickname,
+            String parentName,
+            String familyName,
             String plainTextPassword,
             String hashPassword,
             List<String> userRoleNames ,
             Boolean isAccountActive) {
         this.id = id;
         this.email = email;
-        this.nickname = nickname;
+        this.parentName = parentName;
+        this.familyName = familyName;
         this.plainTextPassword = plainTextPassword;
         this.hashPassword = hashPassword;
         this.authorities =  convertRoleUserToAuthorities(userRoleNames);
@@ -79,8 +82,8 @@ public class UserPrincipal  implements UserDetails, UserLoginProcess {
     }
 
     @Override
-    public String getNickname() {
-        return nickname;
+    public String getParentName() {
+        return parentName;
     }
 
     @Override
@@ -106,5 +109,13 @@ public class UserPrincipal  implements UserDetails, UserLoginProcess {
     @Override
     public boolean isEnabled() {
         return UserDetails.super.isEnabled();
+    }
+
+    public String getFamilyName() {
+        return familyName;
+    }
+
+    public void setFamilyName(String familyName) {
+        this.familyName = familyName;
     }
 }

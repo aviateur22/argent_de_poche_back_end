@@ -145,4 +145,10 @@ public class ChildAccountUseCaseImpl implements ChildAccountUseCase {
 
         return commandBus.executeCommand(streamChildImageCommand);
     }
+
+    @Override
+    public Mono<ChildMoneyAccountIdentity> desactivateChildAccount(ChildMoneyAccountIdentity childMoneyAccountId, ParentIdentity parentIdentity) {
+        var desactivateChildAccountCommand = DesactivateChildAccountCommand.create(childMoneyAccountId, parentIdentity);
+        return commandBus.executeCommand(desactivateChildAccountCommand);
+    }
 }

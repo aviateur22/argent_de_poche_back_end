@@ -7,6 +7,7 @@ public record LoginResponseDto(
         String jwt,
         Long parentId,
         String parentName,
+        String familyName,
         List<String> roles,
         LocalDateTime jwtExpiredAt,
         String message) implements ResponseMessage {

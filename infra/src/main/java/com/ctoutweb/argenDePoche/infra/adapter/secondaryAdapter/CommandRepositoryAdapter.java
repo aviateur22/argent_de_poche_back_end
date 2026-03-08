@@ -10,6 +10,7 @@ import com.ctoutweb.argenDePoche.infra.model.dto.controller.AvailableMovementRea
 import com.ctoutweb.argenDePoche.infra.repository.*;
 import com.ctoutweb.argenDePoche.infra.repository.entity.*;
 import com.ctoutweb.argentDePoche.application.exception.CalendarPeriodNotFound;
+import com.ctoutweb.argentDePoche.application.exception.ChildAccountDesactivateException;
 import com.ctoutweb.argentDePoche.application.exception.FamilyAccountForbiddenException;
 import com.ctoutweb.argentDePoche.application.port.AddMoneyMovementReason;
 import com.ctoutweb.argentDePoche.application.repository.CommandRepository;
@@ -178,15 +179,40 @@ public class CommandRepositoryAdapter implements CommandRepository {
               });
     }
 
-    @Override
+  @Override
+  public Mono<ChildMoneyAccountIdentity> desactivateAccount(ChildMoneyAccountIdentity childAccountIdentityToDesactivate) {
+    long childAccountId = toInfraMapper.toTechnicalId(childAccountIdentityToDesactivate);
+    final boolean isDescativated = false;
+
+    return childAccountRepository.findFirstByIdAndIsAccountActiveTrue(childAccountId)
+            .switchIfEmpty(
+                    Mono.error(new ChildAccountDesactivateException("Ce compte n'existe pas ou est désactivé"))
+            )
+            .flatMap(findChildAccount -> {
+              findChildAccount.setIsAccountActive(isDescativated);
+              return childAccountRepository.save(findChildAccount);
+            })
+            .map(updatedAccount -> toCoreIdentity.toChildAccountIdentity(updatedAccount.getId()));
+
+  }
+
+  @Override
     public Mono<ChildMoneyAccountIdentity> createChildMoneyAccount(ChildMoneyAccount childMoneyAccountToBeCreated, FamilyAccount familyAccount) {
+
+        // Afin de créer un nouveau compte d'argent depoche, on ne transmet pas d'itenditifiant
         final boolean isChildAccountIdToIncludeInEntity = false;
+
+        // Valeur par default des mouvemlent d'argent
         final BigDecimal defaultFluctuationPrice = BigDecimal.valueOf(0.5);
+
+        // Nouveau compte actif par default
+        final boolean isAccountActif  = true;
 
        ChildAccountEntity childAccountToSave = toInfraMapper.toChildAccountEntity(
                childMoneyAccountToBeCreated,
                familyAccount,
-               isChildAccountIdToIncludeInEntity);
+               isChildAccountIdToIncludeInEntity,
+               isAccountActif);
 
        ChildImageEntity childImageEntityToSave = toInfraMapper.toChildImageEntity(childMoneyAccountToBeCreated);
 
