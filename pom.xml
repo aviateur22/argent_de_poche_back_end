@@ -61,6 +61,10 @@
                 <!--JWT -->
                 <jwt.validity.hour>72</jwt.validity.hour>
                 <jwt.issuer>ctoutweb_argent_de_poche</jwt.issuer>
+
+                <!-- FrontEnd -->
+                <front.end.base.url>http://localhost:4200</front.end.base.url>
+                <qr.code.child.account.url>/compte/enfant/%s/info</qr.code.child.account.url>
             </properties>
         </profile>
         <profile>
@@ -95,6 +99,11 @@
                 <!--JWT -->
                 <jwt.validity.hour>72</jwt.validity.hour>
                 <jwt.issuer>ctoutweb_argent_de_poche</jwt.issuer>
+
+                <!-- FrontEnd -->
+                <front.end.base.url>http://52.47.100.124/argent-de-poche</front.end.base.url>
+                <qr.code.child.account.url>/compte/enfant/%s/info</qr.code.child.account.url>
+
             </properties>
         </profile>
         <profile>
@@ -129,6 +138,10 @@
 
                 <!--Horaire -->
                 <zone.id>Europe/Paris</zone.id>
+
+                <!-- FrontEnd -->
+                <front.end.base.url>http://52.47.100.124/argent-de-poche</front.end.base.url>
+                <qr.code.child.account.url>/compte/enfant/%s/info</qr.code.child.account.url>
             </properties>
         </profile>
     </profiles>

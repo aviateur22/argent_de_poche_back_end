@@ -1,5 +1,6 @@
 package com.ctoutweb.argentDePoche.application.query;
 
+import com.ctoutweb.argentDePoche.application.configuration.annotation.CoreService;
 import com.ctoutweb.argentDePoche.application.exception.FamilyAccountForbiddenException;
 import com.ctoutweb.argentDePoche.application.exception.FamilyConflictException;
 import com.ctoutweb.argentDePoche.application.query.dto.FamilyDto;
@@ -7,6 +8,7 @@ import com.ctoutweb.argentDePoche.application.query.dto.query.LoadFamilyAccountQ
 import com.ctoutweb.argentDePoche.application.repository.QueryRepository;
 import reactor.core.publisher.Mono;
 
+@CoreService
 public class LoadFamilyAccountQueryHandler implements MonoQueryHandler<LoadFamilyAccountQuery, FamilyDto> {
 
     private final QueryRepository queryRepository;

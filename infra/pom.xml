@@ -21,6 +21,7 @@
         <auth0.version>4.4.0</auth0.version>
         <thumbmail.version>0.4.20</thumbmail.version>
         <r2dbc-postgresql.version>1.1.0.RELEASE</r2dbc-postgresql.version>
+        <zxing.version>3.5.3</zxing.version>
     </properties>
 
     <build>
@@ -67,18 +68,34 @@
             <artifactId>spring-boot-starter-webflux</artifactId>
         </dependency>
 
+        <!-- Gestion text -->
         <dependency>
             <groupId>org.passay</groupId>
             <artifactId>passay</artifactId>
             <version>${passay.version}</version>
         </dependency>
 
+        <!-- Gestion image -->
         <dependency>
             <groupId>net.coobird</groupId>
             <artifactId>thumbnailator</artifactId>
             <version>${thumbmail.version}</version>
         </dependency>
 
+        <!-- Qr code -->
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>core</artifactId>
+            <version>${zxing.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>javase</artifactId>
+            <version>${zxing.version}</version>
+        </dependency>
+
+        <!--JWT -->
         <dependency>
             <groupId>com.auth0</groupId>
             <artifactId>java-jwt</artifactId>
@@ -86,16 +103,16 @@
         </dependency>
 
         <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>r2dbc-postgresql</artifactId>
+            <version>${r2dbc-postgresql.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.ctoutweb</groupId>
             <artifactId>application</artifactId>
             <version>1.0.0-RC1</version>
             <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>r2dbc-postgresql</artifactId>
-            <version>${r2dbc-postgresql.version}</version>
         </dependency>
 
         <!--- Test -->

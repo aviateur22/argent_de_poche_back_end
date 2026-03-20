@@ -1,11 +1,12 @@
 package com.ctoutweb.argentDePoche.application.api;
 
 import com.ctoutweb.argentDePoche.application.command.dto.UpdatedChildImage;
+import com.ctoutweb.argentDePoche.application.port.GenerateQrCode;
 import com.ctoutweb.argentDePoche.application.query.dto.ChildAccountDto;
+import com.ctoutweb.argentDePoche.application.query.dto.QrCodeDto;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.aggregate.ChildMoneyAccountIdentity;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.entity.childImage.ImageExtension;
 import com.ctoutweb.argentDePoche.core.domain.familyAccount.entity.parent.ParentIdentity;
-import org.reactivestreams.Publisher;
 import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
@@ -120,4 +121,23 @@ public interface ChildAccountUseCase {
      */
     Mono<ChildMoneyAccountIdentity> desactivateChildAccount(ChildMoneyAccountIdentity childMoneyAccountId,  ParentIdentity parentIdentity);
 
+    /**
+     * Génération d'un QR code renvoyant le lien URL pour suivre
+     * l'argent de poche
+     *
+     * @param generateQrCode Contient les information nécessaire à la generarion
+     *                       du Qr code
+     *
+     * @return les données du Qr code qui est générée
+     */
+    Mono<QrCodeDto> generateChildAccountQrCode(GenerateQrCode generateQrCode);
+
+    /**
+     * Affichage des données d'un compte d'argent de poche
+     *
+     * @param childMoneyAccountIdentity Lidendifiant du compte
+     *
+     * @return
+     */
+    Mono<ChildAccountDto> displayChildAccountInfo(ChildMoneyAccountIdentity childMoneyAccountIdentity);
 }

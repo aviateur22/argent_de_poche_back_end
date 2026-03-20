@@ -31,6 +31,12 @@ public class ChildAccountServiceImpl implements ChildAccountService {
     @Value("${default.image.extension}")
     private String defaultImageExtension;
 
+    @Value("${front.end.base.url}")
+    private String frontEndBaseUrl;
+
+    @Value("${qr.code.child.account.url}")
+    private String qrCodeChildAccountUrl;
+
     private final TransactionalOperator txOperator;
     private final ToDtoMapper toDtoMapper;
     private final InfraMapper infraMapper;
@@ -158,5 +164,26 @@ public class ChildAccountServiceImpl implements ChildAccountService {
                     LOGGER.info(() -> String.format("Le compte est mise à jour %s", childAccountUpdated)))
             .doOnError(e ->
                     LOGGER.error("Erreur dans l'appel au service reinitializeRemainingMoney", e));
+  }
+
+  @Override
+  public Mono<DataBuffer> generateQrCode(Long parentId, Long childAccountId) {
+      // Mise a jour du endPount avec id du compte
+      var endPointWithChildAccountId = String.format(qrCodeChildAccountUrl, childAccountId);
+
+      // URL d'acces pour le qrCode
+      var urlToDisplayInQrCode = String.format("%s%s", frontEndBaseUrl, endPointWithChildAccountId);
+    return txOperator.transactional(childAccountUseCaseAdapter.generateQrCode(parentId, childAccountId, urlToDisplayInQrCode))
+            .doOnSuccess(dataBuffer ->
+                    LOGGER.info(() -> String.format("Stream du QR code du compte d'argent de poche ok, compte enfant %s ", childAccountId)))
+            .doOnError(e ->
+                    LOGGER.error("Erreur dans l'appel au service generateQrCode", e));
+  }
+
+  @Override
+  public Mono<DisplayChildAccountInfoResponseDto> displayChildAccountInfo(Long childAccountId) {
+    return txOperator.transactional(childAccountUseCaseAdapter.displayChildAccountInfo(childAccountId)
+        .doOnSuccess(childAccount -> LOGGER.info(() -> String.format("Réussite de la récupération des données du compte enfant %s", childAccount.childAccountIdentity())))
+        .doOnError(e -> LOGGER.error("Erreur dans l'appel au service loadChildAccount", e)));
   }
 }

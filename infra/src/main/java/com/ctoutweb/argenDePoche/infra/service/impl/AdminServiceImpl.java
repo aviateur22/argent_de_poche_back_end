@@ -20,11 +20,18 @@ public class AdminServiceImpl implements com.ctoutweb.argenDePoche.infra.service
   }
 
   //second minute heure day-of-month month day-of-week
-  @Scheduled(cron = "0 0 0 ? * SUN")
   @Override
   public Mono<Boolean> initializeNextPeriod() {
     LOGGER.info("Initialisation de la periode suivante");
     return txOperator.transactional(childAccountUseCaseAdapter.initializeNextPeriod())
             .doOnSuccess(success -> LOGGER.info("Initialisation de la période suivante s'est bien passé"));
+  }
+
+  @Scheduled(cron = "0 0 0 ? * MON")
+  public void scheduleInitializeNextPeriod() {
+    LOGGER.info("Initialisation de la periode suivante");
+    txOperator.transactional(childAccountUseCaseAdapter.initializeNextPeriod())
+            .doOnSuccess(success -> LOGGER.info("Initialisation de la période suivante s'est bien passé"))
+            .subscribe();
   }
 }
