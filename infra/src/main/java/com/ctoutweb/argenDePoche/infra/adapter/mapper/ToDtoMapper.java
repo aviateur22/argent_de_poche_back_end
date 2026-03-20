@@ -1,20 +1,21 @@
 package com.ctoutweb.argenDePoche.infra.adapter.mapper;
 
-import com.ctoutweb.argenDePoche.infra.model.dto.controller.AvailableMovementReasonDto;
+import com.ctoutweb.argenDePoche.infra.model.dto.controller.*;
 import com.ctoutweb.argenDePoche.infra.model.dto.controller.childAccount.ChildAccountResponseDto;
-import com.ctoutweb.argenDePoche.infra.model.dto.controller.CreateChildAccountResponseDto;
-import com.ctoutweb.argenDePoche.infra.model.dto.controller.CreateFamilyAccountResponseDto;
 import com.ctoutweb.argenDePoche.infra.model.dto.UpdatedChildImageDto;
-import com.ctoutweb.argenDePoche.infra.model.dto.controller.UpdatedChildAccountResponseDto;
 import com.ctoutweb.argenDePoche.infra.model.dto.controller.familyAccountResponse.ChildDto;
 import com.ctoutweb.argenDePoche.infra.model.dto.controller.familyAccountResponse.FamilyAccountResponseDto;
 import com.ctoutweb.argentDePoche.application.command.dto.UpdatedChildImage;
 import com.ctoutweb.argentDePoche.application.query.dto.ChildAccountDto;
 import com.ctoutweb.argentDePoche.application.query.dto.FamilyChildDto;
 import com.ctoutweb.argentDePoche.application.query.dto.FamilyDto;
+import com.ctoutweb.argentDePoche.application.query.dto.QrCodeDto;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.aggregate.ChildMoneyAccountIdentity;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.valueObject.movementReason.AvailableReasonMovement;
+import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.core.io.buffer.DefaultDataBufferFactory;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -129,6 +130,43 @@ public class ToDtoMapper {
         return new UpdatedChildAccountResponseDto(childAccountId);
     }
 
+
+    /***
+     * Map des données bytes d'un Qr code en DataBuffer
+     *
+     * @param dto Les données conteant les byte du qrCode
+     *
+     * @return DataBuffer
+     */
+    public DataBuffer toDataBuffer(QrCodeDto dto) {
+        DefaultDataBufferFactory factory = new DefaultDataBufferFactory();
+        return factory.wrap(dto.qrCodeBytes());
+    }
+
+
+
+    /**
+     * Map les données childAccountResponseDto vers  DisplayChildAccountInfoResponseDto
+     *
+     * @param childAccountDto Les données récupérées
+     *
+     * @return Renvoie une nouvelle instance de DisplayChildAccountInfoResponseDto
+     */
+    public DisplayChildAccountInfoResponseDto toDisplayChildAccountInfoResponseDto(ChildAccountDto childAccountDto) {
+        return new DisplayChildAccountInfoResponseDto(
+                infraMapper.toTechnicalId(childAccountDto.childAccountIdentity()),
+                childAccountDto.imageRandomName(),
+                childAccountDto.childName(),
+                childAccountDto.remainingMoney(),
+                childAccountDto.moneyAtPeriodStart(),
+                childAccountDto.actualDate(),
+                childAccountDto.startPeriodDate(),
+                childAccountDto.endPeriodDate(),
+                ""
+        );
+    }
+
+
     /**
      * Renvoie un DTO de type ChildDto qui est requis pour l'objet FamilyAccountResponseDto
      *
@@ -145,6 +183,7 @@ public class ToDtoMapper {
                 childDto.imageRandomName()
         );
     }
+
 
     private AvailableMovementReasonDto toAvailableMovementReasonDto(AvailableReasonMovement availableReasonMovement) {
         return new AvailableMovementReasonDto(

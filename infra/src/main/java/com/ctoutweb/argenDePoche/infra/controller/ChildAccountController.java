@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.web.bind.annotation.*;
@@ -151,4 +152,11 @@ public class ChildAccountController {
                       }
               );
     }
+
+  @GetMapping(value = "/stream/parent/{parentId}/child-account/{childAccountId}/qr-code", produces = MediaType.IMAGE_PNG_VALUE)
+  public Mono<ResponseEntity<DataBuffer>> generateChildAccountQrCode(@PathVariable Long parentId, @PathVariable Long childAccountId) {
+      return childAccountService.generateQrCode(parentId, childAccountId)
+              .map(result -> ResponseEntity.ok()
+                      .body(result));
+  }
 }

@@ -3,6 +3,7 @@ package com.ctoutweb.argenDePoche.infra.service;
 import com.ctoutweb.argenDePoche.infra.model.dto.ImageStreaming;
 import com.ctoutweb.argenDePoche.infra.model.dto.controller.*;
 import com.ctoutweb.argenDePoche.infra.model.dto.controller.childAccount.ChildAccountResponseDto;
+import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.codec.multipart.FilePart;
 import reactor.core.publisher.Mono;
 
@@ -91,4 +92,23 @@ public interface ChildAccountService {
      * @return Renvoie l'identifiant du compte qui a été desaxtivé
      */
     Mono<UpdatedChildAccountResponseDto> desactivateChildAccount(Long parentId, Long childAccountId);
+
+    /**
+     * Génération d'un qr code
+     *
+     * @param parentId L'identifiant du parent
+     * @param childAccountId L'identifiant du compte d'argent de poche
+     * @return
+     */
+    Mono<DataBuffer> generateQrCode(Long parentId, Long childAccountId);
+
+    /**
+     * Affichage des données d'un compte d'argent de poche
+     * Ici les données sont consultable sans authentifacation
+     *
+     * @param childAccountId L'identifiant du compte d'argent de poche
+     *
+     * @return
+     */
+    Mono<DisplayChildAccountInfoResponseDto> displayChildAccountInfo(Long childAccountId);
 }

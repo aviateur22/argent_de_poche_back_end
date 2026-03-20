@@ -2,7 +2,9 @@ package com.ctoutweb.argenDePoche.infra.model.mapper;
 
 import com.ctoutweb.argenDePoche.infra.model.dto.UpdatedChildImageDto;
 import com.ctoutweb.argenDePoche.infra.model.dto.controller.AddMoneyMovementRequestDto;
+import com.ctoutweb.argenDePoche.infra.model.dto.controller.DisplayChildAccountInfoResponseDto;
 import com.ctoutweb.argenDePoche.infra.model.dto.controller.UpdatedChildAccountResponseDto;
+import com.ctoutweb.argenDePoche.infra.model.dto.controller.childAccount.ChildAccountResponseDto;
 import com.ctoutweb.argentDePoche.application.port.AddMoneyMovementReason;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;

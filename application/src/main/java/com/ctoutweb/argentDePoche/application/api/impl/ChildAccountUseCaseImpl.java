@@ -8,14 +8,17 @@ import com.ctoutweb.argentDePoche.application.configuration.bus.CommandBus;
 import com.ctoutweb.argentDePoche.application.configuration.bus.EventBus;
 import com.ctoutweb.argentDePoche.application.configuration.bus.QueryBus;
 import com.ctoutweb.argentDePoche.application.configuration.event.LogErrorEvent;
+import com.ctoutweb.argentDePoche.application.port.GenerateQrCode;
 import com.ctoutweb.argentDePoche.application.query.dto.ChildAccountDto;
+import com.ctoutweb.argentDePoche.application.query.dto.QrCodeDto;
+import com.ctoutweb.argentDePoche.application.query.dto.query.DisplayChildAccountInfoQuery;
+import com.ctoutweb.argentDePoche.application.query.dto.query.GenerateQrCodeQuery;
 import com.ctoutweb.argentDePoche.application.query.dto.query.LoadChildAccountQuery;
 import com.ctoutweb.argentDePoche.application.spi.RandomProvider;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.aggregate.ChildMoneyAccountIdentity;
 import com.ctoutweb.argentDePoche.core.domain.childAccount.entity.childImage.ImageExtension;
 import com.ctoutweb.argentDePoche.core.domain.exception.ChildImageException;
 import com.ctoutweb.argentDePoche.core.domain.familyAccount.entity.parent.ParentIdentity;
-import org.reactivestreams.Publisher;
 import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
@@ -150,5 +153,26 @@ public class ChildAccountUseCaseImpl implements ChildAccountUseCase {
     public Mono<ChildMoneyAccountIdentity> desactivateChildAccount(ChildMoneyAccountIdentity childMoneyAccountId, ParentIdentity parentIdentity) {
         var desactivateChildAccountCommand = DesactivateChildAccountCommand.create(childMoneyAccountId, parentIdentity);
         return commandBus.executeCommand(desactivateChildAccountCommand);
+    }
+
+    @Override
+    public Mono<QrCodeDto> generateChildAccountQrCode(GenerateQrCode generateQrCode) {
+
+        // Taille en pixel de l'image du QR Code
+        final var imageWidthAndHeight = 300;
+
+        var generateQrCodeQuery = GenerateQrCodeQuery.create(
+                generateQrCode.getUrlToDisplayInQrCode(),
+                imageWidthAndHeight,
+                generateQrCode.getParentIdentity(),
+                generateQrCode.getChildMoneyAccountId());
+
+        return queryBus.executeQuery(generateQrCodeQuery);
+    }
+
+    @Override
+    public Mono<ChildAccountDto> displayChildAccountInfo(ChildMoneyAccountIdentity childMoneyAccountId) {
+        var loadChildAccountQuery = DisplayChildAccountInfoQuery.create(childMoneyAccountId);
+        return queryBus.executeQuery(loadChildAccountQuery);
     }
 }
