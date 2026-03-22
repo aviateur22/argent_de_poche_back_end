@@ -68,7 +68,7 @@
             <artifactId>spring-boot-starter-webflux</artifactId>
         </dependency>
 
-        <!-- Gestion text -->
+        <!-- Gestion controle du formatage d'un text -->
         <dependency>
             <groupId>org.passay</groupId>
             <artifactId>passay</artifactId>

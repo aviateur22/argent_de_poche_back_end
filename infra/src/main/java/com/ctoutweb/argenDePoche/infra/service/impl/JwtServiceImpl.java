@@ -2,8 +2,12 @@ package com.ctoutweb.argenDePoche.infra.service.impl;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.SignatureVerificationException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.ctoutweb.argenDePoche.infra.config.authentication.UserPrincipal;
+import com.ctoutweb.argenDePoche.infra.exception.AuthenticationTokenExpiredException;
+import com.ctoutweb.argenDePoche.infra.exception.AuthenticationTokenInvalidException;
 import com.ctoutweb.argenDePoche.infra.model.jwt.JwtGenerated;
 import com.ctoutweb.argenDePoche.infra.model.jwt.JwtGeneratedImpl;
 import com.ctoutweb.argenDePoche.infra.repository.JwtRepository;
@@ -21,9 +25,11 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import static com.ctoutweb.argenDePoche.infra.constant.JwtConstant.CLAIM_AUTHORITIES;
+import static com.ctoutweb.argenDePoche.infra.constant.JwtConstant.CLAIM_ID;
 
 @Service
 public class JwtServiceImpl implements JwtService {
@@ -60,23 +66,32 @@ public class JwtServiceImpl implements JwtService {
                 .withJWTId(jwtId)
                 .withIssuer(jwtIssuer)
                 .withExpiresAt(expiredAt)
-                .withClaim("id", userPrincipal.getId())
-                .withClaim("authorities", authorities)
+                .withClaim(CLAIM_ID, userPrincipal.getId())
+                .withClaim(CLAIM_AUTHORITIES, authorities)
                 .sign(Algorithm.HMAC256(jwtSecret));
 
         return new JwtGeneratedImpl(jwtId, token, LocalDateTime.ofInstant(expiredAt, ZoneId.of(zoneId)));
     }
 
     @Override
-    public Optional<DecodedJWT> validateAndDecode(String token) {
-        try{
-            return Optional.of(JWT
+    public Mono<DecodedJWT> validateAndDecode(String token) {
+        try {
+            DecodedJWT decodedJWT = JWT
                     .require(Algorithm.HMAC256(jwtSecret))
                     .build()
-                    .verify(token));
+                    .verify(token);
+
+            return Mono.just(decodedJWT);
+
+        } catch (SignatureVerificationException exception) {
+            LOGGER.error(exception.getMessage());
+            throw new AuthenticationTokenInvalidException("Le token JWT n'est pas valide");
+        } catch (TokenExpiredException exception) {
+            LOGGER.error(exception.getMessage());
+            throw new AuthenticationTokenExpiredException("Le token JWT est expiré");
         } catch (Exception exception) {
             LOGGER.error(exception.getMessage());
-            return Optional.empty();
+            throw new AuthenticationTokenInvalidException("Il y a eu une exception lors de la validation du token JWT");
         }
     }
 

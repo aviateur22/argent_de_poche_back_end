@@ -86,7 +86,7 @@ public class AuthServiceImpl implements AuthService {
 
       return reactiveAuthenticationManager.authenticate(user)
               .flatMap(authentication  -> {
-                UserPrincipal userPrincipal = (UserPrincipal)authentication.getPrincipal();
+                UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 
                 JwtGenerated jwt = jwtService.generate(userPrincipal);
                 return jwtService.saveJwt(userPrincipal.getId(), jwt, loginDto.email())

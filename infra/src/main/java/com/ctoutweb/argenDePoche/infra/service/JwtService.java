@@ -5,8 +5,6 @@ import com.ctoutweb.argenDePoche.infra.config.authentication.UserPrincipal;
 import com.ctoutweb.argenDePoche.infra.model.jwt.JwtGenerated;
 import reactor.core.publisher.Mono;
 
-import java.util.Optional;
-
 
 public interface JwtService {
 
@@ -26,7 +24,7 @@ public interface JwtService {
    *
    * @return Le jwt decodé
    */
-  public Optional<DecodedJWT> validateAndDecode(String token);
+  public Mono<DecodedJWT> validateAndDecode(String token);
 
   /**
    * Suppression d'un JWT a partir d'un email

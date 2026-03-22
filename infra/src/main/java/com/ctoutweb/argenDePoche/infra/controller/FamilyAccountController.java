@@ -8,6 +8,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
@@ -42,8 +43,11 @@ public class FamilyAccountController {
     }
 
     @GetMapping("/parent/{parentId}/load-family-child-accounts")
-    public Mono<ResponseEntity<FamilyAccountResponseDto>> loadChildAccount(@PathVariable Long parentId) {
+    public Mono<ResponseEntity<FamilyAccountResponseDto>> loadChildAccount(@PathVariable Long parentId, Authentication authentication) {
+
         LOGGER.info(() -> "Création d'un nouveau compte familiale");
+
+        LOGGER.debug(authentication.getPrincipal());
         return familyAccountService.loadFamily(parentId)
                 .map(responseDto -> {
                             return ResponseEntity

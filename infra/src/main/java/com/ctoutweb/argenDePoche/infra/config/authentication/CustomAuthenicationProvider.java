@@ -1,5 +1,5 @@
 package com.ctoutweb.argenDePoche.infra.config.authentication;
-;
+
 import com.ctoutweb.argenDePoche.infra.exception.AuthenticationException;
 import com.ctoutweb.argenDePoche.infra.repository.FamilyRepository;
 import com.ctoutweb.argenDePoche.infra.repository.ParentFamilyAccountRepository;
@@ -80,7 +80,7 @@ public class CustomAuthenicationProvider implements ReactiveAuthenticationManage
                                                               .stream()
                                                               .map(ParentRoleProjection::roleName)
                                                               .toList();
-                                                      return mapToUserPrincipal.map(parent, family.getName(), roles, plainTextPassword);
+                                                      return mapToUserPrincipal.map(parent, family.getName(), roles);
                                                     });
                                           });
                               });

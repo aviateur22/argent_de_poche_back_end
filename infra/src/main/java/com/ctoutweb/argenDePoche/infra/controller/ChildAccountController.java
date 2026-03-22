@@ -11,6 +11,7 @@ import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.codec.multipart.FilePart;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -45,8 +46,11 @@ public class ChildAccountController {
     }
 
     @GetMapping("/parent/{parentId}/child-account/{childAccountId}/load-child-money-account")
-    public Mono<ResponseEntity<ChildAccountResponseDto>> loadChildAccount(@PathVariable Long childAccountId, @PathVariable Long parentId) {
+    public Mono<ResponseEntity<ChildAccountResponseDto>> loadChildAccount(
+            @PathVariable Long childAccountId,
+            @PathVariable Long parentId) {
         LOGGER.info(() -> "Chargement d'un compte d'argent de poche");
+
         return childAccountService.loadChildAccount(parentId, childAccountId)
                 .map(responseDto -> {
                     return ResponseEntity
