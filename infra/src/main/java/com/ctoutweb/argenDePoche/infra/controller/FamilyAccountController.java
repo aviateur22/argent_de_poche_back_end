@@ -28,20 +28,6 @@ public class FamilyAccountController {
         this.familyAccountService = familyAccountService;
     }
 
-    @PostMapping("/create-family-account")
-    public Mono<ResponseEntity<CreateFamilyAccountResponseDto>> createFamilyAccount(@RequestBody CreateFamilyAccountRequestDto dto) {
-        LOGGER.info(() -> String.format("Création d'un compte familliale %s", dto));
-
-        return familyAccountService.createFamilyAccount(dto)
-            .map(responseDto -> {
-                  URI location = URI.create( apiPath + "/family-accounts/" + responseDto.createdFamilyAccountId());
-                  return ResponseEntity
-                      .created(location)
-                      .body(responseDto);
-                }
-            );
-    }
-
     @GetMapping("/parent/{parentId}/load-family-child-accounts")
     public Mono<ResponseEntity<FamilyAccountResponseDto>> loadChildAccount(@PathVariable Long parentId, Authentication authentication) {
 

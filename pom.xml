@@ -121,7 +121,7 @@
                 <log.file>logs/app.log</log.file>
 
                 <!--Cors -->
-                <cors.domains></cors.domains>
+                <cors.domains>http://minipocket.fr,https://minipocket.fr</cors.domains>
 
                 <!--File-->
                 <max.file.size>10MB</max.file.size>
@@ -130,17 +130,17 @@
                 <!--Image Path-->
                 <default.image.extension>jpg</default.image.extension>
                 <default.child.image.name>dtushfgld</default.child.image.name>
-                <folder.path>/home/ubuntu/moe/argentDePoche/images</folder.path>
+                    <folder.path>/home/ubuntu/prod/argentDePoche/images</folder.path>
 
                 <!--JWT -->
                 <jwt.validity.hour>72</jwt.validity.hour>
-                <jwt.issuer>ctoutweb_argent_de_poche</jwt.issuer>
+                <jwt.issuer>ctoutweb_mini_pocket</jwt.issuer>
 
                 <!--Horaire -->
                 <zone.id>Europe/Paris</zone.id>
 
                 <!-- FrontEnd -->
-                <front.end.base.url>http://52.47.100.124/argent-de-poche</front.end.base.url>
+                <front.end.base.url>https://minipocket.fr</front.end.base.url>
                 <qr.code.child.account.url>/compte/enfant/%s/info</qr.code.child.account.url>
             </properties>
         </profile>
